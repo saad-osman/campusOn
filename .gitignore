@@ -1,0 +1,29 @@
+# Node
+.node/
+node_modules/
+frontend/.next/
+frontend/out/
+npm-debug.log*
+
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Env / secrets
+.env
+backend/.env
+frontend/.env.local
+
+# Data
+*.db
+*.sqlite3
+backend/app/*.db
+backend/uploads/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
