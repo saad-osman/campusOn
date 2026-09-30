@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     EXTRACTION_MODEL: str = "claude-haiku-4-5-20251001"
     WRITING_MODEL: str = "claude-sonnet-5"
     DEMO_MODE: bool = False
+    ENABLE_SCHEDULER: bool = True
 
     # Scraping
     SCRAPER_CONTACT_EMAIL: str = "demo@scholarradar.local"

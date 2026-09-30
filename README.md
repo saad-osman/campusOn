@@ -14,7 +14,7 @@ Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 - [x] Phase 0 — Scaffold
 - [x] Phase 1 — Accounts & progress
 - [x] Phase 2 — Application Files & teammates
-- [ ] Phase 3 — Scraping pipeline
+- [x] Phase 3 — Scraping pipeline
 - [ ] Phase 4 — Matching
 - [ ] Phase 5 — Action features
 - [ ] Phase 6 — Engagement & trust
@@ -33,6 +33,7 @@ data model from the spec is built as specified:
 | PostgreSQL 16 + pgvector | SQLite + embeddings as JSON, cosine similarity in Python (numpy) | No Postgres/Docker available. At this data scale (dozens–low hundreds of rows) a Python cosine scan is plenty fast, and it keeps the whole stack to one file with no server process to run. |
 | `docker compose up` | `make dev` (Makefile starts uvicorn + `next dev` together) | No Docker on this machine. |
 | Node via system package manager | Official Node.js tarball extracted into `.node/` (gitignored, not committed) | No Homebrew. Run `make setup` and it's handled for you. |
+| Demo mode uses cached extraction outputs from `seed/cache/` | Demo mode uses a deterministic rule-based extractor | It runs the same pipeline on any page, not just pre-cached ones, and reports lower confidence so weak extractions still reach the review queue. `seed/cache/` is still planned for cached SOP and email drafts (Phase 5). |
 | Playwright fallback for JS-rendered pages | Stubbed hook in `services/scraper.py`; flags `pending_review` instead | Avoids an uninvited ~300MB browser-binary download; wire up on request. |
 | `docker-compose.yml` / Dockerfiles | Present under `docker/` (added in Phase 8) but **unverified** — there was no Docker in this environment to test them against | Keeps the repo structure honest without claiming untested things work. |
 
@@ -48,6 +49,41 @@ Radix needs a ref (e.g. `Button`, dialog/sheet/alert-dialog `Overlay`). Those sp
 components were patched to use `React.forwardRef` explicitly. If you add a new shadcn component
 later and see a browser console warning like *"Function components cannot be given refs"*,
 that's this same issue — wrap the affected component in `forwardRef` the same way.
+
+## Scraping pipeline (Phase 3)
+
+`backend/app/services/scrape_pipeline.py` runs each source through fetch → skip-if-unchanged →
+extract → embed → dedupe → change detection, and logs every run to `scrape_runs`.
+
+- **Fetching** (`services/scraper.py`): robots.txt checked first, `ScholarRadarBot/1.0` User-Agent
+  with `SCRAPER_CONTACT_EMAIL`, max 1 request / 2 s per domain, 15 s timeout, exponential backoff.
+- **Extraction** (`services/extractor.py`): with `ANTHROPIC_API_KEY` set, Claude
+  (`EXTRACTION_MODEL`) returns JSON validated by Pydantic; invalid output is retried once, then
+  flagged `pending_review`. Without a key (demo mode), a rule-based extractor runs instead, at
+  honestly lower confidence scores. Anything under 0.7 confidence or with no deadline goes to
+  `pending_review`.
+- **Dedupe (F7):** cosine > 0.9 on the embedding, plus the same organization or a deadline
+  within ±3 days. The duplicate is kept as a row pointing at its canonical opportunity, so every
+  source stays linked ("Found on N sources").
+- **Change detection (F5):** deadline, eligibility, funding and status are diffed on each
+  re-scrape and recorded with a readable summary, e.g. "Deadline extended: 29 Dec 2026 → 12 Jan
+  2027". If content changes, faculty verification is cleared. User notifications for these
+  changes arrive in Phase 6.
+- **Freshness (F6):** two 404/410 responses in a row → `broken`, hidden from students. A daily
+  job sets `expired` once the deadline passes. Students only ever see `active` items (plus
+  `expired` with `include_expired=true`); faculty and admins see everything.
+- **Scheduler:** APScheduler re-scrapes every 6 h and runs the expiry sweep daily (the weekly
+  digest job is a stub until Phase 6). Set `ENABLE_SCHEDULER=false` to turn it off.
+- **Seed data:** 53 source pages (17 UAE/GCC) go through the same `ingest_page_text` path as a
+  live scrape. Some deadlines are written as `{{today+N}}`, so every reseed produces
+  near-deadline and just-expired items. **Seed entries are illustrative. Verify each one
+  against the real source before any real use.**
+
+API (Phase 3): `GET /api/opportunities` (`include_expired`, `degree_level`, `field`, `type`,
+`q`), `GET /api/opportunities/{id}`, `GET /api/opportunities/{id}/changes`,
+`POST|DELETE /api/opportunities/{id}/save`, and admin/faculty `GET|POST|PATCH /api/sources`,
+`POST /api/sources/{id}/scrape`, `GET /api/sources/runs/recent`, `POST /api/sources/archive-sweep`.
+The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
 
 ## Tech stack
 

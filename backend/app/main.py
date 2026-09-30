@@ -1,14 +1,40 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import auth, documents, invites, profile, settings as settings_router, state, workspaces
+from app.routers import (
+    auth,
+    documents,
+    invites,
+    opportunities,
+    profile,
+    settings as settings_router,
+    sources,
+    state,
+    workspaces,
+)
 
 settings = get_settings()
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler = None
+    if settings.ENABLE_SCHEDULER:
+        from app.jobs.scheduler import start_scheduler
+
+        scheduler = start_scheduler()
+    yield
+    if scheduler:
+        from app.jobs.scheduler import stop_scheduler
+
+        stop_scheduler()
+
+
 def create_app() -> FastAPI:
-    app = FastAPI(title=settings.APP_NAME)
+    app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 
     app.add_middleware(
         CORSMiddleware,
@@ -29,6 +55,8 @@ def create_app() -> FastAPI:
     app.include_router(workspaces.router)
     app.include_router(invites.router)
     app.include_router(documents.router)
+    app.include_router(opportunities.router)
+    app.include_router(sources.router)
 
     return app
 

@@ -1,0 +1,320 @@
+[
+  {
+    "source_name": "MBZUAI",
+    "source_url": "https://mbzuai.ac.ae/admissions/",
+    "region": "uae",
+    "raw_text": "MBZUAI Graduate Fellowship\nMohamed bin Zayed University of Artificial Intelligence\nFully funded Master's and PhD programs in Machine Learning, Computer Vision, NLP, and Robotics.\nEligibility: Bachelor's or Master's degree in a related field. CGPA of 3.30/4.0 minimum.\nFunding: Full tuition waiver, monthly stipend, housing, health insurance.\nField: AI/ML, Computer Science\nLocation: Abu Dhabi, UAE\nDeadline: December 29, 2026"
+  },
+  {
+    "source_name": "NYU Abu Dhabi",
+    "source_url": "https://nyuad.nyu.edu/en/admissions/graduate.html",
+    "region": "uae",
+    "raw_text": "NYUAD Global PhD Fellowship\nNew York University Abu Dhabi\nFully funded PhD positions across engineering, science, and humanities disciplines.\nEligibility: Master's degree preferred, Bachelor's considered for exceptional applicants. CGPA of 3.20/4.0 minimum.\nFunding: Full funding - stipend, tuition, housing.\nField: Engineering, Natural Sciences, Social Sciences\nLocation: Abu Dhabi, UAE\nDeadline: January 10, 2027"
+  },
+  {
+    "source_name": "KAUST",
+    "source_url": "https://www.kaust.edu.sa/en/study/scholarship",
+    "region": "gcc",
+    "raw_text": "KAUST Discovery Scholarship\nKing Abdullah University of Science and Technology\nFully funded Master's and PhD scholarships in science and engineering.\nEligibility: Bachelor's degree. CGPA of 3.00/4.0 minimum.\nFunding: Full tuition, monthly living allowance, housing, medical insurance, annual airfare.\nField: Engineering, Natural Sciences, Data Science\nLocation: Saudi Arabia\nDeadline: applications reviewed on a rolling basis, no fixed date published"
+  },
+  {
+    "source_name": "Khalifa University",
+    "source_url": "https://www.ku.ac.ae/graduate-studies",
+    "region": "uae",
+    "raw_text": "Khalifa University Graduate Assistantship\nKhalifa University of Science and Technology\nFunded Master's and PhD research assistantship positions.\nEligibility: Bachelor's degree in engineering or related field.\nFunding: Tuition waiver plus monthly stipend.\nField: Engineering\nLocation: Abu Dhabi, UAE\nDeadline: March 1, 2027"
+  },
+  {
+    "source_name": "UAE University",
+    "source_url": "https://www.uaeu.ac.ae/en/research/graduate-scholarships.shtml",
+    "region": "uae",
+    "raw_text": "UAEU Graduate Research Scholarship\nUnited Arab Emirates University\nFully funded Master's and PhD scholarships for research-focused programs.\nEligibility: Bachelor's degree, CGPA of 3.00/4.0 minimum.\nFunding: Fully funded - tuition, monthly stipend.\nField: Natural Sciences, Engineering, Business\nLocation: Al Ain, UAE\nDeadline: January 28, 2027"
+  },
+  {
+    "source_name": "American University of Sharjah",
+    "source_url": "https://www.aus.edu/graduate/financial-aid",
+    "region": "uae",
+    "raw_text": "AUS Graduate Teaching Assistantship\nAmerican University of Sharjah\nAssistantship for Master's students covering tuition and a monthly stipend in exchange for teaching support.\nEligibility: Bachelor's degree, CGPA of 3.00/4.0 minimum.\nFunding: Tuition waiver plus stipend.\nField: Engineering, Business, Computer Science\nLocation: Sharjah, UAE\nDeadline: December 14, 2026"
+  },
+  {
+    "source_name": "Zayed University",
+    "source_url": "https://www.zu.ac.ae/main/en/graduate/scholarships",
+    "region": "uae",
+    "raw_text": "Zayed University Graduate Fellowship\nZayed University\nFellowship for Master's students in policy and business programs.\nEligibility: Bachelor's degree with strong academic record.\nFunding: Partial tuition scholarship.\nField: Public Policy, Business\nLocation: Dubai, UAE\nDeadline: {{today+12}}"
+  },
+  {
+    "source_name": "ADEK Scholarship Program",
+    "source_url": "https://www.adek.gov.ae/en/Education-System/scholarships",
+    "region": "uae",
+    "raw_text": "ADEK Abu Dhabi Scholarship Program\nAbu Dhabi Department of Education and Knowledge\nGovernment-funded scholarship for UAE nationals and residents pursuing Bachelor's or Master's degrees at partner universities.\nEligibility: UAE residency required, strong academic record.\nFunding: Fully funded - tuition, living stipend.\nField: Engineering, Natural Sciences, Business\nLocation: Abu Dhabi, UAE\nDeadline: April 18, 2027"
+  },
+  {
+    "source_name": "Qatar Foundation",
+    "source_url": "https://www.qf.org.qa/education/scholarships",
+    "region": "gcc",
+    "raw_text": "Qatar Foundation Research Scholarship\nQatar Foundation\nFully funded PhD scholarships at Qatar-based research institutes.\nEligibility: Master's degree in a STEM field. CGPA of 3.20/4.0 minimum.\nFunding: Fully funded - tuition, stipend, housing.\nField: Engineering, Natural Sciences, AI/ML\nLocation: Doha, Qatar\nDeadline: February 12, 2027"
+  },
+  {
+    "source_name": "KFUPM",
+    "source_url": "https://www.kfupm.edu.sa/en/pages/graduate-scholarships",
+    "region": "gcc",
+    "raw_text": "KFUPM Graduate Scholarship\nKing Fahd University of Petroleum and Minerals\nFully funded Master's and PhD scholarships in engineering and applied science.\nEligibility: Bachelor's degree, CGPA of 3.00/4.0 minimum.\nFunding: Full tuition, monthly stipend, housing.\nField: Engineering, Data Science\nLocation: Dhahran, Saudi Arabia\nDeadline: January 18, 2027"
+  },
+  {
+    "source_name": "Sultan Qaboos University",
+    "source_url": "https://www.squ.edu.om/graduate/scholarships",
+    "region": "gcc",
+    "raw_text": "SQU Graduate Research Grant\nSultan Qaboos University\nResearch grant for Master's students in natural sciences.\nEligibility: Bachelor's degree with research experience preferred.\nFunding: Partial funding - monthly stipend.\nField: Natural Sciences\nLocation: Muscat, Oman\nDeadline: November 29, 2026"
+  },
+  {
+    "source_name": "Kuwait University",
+    "source_url": "https://www.ku.edu.kw/en/graduate-scholarships",
+    "region": "gcc",
+    "raw_text": "Kuwait University Graduate Scholarship\nKuwait University\nScholarship for Master's students, open to GCC nationals and residents.\nEligibility: Bachelor's degree, CGPA of 2.80/4.0 minimum.\nFunding: Tuition waiver.\nField: Business, Social Sciences\nLocation: Kuwait City, Kuwait\nDeadline: December 27, 2026"
+  },
+  {
+    "source_name": "Bahrain Polytechnic",
+    "source_url": "https://www.polytechnic.bh/scholarships",
+    "region": "gcc",
+    "raw_text": "Bahrain Polytechnic Undergraduate Scholarship\nBahrain Polytechnic\nScholarship for undergraduate students in applied engineering programs.\nEligibility: High school diploma with strong grades.\nFunding: Partial tuition scholarship.\nField: Engineering\nLocation: Isa Town, Bahrain\nDeadline: {{today+5}}"
+  },
+  {
+    "source_name": "Masdar Institute Programs",
+    "source_url": "https://masdar.ac.ae/research-programs",
+    "region": "uae",
+    "raw_text": "Masdar Institute Clean Energy Research Fellowship\nMasdar Institute (Khalifa University)\nFellowship for PhD students researching renewable energy and sustainability.\nEligibility: Master's degree in engineering or physics. CGPA of 3.30/4.0 minimum.\nFunding: Fully funded - stipend, tuition.\nField: Engineering, Natural Sciences\nLocation: Abu Dhabi, UAE\nDeadline: March 19, 2027"
+  },
+  {
+    "source_name": "Dubai Future Foundation",
+    "source_url": "https://www.dubaifuture.ae/fellowships",
+    "region": "uae",
+    "raw_text": "Dubai Future Fellowship\nDubai Future Foundation\nFellowship program for graduate students and young professionals working on emerging technology projects.\nEligibility: Bachelor's degree, strong project portfolio.\nFunding: Stipend for the fellowship duration.\nField: AI/ML, Computer Science\nLocation: Dubai, UAE\nDeadline: November 24, 2026"
+  },
+  {
+    "source_name": "American University of Kuwait",
+    "source_url": "https://www.auk.edu.kw/financial-aid",
+    "region": "gcc",
+    "raw_text": "AUK Merit Scholarship\nAmerican University of Kuwait\nMerit-based undergraduate scholarship covering partial tuition.\nEligibility: High school diploma, CGPA of 3.00/4.0 minimum.\nFunding: Partial tuition scholarship.\nField: Business, Computer Science\nLocation: Kuwait\nDeadline: {{today+6}}"
+  },
+  {
+    "source_name": "DAAD",
+    "source_url": "https://www.daad.de/en/study-and-research-in-germany/scholarships/",
+    "region": "europe",
+    "raw_text": "DAAD Graduate School Scholarship Programme\nGerman Academic Exchange Service (DAAD)\nFully funded Master's and PhD scholarships for international students in Germany.\nEligibility: Bachelor's degree completed with strong academic record. CGPA of 3.00/4.0 recommended.\nFunding: Fully funded - monthly stipend of 934 EUR, travel allowance, health insurance.\nField: Engineering, Natural Sciences, Computer Science\nLocation: Germany\nDeadline: October 15, 2027"
+  },
+  {
+    "source_name": "Fulbright",
+    "source_url": "https://foreign.fulbrightonline.org/",
+    "region": "usa",
+    "raw_text": "Fulbright Foreign Student Program\nFulbright / US Department of State\nFully funded Master's and PhD study in the United States for one academic year or more.\nEligibility: Bachelor's degree, strong English proficiency, leadership potential. CGPA of 3.20/4.0 preferred.\nFunding: Fully funded - tuition, living stipend, airfare, health insurance.\nField: Public Policy, Social Sciences, Business, Engineering\nLocation: United States\nDeadline: November 24, 2027"
+  },
+  {
+    "source_name": "Mitacs",
+    "source_url": "https://www.mitacs.ca/en/programs/globalink/globalink-research-internship",
+    "region": "usa",
+    "raw_text": "Mitacs Globalink Research Internship\nMitacs Canada\n12-week funded research internship for undergraduate students at Canadian universities.\nEligibility: Undergraduate students in second, third, or final year. CGPA of 3.00/4.0 or equivalent.\nFunding: $6,000 CAD stipend plus travel support.\nField: Engineering, Natural Sciences, Computer Science\nLocation: Canada\nDeadline: {{today-10}}"
+  },
+  {
+    "source_name": "IIT Kanpur SURGE",
+    "source_url": "https://surge.iitk.ac.in/",
+    "region": "india",
+    "raw_text": "SURGE Summer Undergraduate Research Program\nIndian Institute of Technology Kanpur\nSummer research internship for undergraduate engineering students.\nEligibility: Undergraduate students with strong academic record.\nFunding: Stipend plus on-campus accommodation.\nField: Engineering\nLocation: India\nDeadline: January 3, 2027"
+  },
+  {
+    "source_name": "Google Research",
+    "source_url": "https://research.google/programs-and-events/phd-fellowship/",
+    "region": "usa",
+    "raw_text": "Google PhD Fellowship Program\nGoogle Research\nFellowship supporting PhD students doing exceptional research in computer science and related fields.\nEligibility: Enrolled PhD student nominated by their university.\nFunding: Full tuition, stipend, conference travel support.\nField: AI/ML, Computer Science\nLocation: Remote / Global\nDeadline: February 17, 2027"
+  },
+  {
+    "source_name": "Chevening",
+    "source_url": "https://www.chevening.org/scholarships/",
+    "region": "europe",
+    "raw_text": "Chevening Scholarship\nUK Government / Foreign, Commonwealth & Development Office\nFully funded one-year Master's scholarship in the United Kingdom.\nEligibility: Bachelor's degree, at least two years of work experience.\nFunding: Fully funded - tuition, living stipend, travel costs.\nField: Public Policy, Business, Social Sciences\nLocation: United Kingdom\nDeadline: June 7, 2027"
+  },
+  {
+    "source_name": "Erasmus Mundus",
+    "source_url": "https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en",
+    "region": "europe",
+    "raw_text": "Erasmus Mundus Joint Master Degree Scholarship\nEuropean Commission\nFully funded Master's degree studied across at least two European universities.\nEligibility: Bachelor's degree in a relevant field.\nFunding: Fully funded - tuition, travel, monthly stipend.\nField: Engineering, Data Science, Social Sciences\nLocation: Europe\nDeadline: April 28, 2027"
+  },
+  {
+    "source_name": "Rhodes Trust",
+    "source_url": "https://www.rhodeshouse.ox.ac.uk/scholarships/",
+    "region": "europe",
+    "raw_text": "Rhodes Scholarship\nRhodes Trust, University of Oxford\nFully funded postgraduate study at the University of Oxford.\nEligibility: Bachelor's degree with outstanding academic record and leadership experience.\nFunding: Fully funded - tuition, stipend, travel.\nField: Public Policy, Natural Sciences, Social Sciences\nLocation: Oxford, United Kingdom\nDeadline: July 27, 2027"
+  },
+  {
+    "source_name": "Gates Cambridge",
+    "source_url": "https://www.gatescambridge.org/",
+    "region": "europe",
+    "raw_text": "Gates Cambridge Scholarship\nUniversity of Cambridge\nFully funded postgraduate scholarship at the University of Cambridge for non-UK students.\nEligibility: Bachelor's degree with outstanding academic record.\nFunding: Fully funded - tuition, stipend, travel.\nField: Natural Sciences, Engineering, Public Policy\nLocation: Cambridge, United Kingdom\nDeadline: July 17, 2027"
+  },
+  {
+    "source_name": "Commonwealth Scholarship Commission",
+    "source_url": "https://cscuk.fcdo.gov.uk/scholarships/",
+    "region": "europe",
+    "raw_text": "Commonwealth Master's Scholarship\nCommonwealth Scholarship Commission\nFully funded Master's scholarship in the United Kingdom for students from Commonwealth countries.\nEligibility: Bachelor's degree, CGPA of 3.00/4.0 minimum.\nFunding: Fully funded - tuition, stipend, airfare.\nField: Public Policy, Engineering\nLocation: United Kingdom\nDeadline: June 17, 2027"
+  },
+  {
+    "source_name": "CERN Summer Student Programme",
+    "source_url": "https://careers.cern/summer",
+    "region": "europe",
+    "raw_text": "CERN Summer Student Programme\nCERN\nSummer research program for undergraduate and graduate students in physics and engineering.\nEligibility: Undergraduate students in physics, engineering, or computer science.\nFunding: Monthly stipend plus travel allowance.\nField: Natural Sciences, Engineering\nLocation: Geneva, Switzerland\nDeadline: December 4, 2026"
+  },
+  {
+    "source_name": "MIT MSRP",
+    "source_url": "https://oge.mit.edu/msrp/",
+    "region": "usa",
+    "raw_text": "MIT Summer Research Program (MSRP)\nMassachusetts Institute of Technology\nSummer research internship for undergraduate students considering graduate school.\nEligibility: Undergraduate students with strong academic record.\nFunding: Fully funded - stipend, housing, travel.\nField: Engineering, AI/ML, Natural Sciences\nLocation: Cambridge, Massachusetts, USA\nDeadline: February 2, 2027"
+  },
+  {
+    "source_name": "Stanford SURGE",
+    "source_url": "https://surge.stanford.edu/",
+    "region": "usa",
+    "raw_text": "Stanford Summer Undergraduate Research in Genomics and Engineering\nStanford University\nSummer research program for undergraduate students in engineering and life sciences.\nEligibility: Undergraduate students, CGPA of 3.00/4.0 minimum.\nFunding: Stipend plus housing.\nField: Engineering, Natural Sciences\nLocation: Stanford, California, USA\nDeadline: January 8, 2027"
+  },
+  {
+    "source_name": "ETH Zurich Excellence Scholarship",
+    "source_url": "https://ethz.ch/en/studies/financial/scholarships/excellence-scholarship.html",
+    "region": "europe",
+    "raw_text": "ETH Zurich Excellence Scholarship\nETH Zurich\nFully funded Master's scholarship for outstanding students.\nEligibility: Bachelor's degree with top academic record. CGPA of 3.50/4.0 minimum.\nFunding: Fully funded - tuition, living stipend.\nField: Engineering, Natural Sciences, Data Science\nLocation: Zurich, Switzerland\nDeadline: May 18, 2027"
+  },
+  {
+    "source_name": "NUS Research Fellowship",
+    "source_url": "https://www.nus.edu.sg/gradschool/scholarships",
+    "region": "asia",
+    "raw_text": "NUS Graduate Research Scholarship\nNational University of Singapore\nFully funded PhD scholarship for research students.\nEligibility: Bachelor's or Master's degree, CGPA of 3.20/4.0 minimum.\nFunding: Fully funded - tuition, monthly stipend.\nField: Engineering, Computer Science, Data Science\nLocation: Singapore\nDeadline: {{today-45}}"
+  },
+  {
+    "source_name": "University of Tokyo MEXT",
+    "source_url": "https://www.u-tokyo.ac.jp/en/prospective-students/scholarships.html",
+    "region": "asia",
+    "raw_text": "MEXT Scholarship for Graduate Studies\nUniversity of Tokyo / Japanese Government\nFully funded Master's and PhD scholarship for international students in Japan.\nEligibility: Bachelor's degree, strong academic record.\nFunding: Fully funded - tuition, monthly stipend, airfare.\nField: Engineering, Natural Sciences\nLocation: Tokyo, Japan\nDeadline: June 27, 2027"
+  },
+  {
+    "source_name": "Microsoft Research",
+    "source_url": "https://www.microsoft.com/en-us/research/academic-program/phd-fellowship/",
+    "region": "usa",
+    "raw_text": "Microsoft Research PhD Fellowship\nMicrosoft Research\nFellowship supporting PhD students in computer science and related fields.\nEligibility: Enrolled PhD student nominated by their university.\nFunding: Full tuition, stipend, conference travel.\nField: AI/ML, Computer Science\nLocation: Remote / Global\nDeadline: February 22, 2027"
+  },
+  {
+    "source_name": "Marshall Scholarship",
+    "source_url": "https://www.marshallscholarship.org/",
+    "region": "europe",
+    "raw_text": "Marshall Scholarship\nMarshall Aid Commemoration Commission\nFully funded postgraduate study in the United Kingdom for American students.\nEligibility: Bachelor's degree with outstanding academic record.\nFunding: Fully funded - tuition, stipend, travel.\nField: Public Policy, Natural Sciences\nLocation: United Kingdom\nDeadline: August 6, 2027"
+  },
+  {
+    "source_name": "Toronto Global Scholars",
+    "source_url": "https://www.utoronto.ca/scholarships",
+    "region": "usa",
+    "raw_text": "University of Toronto Graduate Scholarship\nUniversity of Toronto\nFully funded Master's and PhD scholarship for international students.\nEligibility: Bachelor's degree, CGPA of 3.30/4.0 minimum.\nFunding: Fully funded - tuition, stipend.\nField: Engineering, Data Science, Natural Sciences\nLocation: Toronto, Canada\nDeadline: April 8, 2027"
+  },
+  {
+    "source_name": "Melbourne Research Scholarship",
+    "source_url": "https://scholarships.unimelb.edu.au/",
+    "region": "asia",
+    "raw_text": "Melbourne Research Scholarship\nUniversity of Melbourne\nFully funded PhD scholarship covering tuition and living stipend.\nEligibility: Master's degree with research experience.\nFunding: Fully funded - tuition, stipend.\nField: Natural Sciences, Engineering, Social Sciences\nLocation: Melbourne, Australia\nDeadline: March 24, 2027"
+  },
+  {
+    "source_name": "Seoul National University Global Scholarship",
+    "source_url": "https://oia.snu.ac.kr/scholarships",
+    "region": "asia",
+    "raw_text": "SNU Global Scholarship\nSeoul National University\nScholarship for international Master's and PhD students.\nEligibility: Bachelor's degree, CGPA of 3.00/4.0 minimum.\nFunding: Partial tuition scholarship plus monthly stipend.\nField: Engineering, Computer Science\nLocation: Seoul, South Korea\nDeadline: {{today-20}}"
+  },
+  {
+    "source_name": "IISc Summer Research Fellowship",
+    "source_url": "https://www.iisc.ac.in/summer-fellowship/",
+    "region": "india",
+    "raw_text": "IISc Summer Research Fellowship\nIndian Institute of Science\nSummer research fellowship for undergraduate students in science and engineering.\nEligibility: Undergraduate students with strong academic record.\nFunding: Stipend plus accommodation.\nField: Natural Sciences, Engineering\nLocation: Bangalore, India\nDeadline: December 9, 2026"
+  },
+  {
+    "source_name": "TIFR Visiting Students Programme",
+    "source_url": "https://www.tifr.res.in/~outreach/vsp.html",
+    "region": "india",
+    "raw_text": "TIFR Visiting Students' Research Programme\nTata Institute of Fundamental Research\nResearch internship for undergraduate students in physics, mathematics, and biology.\nEligibility: Undergraduate students with strong academic record.\nFunding: Stipend plus accommodation.\nField: Natural Sciences\nLocation: Mumbai, India\nDeadline: December 19, 2026"
+  },
+  {
+    "source_name": "DST Inspire Scholarship",
+    "source_url": "https://online-inspire.gov.in/",
+    "region": "india",
+    "raw_text": "INSPIRE Scholarship for Higher Education\nDepartment of Science and Technology, India\nScholarship for undergraduate students pursuing natural sciences.\nEligibility: High school diploma with top academic rank.\nFunding: Annual scholarship amount plus summer research grant.\nField: Natural Sciences\nLocation: India\nDeadline: November 19, 2026"
+  },
+  {
+    "source_name": "Naval Postgraduate Research Grant",
+    "source_url": "https://www.nps.edu/scholarships",
+    "region": "usa",
+    "raw_text": "Applied Engineering Research Grant\nNaval Postgraduate School Foundation\nResearch grant for Master's students in applied engineering.\nEligibility: Bachelor's degree in engineering.\nFunding: Partial funding - research stipend.\nField: Engineering\nLocation: Monterey, California, USA\nDeadline: {{today+3}}"
+  },
+  {
+    "source_name": "Imperial College London Scholarship",
+    "source_url": "https://www.imperial.ac.uk/study/pg/fees-and-funding/scholarships/",
+    "region": "europe",
+    "raw_text": "Imperial College President's PhD Scholarship\nImperial College London\nFully funded PhD scholarship across engineering and natural sciences departments.\nEligibility: Master's degree, CGPA of 3.30/4.0 minimum.\nFunding: Fully funded - tuition, stipend.\nField: Engineering, Natural Sciences, AI/ML\nLocation: London, United Kingdom\nDeadline: May 8, 2027"
+  },
+  {
+    "source_name": "TU Delft Justus & Louise van Effen Scholarship",
+    "source_url": "https://www.tudelft.nl/en/education/practical-matters/scholarships",
+    "region": "europe",
+    "raw_text": "TU Delft Excellence Scholarship\nDelft University of Technology\nFully funded Master's scholarship for outstanding international students.\nEligibility: Bachelor's degree with top academic record.\nFunding: Fully funded - tuition, living stipend.\nField: Engineering, Data Science\nLocation: Delft, Netherlands\nDeadline: April 23, 2027"
+  },
+  {
+    "source_name": "Partner University International Office",
+    "source_url": "https://university.example.edu/global/daad-partnership",
+    "region": "europe",
+    "raw_text": "DAAD Graduate School Scholarship Programme\nGerman Academic Exchange Service (DAAD)\nListed by your home university's international office. Fully funded scholarship for Master's and PhD students in Germany.\nEligibility: CGPA of 3.00/4.0 minimum.\nFunding: Fully funded - monthly stipend of 934 EUR.\nField: Engineering, Natural Sciences\nLocation: Germany\nDeadline: October 15, 2027"
+  },
+  {
+    "source_name": "Scholarship Aggregator Mirror",
+    "source_url": "https://scholarships-mirror.example.com/mbzuai",
+    "region": "uae",
+    "raw_text": "MBZUAI Graduate Fellowship\nMohamed bin Zayed University of Artificial Intelligence\nMirrored listing. Fully funded Master's and PhD programs in Machine Learning, Computer Vision, NLP, and Robotics.\nEligibility: CGPA of 3.30/4.0 minimum.\nFunding: Full tuition waiver, monthly stipend, housing.\nField: AI/ML, Computer Science\nLocation: Abu Dhabi, UAE\nDeadline: December 29, 2026"
+  },
+  {
+    "source_name": "Departmental Newsletter (scanned PDF)",
+    "source_url": "https://dept.example.edu/newsletter/oct-issue.pdf",
+    "region": "global",
+    "raw_text": "Opportunity announcement. New research collaboration program.\nContact department office for more information.\nSee attached flyer for details."
+  },
+  {
+    "source_name": "Alumni Bulletin Snippet",
+    "source_url": "https://alumni.example.org/bulletin/summer",
+    "region": "global",
+    "raw_text": "Summer program mentioned by a returning alumnus.\nDetails forthcoming.\nA former student mentioned a summer program but didn't share a link."
+  },
+  {
+    "source_name": "Conference Flyer Photo (OCR)",
+    "source_url": "https://conf.example.com/flyer-ocr-1",
+    "region": "global",
+    "raw_text": "Funding opportunity - partial text unreadable\nOrganization name unclear\nDeadline sometime next year. Contact organizers for details."
+  },
+  {
+    "source_name": "WhatsApp Forward Transcript",
+    "source_url": "https://groupchat.example.com/forward-42",
+    "region": "global",
+    "raw_text": "Someone said there's a scholarship for engineering students\nUnknown\nNo further details available."
+  },
+  {
+    "source_name": "Career Fair Business Card Note",
+    "source_url": "https://careerfair.example.com/note-7",
+    "region": "global",
+    "raw_text": "Research position, ask recruiter for details\nCompany name illegible\nRecruiter mentioned openings but the card doesn't have a URL."
+  },
+  {
+    "source_name": "Faculty Email Forward",
+    "source_url": "https://mail.example.edu/forward-119",
+    "region": "global",
+    "raw_text": "FW: FW: possible funding for students\nForwarded without context\nOriginal sender and details unclear from the forwarded chain."
+  },
+  {
+    "source_name": "Bulletin Board Photo",
+    "source_url": "https://campus.example.edu/bulletin-photo-3",
+    "region": "global",
+    "raw_text": "Partially obscured poster about a fellowship\nOrganization name cut off in photo\nPoster was photographed at an angle. Some text not legible."
+  },
+  {
+    "source_name": "Student Group Chat Screenshot",
+    "source_url": "https://chat.example.com/screenshot-88",
+    "region": "global",
+    "raw_text": "Apparently there's a grant for something\nNot specified\nScreenshot shared without additional context."
+  }
+]

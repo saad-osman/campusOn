@@ -297,7 +297,7 @@ After each phase: run the app, run tests, fix errors, update README, `git commit
 5. **Action features:** professor finder (F3), application copilot (F4), tracker Kanban + .ics (F9).
 6. **Engagement & trust:** notifications, digest + Telegram (F10), UAE/GCC section (F11), confidence and review queue (F6), faculty endorsements (F12).
 7. **Institutional & integration:** admin analytics (F13), public API, RSS, widget, mock portal (F14).
-8. **Polish:** demo mode, empty states, loading states, mobile check, accessibility pass, `README.md` (setup in under 5 commands), `DEMO_SCRIPT.md` (a 3-minute demo flow: login → continue card → upload CV → eligibility verdicts → NL search → professor finder → generate kit into a shared file → teammate sees it → change alert → admin analytics → widget on mock portal).
+8. **Polish:** replace `/` (a dev status page until then) with a real homepage: a short headline explaining the product, "how it works" in … *(rest of this requirement still to be supplied)*; demo mode, empty states, loading states, mobile check, accessibility pass, `README.md` (setup in under 5 commands), `DEMO_SCRIPT.md` (a 3-minute demo flow: login → continue card → upload CV → eligibility verdicts → NL search → professor finder → generate kit into a shared file → teammate sees it → change alert → admin analytics → widget on mock portal).
 
 ---
 

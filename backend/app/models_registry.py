@@ -8,3 +8,6 @@ from app.models import user, profile, user_state, password_reset  # noqa: F401
 
 # Phase 2
 from app.models import workspace, document, tracker  # noqa: F401
+
+# Phase 3
+from app.models import source, opportunity, scrape_run  # noqa: F401

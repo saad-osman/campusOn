@@ -6,6 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 os.environ["DATABASE_URL"] = "sqlite:///./test.db"
 os.environ["DEMO_MODE"] = "true"
+os.environ["ENABLE_SCHEDULER"] = "false"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -28,9 +29,20 @@ def _create_tables():
         db_path.unlink()
 
 
+PHASE_3_TABLES = [
+    "opportunity_changes", "opportunity_sources", "saved_opportunities",
+    "raw_pages", "scrape_runs", "opportunities", "sources",
+]
+
+
 @pytest.fixture()
 def db_session():
     session = SessionLocal()
+    # Users/workspaces use unique emails per test, but opportunity/dedupe tests
+    # count rows and match by embedding, so those tables start empty each test.
+    for table in PHASE_3_TABLES:
+        session.execute(Base.metadata.tables[table].delete())
+    session.commit()
     try:
         yield session
     finally:
