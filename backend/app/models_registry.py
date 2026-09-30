@@ -4,4 +4,4 @@ Add a line here each time a new model module is added in a later phase.
 """
 
 # Phase 1
-# from app.models import user, profile, user_state  # noqa: F401
+from app.models import user, profile, user_state, password_reset  # noqa: F401

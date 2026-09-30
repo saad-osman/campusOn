@@ -7,3 +7,6 @@ alembic
 python-dotenv
 pytest
 httpx
+argon2-cffi
+pyjwt
+email-validator

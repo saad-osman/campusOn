@@ -12,7 +12,7 @@ Discovery Platform.
 Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 
 - [x] Phase 0 — Scaffold
-- [ ] Phase 1 — Accounts & progress
+- [x] Phase 1 — Accounts & progress
 - [ ] Phase 2 — Application Files & teammates
 - [ ] Phase 3 — Scraping pipeline
 - [ ] Phase 4 — Matching
@@ -40,6 +40,14 @@ If you have Docker, Node, and Postgres available, the files under `docker/` and 
 `DATABASE_URL` setting in `.env.example` are the starting point for switching back to the
 literal spec'd stack — nothing in the application code assumes SQLite specifically beyond the
 embeddings-as-JSON representation in `backend/app/services/embeddings.py`.
+
+**shadcn/ui + React 18 note:** this Next.js version pins React 18 (Next 14's official peer
+dependency), but `shadcn@latest`'s default "Nova" component preset assumes React 19's automatic
+ref forwarding and ships several `components/ui/*.tsx` files as plain function components where
+Radix needs a ref (e.g. `Button`, dialog/sheet/alert-dialog `Overlay`). Those specific
+components were patched to use `React.forwardRef` explicitly. If you add a new shadcn component
+later and see a browser console warning like *"Function components cannot be given refs"*,
+that's this same issue — wrap the affected component in `forwardRef` the same way.
 
 ## Tech stack
 
