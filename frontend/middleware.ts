@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/settings", "/onboarding"];
+const PROTECTED_PREFIXES = ["/dashboard", "/settings", "/onboarding", "/files"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -17,5 +17,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/settings/:path*", "/onboarding/:path*"],
+  matcher: ["/dashboard/:path*", "/settings/:path*", "/onboarding/:path*", "/files/:path*"],
 };

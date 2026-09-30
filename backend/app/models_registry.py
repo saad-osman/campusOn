@@ -5,3 +5,6 @@ Add a line here each time a new model module is added in a later phase.
 
 # Phase 1
 from app.models import user, profile, user_state, password_reset  # noqa: F401
+
+# Phase 2
+from app.models import workspace, document, tracker  # noqa: F401

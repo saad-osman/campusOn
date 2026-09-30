@@ -13,7 +13,7 @@ Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 
 - [x] Phase 0 — Scaffold
 - [x] Phase 1 — Accounts & progress
-- [ ] Phase 2 — Application Files & teammates
+- [x] Phase 2 — Application Files & teammates
 - [ ] Phase 3 — Scraping pipeline
 - [ ] Phase 4 — Matching
 - [ ] Phase 5 — Action features
