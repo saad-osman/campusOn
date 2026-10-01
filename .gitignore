@@ -2,6 +2,7 @@
 .node/
 node_modules/
 frontend/.next/
+frontend/.next-build/
 frontend/out/
 npm-debug.log*
 

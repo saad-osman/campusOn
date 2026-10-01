@@ -143,3 +143,12 @@ def test_reset_password_with_token(client):
         "/api/auth/login", json={"email": "reset@example.com", "password": "brandnew123"}
     )
     assert login.status_code == 200
+
+
+def test_session_endpoint_is_200_when_logged_out(client):
+    reset_rate_limits()
+    client.cookies.clear()
+    res = client.get("/api/auth/session")
+    assert res.status_code == 200 and res.json() == {"user": None}
+    _register(client, email="session@example.com")
+    assert client.get("/api/auth/session").json()["user"]["email"] == "session@example.com"

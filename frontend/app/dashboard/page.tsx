@@ -83,8 +83,9 @@ function ContinueTile() {
   const chips = discover?.filters ? filterChips({ ...EMPTY_FILTERS, ...discover.filters }) : [];
   const preview = doc?.content
     .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean)
+    // Plain-text preview: drop Markdown list/heading/quote markers and the AI-draft label.
+    .map((l) => l.trim().replace(/^([-*] \[[ xX]\]\s*|#+\s*|>\s*|[-*]\s+)/, "").replace(/\*\*/g, ""))
+    .filter((l) => l && !l.startsWith("AI draft"))
     .slice(-2)
     .join(" · ");
 

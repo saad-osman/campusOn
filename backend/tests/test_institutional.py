@@ -122,3 +122,18 @@ def test_private_api_cors_stays_locked(client):
         "Origin": "http://localhost:3000", "Access-Control-Request-Method": "GET"})
     assert ok.headers.get("access-control-allow-origin") == "http://localhost:3000"
     assert ok.headers.get("access-control-allow-credentials") == "true"
+
+
+def test_simulate_change_alerts_followers(client, db_session):
+    from app.models.notification import Notification
+
+    opp = _opp(db_session, title="Followed")
+    reset_rate_limits()
+    client.cookies.clear()
+    res = client.post("/api/auth/register", json={"name": "F", "email": f"{uuid.uuid4().hex[:8]}@e.com", "password": "password123"})
+    follower = res.json()["id"]
+    client.post(f"/api/opportunities/{opp.id}/save")
+    _admin(client, db_session)
+    body = client.post("/api/admin/demo/simulate-change").json()
+    assert body["title"] == "Followed" and body["summary"].startswith("Deadline extended")
+    assert db_session.query(Notification).filter_by(user_id=follower, type="change_alert").count() == 1

@@ -7,9 +7,46 @@ and lets them work on applications together with teammates.
 Built for CampusOPS (IEEE BPDC), Problem Statement 03: Research Opportunity Aggregation &
 Discovery Platform.
 
+## Quick start
+
+Needs Python 3.11+ and Node 18+.
+
+```bash
+make setup     # backend venv + deps, frontend npm install, .env files
+make migrate   # create the database schema (SQLite)
+make seed      # demo users, 58 source pages through the real pipeline, demo files
+make dev       # backend on :8000, frontend on :3000
+```
+
+**Windows (PowerShell, no `make` needed):**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1   # setup + migrate + seed
+powershell -ExecutionPolicy Bypass -File scripts\dev.ps1     # opens backend + frontend windows
+```
+
+Open http://localhost:3000. The browser only talks to the Next.js server, which proxies `/api/*`
+and `/feed.xml` to FastAPI (`frontend/next.config.mjs`), so the session cookie is first-party.
+
+**Demo accounts** (password `demo1234`):
+
+| Account | What to look at |
+|---|---|
+| `student@demo.com` | Dashboard, Discover, an opportunity, Professors, the shared Application File |
+| `teammate@demo.com` | Same shared file: sees edits, tracker moves and activity |
+| `faculty@demo.com` | Review queue (`/faculty/review`) and endorsements (`/faculty/endorse`) |
+| `admin@demo.com` | Analytics, sources, digest and demo controls (`/admin`) |
+
+No API keys are needed. Without `ANTHROPIC_API_KEY` the app runs in **demo mode** (banner at the
+top): rule-based extraction, CV parsing and query parsing, and template drafts. Set the key in
+`backend/.env` to use Claude (`EXTRACTION_MODEL` for extraction, `WRITING_MODEL` for drafts).
+`DEMO_SCRIPT.md` walks through a 3-minute demo.
+
+Tests: `make test` (115 backend tests). Production build check: `make build`.
+
 ## Status
 
-Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
+All phases of `SPEC.md` Section 10 are built:
 
 - [x] Phase 0 — Scaffold
 - [x] Phase 1 — Accounts & progress
@@ -19,23 +56,22 @@ Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 - [x] Phase 5 — Action features
 - [x] Phase 6 — Engagement & trust
 - [x] Phase 7 — Institutional & integration
-- [ ] Phase 8 — Polish
+- [x] Phase 8 — Polish
 
-## Infra notes (read this first)
+## Infra notes
 
-This build environment has no Docker, no Node.js, no PostgreSQL, and no Homebrew available
-(no sudo/GUI access to install them). Rather than block on manual installs, the infra layer
+The original build environment had no Docker, PostgreSQL or Homebrew, so the infra layer
 was adapted to equivalents that need no system-level install, while every feature, route, and
 data model from the spec is built as specified:
 
 | Spec | This build | Why |
 |---|---|---|
 | PostgreSQL 16 + pgvector | SQLite + embeddings as JSON, cosine similarity in Python (numpy) | No Postgres/Docker available. At this data scale (dozens–low hundreds of rows) a Python cosine scan is plenty fast, and it keeps the whole stack to one file with no server process to run. |
-| `docker compose up` | `make dev` (Makefile starts uvicorn + `next dev` together) | No Docker on this machine. |
+| `docker compose up` | `make dev` / `scripts\dev.ps1` | No Docker in the build environment. `docker-compose.yml` + `docker/*.Dockerfile` (Postgres 16) exist but are **unverified**. |
 | Node via system package manager | Official Node.js tarball extracted into `.node/` (gitignored, not committed) | No Homebrew. Run `make setup` and it's handled for you. |
-| Demo mode uses cached extraction outputs from `seed/cache/` | Demo mode uses a deterministic rule-based extractor | It runs the same pipeline on any page, not just pre-cached ones, and reports lower confidence so weak extractions still reach the review queue. `seed/cache/` is still planned for cached SOP and email drafts (Phase 5). |
+| Demo mode uses cached outputs from `seed/cache/` | Rule-based extraction/CV/query parsing and template drafts | They work on any input, not just pre-cached ones, and report lower confidence so weak extractions still reach the review queue. `seed/cache/` holds the offline professor sample. |
 | Playwright fallback for JS-rendered pages | Stubbed hook in `services/scraper.py`; flags `pending_review` instead | Avoids an uninvited ~300MB browser-binary download; wire up on request. |
-| `docker-compose.yml` / Dockerfiles | Present under `docker/` (added in Phase 8) but **unverified** — there was no Docker in this environment to test them against | Keeps the repo structure honest without claiming untested things work. |
+| python-telegram-bot, `ics` library | Bot API over httpx (long polling); RFC 5545 written directly | Fewer dependencies for two small, stable protocols; both are unit-tested. |
 
 If you have Docker, Node, and Postgres available, the files under `docker/` and the
 `DATABASE_URL` setting in `.env.example` are the starting point for switching back to the
@@ -194,34 +230,23 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
   SOP/email drafting. Runs in demo mode (cached outputs, no external calls) when
   `ANTHROPIC_API_KEY` is unset.
 
-## Setup
-
-```bash
-make setup     # backend venv + deps, frontend npm install, .env files
-make migrate   # create the SQLite schema
-make seed      # load demo users + seed opportunities
-make dev       # backend on :8000, frontend on :3000
-```
-
-Then open http://localhost:3000.
-
-Run the backend test suite with `make test`.
-
 ## Repository layout
 
 ```
 scholarradar/
   Makefile
+  docker-compose.yml   # unverified
+  scripts/             # setup.ps1, dev.ps1 (Windows)
   .env.example
   README.md
   DEMO_SCRIPT.md
   backend/
     app/            # main, config, db, models/, schemas/, routers/, services/, jobs/, prompts/
+    seed/           # opportunities.json (58 illustrative listings), cache/
     alembic/
-    seed/
     tests/
-  frontend/         # Next.js App Router app
-  docker/           # best-effort, unverified Dockerfiles + compose (Phase 8)
+  frontend/         # Next.js App Router app; public/widget.js, public/sample-cv.docx
+  docker/           # backend/frontend Dockerfiles (unverified)
 ```
 
 ## Environment variables

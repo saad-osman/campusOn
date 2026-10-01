@@ -49,6 +49,13 @@ class Settings(BaseSettings):
         return self.DEMO_MODE or not self.ANTHROPIC_API_KEY
 
 
+PLACEHOLDER_SECRETS = {"dev-secret-change-me", "change-me-to-a-random-string", ""}
+
+
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    settings = Settings()
+    if settings.ENV == "production" and settings.SECRET_KEY in PLACEHOLDER_SECRETS:
+        # Anyone could forge session cookies with a published key.
+        raise RuntimeError("Set SECRET_KEY to a long random value before running in production")
+    return settings

@@ -19,8 +19,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "ScholarRadar",
-  description: "From discovery to a submitted application.",
+  title: { default: "ScholarRadar", template: "%s · ScholarRadar" },
+  description:
+    "Find research internships, fellowships and scholarships you actually qualify for, who to contact, and what to send.",
 };
 
 export default function RootLayout({
@@ -33,8 +34,14 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
+            <a
+              href="#main"
+              className="sr-only z-50 rounded-md bg-primary px-3 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+            >
+              Skip to content
+            </a>
             <Nav />
-            <main className="mx-auto min-h-[calc(100vh-3.5rem)] max-w-6xl px-4 py-6">
+            <main id="main" tabIndex={-1} className="mx-auto min-h-[calc(100vh-3.5rem)] max-w-6xl px-4 py-6 outline-none">
               {children}
             </main>
             <Toaster />

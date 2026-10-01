@@ -100,3 +100,12 @@ export function useArchiveSweep() {
     onSuccess: invalidate,
   });
 }
+
+export function useSimulateChange() {
+  const invalidate = useInvalidateAdmin();
+  return useMutation({
+    mutationFn: () =>
+      api.post<{ opportunity_id: string; title: string; summary: string; followers: number }>("/api/admin/demo/simulate-change"),
+    onSuccess: invalidate,
+  });
+}

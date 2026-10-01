@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Archive, Download, ExternalLink, Mail, Plus, RefreshCw, Trophy } from "lucide-react";
+import { Archive, Download, ExternalLink, Mail, Plus, RefreshCw, Trophy, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,7 @@ import {
   usePatchSource,
   useScrapeRuns,
   useScrapeSource,
+  useSimulateChange,
   useSources,
   type SourceRow,
 } from "@/lib/admin";
@@ -253,6 +254,7 @@ export default function AdminPage() {
   const { data, isLoading } = useAnalytics();
   const digest = useSendDigestNow();
   const sweep = useArchiveSweep();
+  const simulate = useSimulateChange();
 
   if (!allowed) return <div className="py-16 text-center text-muted-foreground">Loading&hellip;</div>;
   const h = data?.headline;
@@ -284,6 +286,21 @@ export default function AdminPage() {
             }}
           >
             <Archive /> Run expiry sweep
+          </Button>
+          <Button
+            variant="outline"
+            disabled={simulate.isPending}
+            title="Demo helper: extends the deadline of the most recently saved opportunity by a week, as a re-scrape would"
+            onClick={async () => {
+              try {
+                const r = await simulate.mutateAsync();
+                toast.success(`${r.title}: ${r.summary}. ${r.followers} follower${r.followers === 1 ? "" : "s"} alerted.`);
+              } catch (e) {
+                toast.error(e instanceof ApiError ? e.message : "Couldn't simulate a change");
+              }
+            }}
+          >
+            <Zap /> Simulate a deadline change
           </Button>
           <Button asChild>
             <a href="/api/admin/analytics.csv" download>

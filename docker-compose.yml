@@ -1,0 +1,49 @@
+# UNVERIFIED: there was no Docker in the environment this was written in. The
+# tested path is `make setup && make migrate && make seed && make dev` (or
+# scripts\setup.ps1 + scripts\dev.ps1 on Windows), which uses SQLite.
+#
+#   docker compose up --build
+#   docker compose exec backend python -m app.seed
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: scholarradar
+      POSTGRES_PASSWORD: scholarradar
+      POSTGRES_DB: scholarradar
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scholarradar"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file:
+      - path: backend/.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://scholarradar:scholarradar@db:5432/scholarradar
+      FRONTEND_ORIGIN: http://localhost:3000
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        BACKEND_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

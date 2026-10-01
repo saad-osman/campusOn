@@ -2,11 +2,12 @@ import secrets
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.db import get_db
-from app.deps import get_current_user
+from app.deps import get_current_user, get_current_user_optional
 from app.models.password_reset import PasswordResetToken
 from app.models.profile import Profile
 from app.models.user import User
@@ -93,6 +94,17 @@ def logout(response: Response):
 @router.get("/me", response_model=UserOut)
 def me(user: User = Depends(get_current_user)):
     return user
+
+
+class SessionOut(BaseModel):
+    user: UserOut | None
+
+
+@router.get("/session", response_model=SessionOut)
+def session(user: User | None = Depends(get_current_user_optional)):
+    """Who's logged in, if anyone. Unlike /me, a logged-out visitor gets 200 with
+    `user: null`, so public pages don't log a 401 in every visitor's console."""
+    return {"user": user}
 
 
 @router.post("/forgot-password")

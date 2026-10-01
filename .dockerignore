@@ -1,0 +1,9 @@
+**/.venv
+**/node_modules
+**/.next
+**/.next-build
+**/__pycache__
+**/*.db
+**/.env
+**/.env.local
+.git

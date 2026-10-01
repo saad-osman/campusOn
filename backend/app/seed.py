@@ -50,6 +50,12 @@ def render_relative_dates(text: str, today: date | None = None) -> str:
 def reset_db():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
+    # The schema now matches the models, so record that in Alembic's version table;
+    # otherwise a later `alembic upgrade head` re-runs migrations into existing tables.
+    from alembic import command
+    from alembic.config import Config
+
+    command.stamp(Config(str(Path(__file__).resolve().parents[1] / "alembic.ini")), "head")
 
 
 def create_demo_users(db):

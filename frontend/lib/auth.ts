@@ -3,20 +3,14 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, ApiError } from "@/lib/api";
+import { api } from "@/lib/api";
 import type { User } from "@/lib/types";
 
 export function useCurrentUser() {
   return useQuery<User | null>({
     queryKey: ["me"],
-    queryFn: async () => {
-      try {
-        return await api.get<User>("/api/auth/me");
-      } catch (err) {
-        if (err instanceof ApiError && err.status === 401) return null;
-        throw err;
-      }
-    },
+    // /session answers 200 with `user: null` when logged out (no console 401s).
+    queryFn: async () => (await api.get<{ user: User | null }>("/api/auth/session")).user,
     staleTime: 60_000,
   });
 }
