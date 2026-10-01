@@ -24,6 +24,7 @@ def _create_tables():
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
+    engine.dispose()  # Windows can't delete a file that still has open connections
     db_path = Path(__file__).resolve().parents[1] / "test.db"
     if db_path.exists():
         db_path.unlink()

@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     # LLM
     ANTHROPIC_API_KEY: str | None = None
     EXTRACTION_MODEL: str = "claude-haiku-4-5-20251001"
-    WRITING_MODEL: str = "claude-sonnet-5"
+    WRITING_MODEL: str = "claude-sonnet-5-5"
     DEMO_MODE: bool = False
     ENABLE_SCHEDULER: bool = True
 

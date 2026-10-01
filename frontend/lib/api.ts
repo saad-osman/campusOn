@@ -1,4 +1,7 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// In the browser, calls go to this origin and next.config.mjs proxies them to
+// FastAPI. Server components can't use a relative URL, so they hit the backend directly.
+const API_URL =
+  typeof window === "undefined" ? process.env.BACKEND_URL || "http://localhost:8000" : "";
 
 export class ApiError extends Error {
   status: number;

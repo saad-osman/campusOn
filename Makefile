@@ -12,7 +12,7 @@ setup:
 	@if [ ! -f backend/.env ]; then cp .env.example backend/.env; echo "created backend/.env from .env.example (edit as needed)"; fi
 	@echo "== Frontend: npm install =="
 	cd frontend && npm install
-	@if [ ! -f frontend/.env.local ]; then echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > frontend/.env.local; fi
+	@if [ ! -f frontend/.env.local ]; then echo "BACKEND_URL=http://localhost:8000" > frontend/.env.local; fi
 	@echo "Setup complete. Run 'make migrate && make seed && make dev' next."
 
 migrate:

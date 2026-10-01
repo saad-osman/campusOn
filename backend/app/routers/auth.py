@@ -19,7 +19,7 @@ from app.schemas.auth import (
     ResetPasswordIn,
     UserOut,
 )
-from app.services.rate_limit import check_rate_limit
+from app.services.rate_limit import is_rate_limited, record_hit
 from app.services.security import create_access_token, hash_password, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -69,11 +69,14 @@ def register(payload: RegisterIn, response: Response, db: Session = Depends(get_
 @router.post("/login", response_model=UserOut)
 def login(payload: LoginIn, request: Request, response: Response, db: Session = Depends(get_db)):
     ip = _client_ip(request)
-    if not check_rate_limit(f"login:{ip}", max_calls=5, window_seconds=60):
+    # Only failed attempts count toward the limit, so someone who logs in and out
+    # repeatedly (e.g. switching demo accounts) never gets locked out.
+    if is_rate_limited(f"login:{ip}", max_calls=5, window_seconds=60):
         raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many login attempts. Try again in a minute.")
 
     user = db.query(User).filter(User.email == payload.email.lower()).first()
     if not user or not verify_password(payload.password, user.password_hash):
+        record_hit(f"login:{ip}")
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
 
     _set_session_cookie(response, user)
