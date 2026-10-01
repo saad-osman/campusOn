@@ -166,7 +166,7 @@ def test_archive_sweep_records_status_change(db_session):
     archive_expired(db_session)
     change = db_session.query(OpportunityChange).filter_by(opportunity_id=opp.id).one()
     assert change.field == "status"
-    assert change.summary == "Status changed: active → expired"
+    assert change.summary == "Applications have closed"
 
 
 def test_unchanged_page_refreshes_last_checked_without_new_raw_page(db_session):

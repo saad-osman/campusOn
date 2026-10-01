@@ -20,6 +20,7 @@ from app.schemas.auth import (
     UserOut,
 )
 from app.services.rate_limit import is_rate_limited, record_hit
+from app.services.email import send_email
 from app.services.security import create_access_token, hash_password, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -114,12 +115,16 @@ def forgot_password(payload: ForgotPasswordIn, db: Session = Depends(get_db)):
     db.commit()
 
     reset_link = f"{settings.FRONTEND_ORIGIN}/forgot-password?token={token}"
-    if settings.SMTP_HOST:
-        # Phase 6 wires up the actual notification service; SMTP send happens there.
-        pass
+    sent = send_email(
+        user.email, "Reset your ScholarRadar password",
+        f"Someone asked to reset the password for {user.email}.\n\nReset it here (valid for 1 hour):\n"
+        f"{reset_link}\n\nIf this wasn't you, ignore this email.",
+    )
 
     response = dict(generic_response)
-    if settings.demo_mode_effective or not settings.SMTP_HOST:
+    # Without SMTP there's no other way to deliver the link, so local/dev setups show it
+    # directly (as with workspace invites). Never in production: anyone could reset any account.
+    if not sent and settings.ENV != "production":
         # No SMTP configured (or running in demo mode): surface the link directly so the
         # flow is demoable without email, same pattern as workspace invites (Section 4.4).
         response["dev_reset_link"] = reset_link

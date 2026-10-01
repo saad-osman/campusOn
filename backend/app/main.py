@@ -5,7 +5,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.routers import (
+    admin,
     auth,
+    endorsements,
+    notifications,
+    review,
     calendar,
     copilot,
     professors,
@@ -30,7 +34,11 @@ async def lifespan(app: FastAPI):
         from app.jobs.scheduler import start_scheduler
 
         scheduler = start_scheduler()
+    from app.services import telegram_bot
+
+    telegram_bot.start_bot()  # no-op unless TELEGRAM_BOT_TOKEN is set
     yield
+    telegram_bot.stop_bot()
     if scheduler:
         from app.jobs.scheduler import stop_scheduler
 
@@ -65,6 +73,10 @@ def create_app() -> FastAPI:
     app.include_router(calendar.router)
     app.include_router(professors.router)
     app.include_router(copilot.router)
+    app.include_router(notifications.router)
+    app.include_router(review.router)
+    app.include_router(endorsements.router)
+    app.include_router(admin.router)
 
     return app
 

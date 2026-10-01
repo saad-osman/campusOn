@@ -14,3 +14,6 @@ from app.models import source, opportunity, scrape_run  # noqa: F401
 
 # Phase 5
 from app.models import notification, outcome, api_cache  # noqa: F401
+
+# Phase 6
+from app.models import endorsement  # noqa: F401

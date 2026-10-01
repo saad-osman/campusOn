@@ -302,3 +302,42 @@ export interface KitResponse {
   documents: Document[];
   method: "llm" | "template" | "mixed";
 }
+
+// ---------- Phase 6: notifications, review, endorsements ----------
+
+export interface AppNotification {
+  id: string;
+  type: "invite" | "assignment" | "change_alert" | "endorsement" | "digest" | "outcome" | "system";
+  title: string;
+  body: string | null;
+  link: string | null;
+  read: boolean;
+  created_at: string;
+}
+
+export interface NotificationSettings {
+  prefs: { email_digest: boolean; telegram_digest: boolean; change_alerts: boolean; endorsements: boolean };
+  email_available: boolean;
+  telegram_available: boolean;
+  telegram_connected: boolean;
+  telegram_bot_username: string | null;
+}
+
+export interface ReviewDetail {
+  opportunity: Opportunity;
+  raw_text: string | null;
+  raw_url: string | null;
+  fetched_at: string | null;
+}
+
+export interface MyEndorsement {
+  id: string;
+  opportunity_id: string;
+  opportunity_title: string;
+  note: string | null;
+  target_degree_level: string | null;
+  target_year: number | null;
+  target_major: string | null;
+  created_at: string;
+  notified: number;
+}

@@ -17,7 +17,7 @@ Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 - [x] Phase 3 — Scraping pipeline
 - [x] Phase 4 — Matching
 - [x] Phase 5 — Action features
-- [ ] Phase 6 — Engagement & trust
+- [x] Phase 6 — Engagement & trust
 - [ ] Phase 7 — Institutional & integration
 - [ ] Phase 8 — Polish
 
@@ -127,6 +127,32 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
 - **Calendar:** `.ics` per opportunity and per file, with alarms 7 days and 1 day before.
 - Also: documents poll every 10 s and show "Last edited by X"; checklist documents have clickable
   checkboxes; the `/files` list shows members, opportunity count, nearest deadline and last activity.
+
+## Engagement & trust (Phase 6)
+
+- **Notifications:** bell in the nav (unread count, mark read), dashboard tile. Sent for invites,
+  tracker assignments, change alerts, endorsements and digests.
+- **Change alerts (F5):** every recorded change (re-scrape, expiry sweep, broken link, or a faculty
+  correction in the review queue) notifies everyone who saved the opportunity, a merged duplicate of
+  it, or belongs to a file that tracks it, e.g. "Deadline extended: 29 Dec 2026 → 12 Jan 2027".
+- **Digest + Telegram (F10):** weekly job (and **Send digest now** on the admin page) sends new
+  matches above 70, deadlines in the next 7 days and changes to followed opportunities: in-app always,
+  by email if SMTP is configured, on Telegram if `TELEGRAM_BOT_TOKEN` is set and the chat is linked.
+  The bot (`services/telegram_bot.py`) long-polls the Bot API directly with httpx (no webhook or extra
+  library); link a chat with the one-time code from Settings and `/start <code>`, then use `/matches`,
+  `/deadlines`, `/digest`. Preferences live in Settings.
+- **Review queue (F6):** `/faculty/review` shows extractions under 0.7 confidence or without a deadline,
+  side by side with the stored page text and per-field confidence. Approve marks them "Verified by
+  BPDC faculty"; reject hides them from students. Also lists live-but-unverified and broken listings.
+- **Endorsements (F12):** `/faculty/endorse` lets faculty recommend an opportunity with a note and a
+  target audience (degree, year, major). Matching students are notified, cards show "Recommended by
+  Dr. X", and endorsed items get a +5 ranking boost for those students.
+- **UAE/GCC (F11):** "Open to UAE residents" filter on Discover and the dashboard's "Near you: UAE &
+  GCC" tile; 17+ regional sources in the seed.
+- Fixes: password-reset links are only returned in the API response when SMTP isn't configured and
+  `ENV != production` (previously any keyless deployment exposed them); logout/login clear the client
+  cache so a second user never sees the first one's data; account deletion now removes saved items,
+  outcomes and notifications and hands shared files to a teammate instead of leaving orphaned rows.
 
 ## Tech stack
 

@@ -1,5 +1,5 @@
 """APScheduler wiring: re-scrape every 6h, expiry check daily, digest weekly
-(the digest job itself is a no-op until Phase 6 wires up notifications)."""
+(the digest goes in-app, plus email/Telegram where configured)."""
 import logging
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -36,8 +36,15 @@ def run_daily_expiry_check() -> None:
 
 
 def run_weekly_digest() -> None:
-    """Wired up properly in Phase 6 once notifications/digest exist."""
-    logger.info("Weekly digest job fired (no-op until Phase 6)")
+    from app.services.digest import send_all_digests
+
+    db = SessionLocal()
+    try:
+        logger.info("Weekly digest: %s", send_all_digests(db))
+    except Exception:
+        logger.exception("Weekly digest failed")
+    finally:
+        db.close()
 
 
 def start_scheduler() -> BackgroundScheduler:

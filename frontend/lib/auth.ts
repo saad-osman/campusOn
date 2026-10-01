@@ -26,7 +26,11 @@ export function useLogin() {
   return useMutation({
     mutationFn: (body: { email: string; password: string }) =>
       api.post<User>("/api/auth/login", body),
-    onSuccess: (user) => qc.setQueryData(["me"], user),
+    // Drop anything cached for a previous account before showing this one's data.
+    onSuccess: (user) => {
+      qc.clear();
+      qc.setQueryData(["me"], user);
+    },
   });
 }
 
@@ -35,7 +39,10 @@ export function useRegister() {
   return useMutation({
     mutationFn: (body: { name: string; email: string; password: string }) =>
       api.post<User>("/api/auth/register", body),
-    onSuccess: (user) => qc.setQueryData(["me"], user),
+    onSuccess: (user) => {
+      qc.clear();
+      qc.setQueryData(["me"], user);
+    },
   });
 }
 
@@ -43,7 +50,10 @@ export function useLogout() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: () => api.post<void>("/api/auth/logout"),
-    onSuccess: () => qc.setQueryData(["me"], null),
+    onSuccess: () => {
+      qc.clear();
+      qc.setQueryData(["me"], null);
+    },
   });
 }
 
@@ -55,4 +65,16 @@ export function useRequireUser(nextPath: string) {
     if (!query.isLoading && !query.data) router.replace(`/login?next=${encodeURIComponent(nextPath)}`);
   }, [query.isLoading, query.data, router, nextPath]);
   return query;
+}
+
+/** Like useRequireUser, but also sends users without one of `roles` back to the dashboard. */
+export function useRequireRole(roles: User["role"][], nextPath: string) {
+  const query = useRequireUser(nextPath);
+  const router = useRouter();
+  const allowed = !!query.data && roles.includes(query.data.role);
+  React.useEffect(() => {
+    if (query.data && !roles.includes(query.data.role)) router.replace("/dashboard");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.data, router]);
+  return { ...query, allowed };
 }

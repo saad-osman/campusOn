@@ -140,6 +140,19 @@ def create_demo_workspace(db, student, teammate):
         ))
         db.add(SavedOpportunity(user_id=student.id, opportunity_id=opp.id))
 
+    # "Continue where you left off" (Section 4.2): the student was last editing the SOP
+    # and had a search open, so the dashboard card has something real to resume.
+    state = db.query(UserState).filter(UserState.user_id == student.id).one()
+    state.last_route = f"/files/{ws.id}/docs/{sop.id}"
+    state.last_workspace_id = ws.id
+    state.last_document_id = sop.id
+    state.ui_state = {"discover": {
+        "q": "funded AI internships in the UAE",
+        "filters": {"fields": ["AI/ML"], "funding": "funded", "regions": ["uae"], "types": ["research_internship"],
+                    "semantic_query": "internships"},
+        "sort": "match",
+    }}
+
     log_activity(db, ws.id, student.id, "workspace_created", {"name": ws.name, "template": "single_application"})
     log_activity(db, ws.id, student.id, "document_created", {"title": sop.title, "type": "sop"})
     log_activity(db, ws.id, teammate.id, "invite_accepted", {"role": "editor"})
@@ -166,6 +179,35 @@ def simulate_deadline_extension(db, opp):
     print(f"Simulated re-scrape of '{opp.title}': changed {', '.join(result.get('changed_fields', [])) or 'nothing'}.")
 
 
+def seed_trust_and_endorsements(db, faculty):
+    """Phase 6 demo state: a few faculty-verified listings and one endorsement
+    aimed at 3rd-year CS students (which notifies the demo student)."""
+    from app.models.endorsement import Endorsement
+    from app.models.profile import Profile
+    from app.services.matcher import profile_to_dict
+    from app.services.notifications import notify
+    from app.services.opportunity_view import endorsement_applies
+
+    canonical = db.query(Opportunity).filter(Opportunity.canonical_id.is_(None), Opportunity.status == "active")
+    verified = [o for o in canonical.all() if o.title.startswith(("MBZUAI", "DAAD RISE", "Khalifa", "Dubai Future"))]
+    for opp in verified:
+        opp.verified, opp.verified_by = True, faculty.id
+
+    ugrip = canonical.filter(Opportunity.title.like("MBZUAI Undergraduate Research Internship%")).first()
+    if ugrip:
+        e = Endorsement(opportunity_id=ugrip.id, faculty_id=faculty.id,
+                        note="Great first research experience for our 3rd-year CS students. Apply early, it fills fast.",
+                        target_degree_level="bachelors", target_year=3, target_major="Computer Science")
+        db.add(e)
+        target = {"target_degree_level": "bachelors", "target_year": 3, "target_major": "Computer Science"}
+        for user, profile in db.query(User, Profile).join(Profile, Profile.user_id == User.id).filter(User.role == "student"):
+            if endorsement_applies(target, profile_to_dict(profile)):
+                notify(db, user.id, "endorsement", f"{faculty.name} recommends “{ugrip.title}”", e.note,
+                       f"/opportunities/{ugrip.id}")
+    db.commit()
+    print(f"Verified {len(verified)} listings; endorsement on {'UGRIP' if ugrip else 'nothing'}.")
+
+
 def main():
     print("Resetting database...")
     reset_db()
@@ -179,6 +221,7 @@ def main():
         tracked = create_demo_workspace(db, student, teammate)
         if tracked:
             simulate_deadline_extension(db, tracked[0])
+        seed_trust_and_endorsements(db, faculty)
         print("Done.")
     finally:
         db.close()

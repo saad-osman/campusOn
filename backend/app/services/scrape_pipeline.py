@@ -19,6 +19,7 @@ from app.models.source import RawPage, Source
 from app.services.dedupe import find_duplicate
 from app.services.embeddings import embed_opportunity
 from app.services.extractor import extract_opportunity
+from app.services.notifications import notify_change
 from app.services.scraper import ScrapeBlocked, ScrapeFailed, content_hash, extract_text, fetch_page
 
 # Key fields diffed on re-scrape (Feature 5).
@@ -71,7 +72,11 @@ def _change_summary(field: str, old, new) -> str:
     if field == "eligibility":
         return "Eligibility requirements updated"
     if field == "status":
-        return f"Status changed: {old} → {new}"
+        return {
+            "expired": "Applications have closed",
+            "broken": "The official page is no longer available",
+            "active": "Open for applications again",
+        }.get(new, f"Status changed: {old} → {new}")
     return f"{field} changed"
 
 
@@ -82,7 +87,7 @@ def record_change(db: Session, opp: Opportunity, field: str, old, new) -> Opport
         summary=_change_summary(field, old, new),
     )
     db.add(change)
-    # Phase 6 hooks notifications for users who saved/track `opp` onto these rows.
+    notify_change(db, opp, change.summary)  # Feature 5: alert everyone following it
     return change
 
 

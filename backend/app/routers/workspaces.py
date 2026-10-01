@@ -25,6 +25,7 @@ from app.schemas.workspace import (
     WorkspacePatch,
 )
 from app.services.activity import log_activity
+from app.services.email import send_email
 from app.services.notifications import notify
 from app.services.workspace_access import require_workspace_role
 
@@ -300,8 +301,14 @@ def create_invite(
     db.commit()
     db.refresh(invite)
 
+    ws = db.get(Workspace, workspace_id)
+    invite_link = f"{settings.FRONTEND_ORIGIN}/invite/{token}"
+    send_email(  # no-op without SMTP; the copyable link in the UI still works
+        invite.email, f"{user.name} invited you to “{ws.name}” on ScholarRadar",
+        f"{user.name} invited you to collaborate on the Application File “{ws.name}” as {payload.role}.\n\n"
+        f"Accept the invite (valid for 7 days):\n{invite_link}\n",
+    )
     if existing_user:
-        ws = db.get(Workspace, workspace_id)
         notify(db, existing_user.id, "invite", f"{user.name} invited you to “{ws.name}”",
                f"Join as {payload.role}.", f"/invite/{token}")
         db.commit()

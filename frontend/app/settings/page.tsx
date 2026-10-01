@@ -1,5 +1,7 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
+import { NotificationSettingsCard, TelegramCard } from "@/components/settings/notification-settings";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -26,6 +28,7 @@ import { useTrackRoute } from "@/lib/state";
 export default function SettingsPage() {
   const router = useRouter();
   const { data: user, isLoading } = useCurrentUser();
+  const queryClient = useQueryClient();
   const logout = useLogout();
 
   const [currentPassword, setCurrentPassword] = React.useState("");
@@ -74,6 +77,7 @@ export default function SettingsPage() {
     setDeleting(true);
     try {
       await api.delete("/api/settings/account");
+      queryClient.clear();
       toast.success("Account deleted.");
       router.push("/");
     } catch (err) {
@@ -129,6 +133,9 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+      <NotificationSettingsCard />
+      <TelegramCard />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Your data</CardTitle>
@@ -157,9 +164,9 @@ export default function SettingsPage() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete your account?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This permanently removes your profile, saved opportunities, and personal
-                  data. Application Files you own that have other members will need to be
-                  transferred or archived separately. This cannot be undone.
+                  This permanently removes your profile, CV text, saved opportunities,
+                  outcomes and notifications. Application Files only you belong to are deleted;
+                  shared files you own pass to the teammate who joined first. This cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

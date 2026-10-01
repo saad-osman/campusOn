@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, CalendarClock, FileText, FolderOpen, MapPin, Search, Sparkles, Target } from "lucide-react";
+import { ArrowRight, Bell, CalendarClock, FileText, FolderOpen, MapPin, Search, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ import { DeadlineBadge } from "@/components/opportunity/deadline-badge";
 import { EligibilityPill } from "@/components/opportunity/eligibility-badge";
 import { MatchScore } from "@/components/opportunity/match-score";
 import { useRequireUser } from "@/lib/auth";
+import { useEndorsedForMe, useNotifications } from "@/lib/engagement";
 import { daysUntil, timeAgo, TYPE_LABELS } from "@/lib/format";
 import { EMPTY_FILTERS, useOpportunities, useSavedOpportunities, useTopMatches } from "@/lib/opportunities";
 import { useProfile } from "@/lib/profile";
@@ -185,6 +186,8 @@ export default function DashboardPage() {
   const nearYou = useOpportunities({ region: "uae", sort: "match", limit: 4 });
   const gcc = useOpportunities({ region: "gcc", sort: "match", limit: 4 });
   const { data: workspaces } = useWorkspaces();
+  const endorsed = useEndorsedForMe();
+  const notifications = useNotifications();
   useTrackRoute("/dashboard");
 
   if (userLoading || !user) {
@@ -298,13 +301,50 @@ export default function DashboardPage() {
         )}
       </Tile>
 
-      <div id="dashboard-engagement" className="contents" />
+      <Tile title="Recommended by faculty" icon={Sparkles} className="lg:col-span-2">
+        {endorsed.isLoading ? (
+          <TileSkeleton rows={2} />
+        ) : endorsed.data?.length ? (
+          <div className="flex flex-col gap-1">
+            {endorsed.data.slice(0, 3).map((o) => (
+              <div key={o.id}>
+                <MiniOpportunity opp={o} />
+                {o.endorsements[0]?.note && (
+                  <p className="ml-14 line-clamp-1 text-xs text-violet-700 dark:text-violet-300">
+                    {o.endorsements[0].faculty_name}: &ldquo;{o.endorsements[0].note}&rdquo;
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            When faculty recommend something for students like you, it shows up here.
+          </p>
+        )}
+      </Tile>
 
-      <Tile title="Tip" icon={Sparkles} className="lg:col-span-2">
-        <p className="text-sm text-muted-foreground">
-          Open any opportunity and use <strong>Generate application kit</strong> to get a checklist, an SOP draft and a
-          cold email to a matching professor, saved into a shared Application File.
-        </p>
+      <Tile title="Notifications" icon={Bell} className="lg:col-span-2">
+        {!notifications.data ? (
+          <TileSkeleton rows={2} />
+        ) : notifications.data.items.length ? (
+          <ul className="flex flex-col gap-1">
+            {notifications.data.items.slice(0, 4).map((n) => (
+              <li key={n.id}>
+                <Link
+                  href={n.link ?? "#"}
+                  className={cn("flex items-start gap-2 rounded-lg p-2 text-sm hover:bg-muted/60", !n.read && "font-medium")}
+                >
+                  {!n.read && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" aria-label="unread" />}
+                  <span className="min-w-0 flex-1 truncate">{n.title}</span>
+                  <span className="shrink-0 text-xs font-normal text-muted-foreground">{timeAgo(n.created_at)}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-muted-foreground">You&apos;re all caught up.</p>
+        )}
       </Tile>
     </div>
   );
