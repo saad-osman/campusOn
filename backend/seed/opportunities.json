@@ -316,5 +316,35 @@
     "source_url": "https://chat.example.com/screenshot-88",
     "region": "global",
     "raw_text": "Apparently there's a grant for something\nNot specified\nScreenshot shared without additional context."
+  },
+  {
+    "source_name": "DAAD RISE Germany",
+    "source_url": "https://www.daad.de/rise/en/rise-germany/",
+    "region": "europe",
+    "raw_text": "DAAD RISE Germany Research Internship\nGerman Academic Exchange Service (DAAD)\nSummer research internship at German universities and research institutes for undergraduate students in biology, chemistry, physics, earth sciences, engineering and computer science, including machine learning projects.\nEligibility: Bachelor's students who have completed at least 2nd year of study. Minimum CGPA 3.0/4.0.\nFunding: Monthly stipend from DAAD plus partial travel support.\nLocation: Germany\nDeadline: {{today+48}}"
+  },
+  {
+    "source_name": "EPFL Summer@EPFL",
+    "source_url": "https://summer.epfl.ch/",
+    "region": "europe",
+    "raw_text": "Summer@EPFL Research Internship\nEPFL School of Computer and Communication Sciences\nThree-month research internship in computer science, machine learning, systems and security labs in Lausanne.\nEligibility: Bachelor's students in their 3rd year or later, or Master's students. Minimum CGPA 3.5/4.0 recommended.\nFunding: Monthly stipend of CHF 1,600 plus travel and housing support.\nDeadline: {{today+70}}"
+  },
+  {
+    "source_name": "ETH Zurich SSRF",
+    "source_url": "https://inf.ethz.ch/studies/summer-research-fellowship.html",
+    "region": "europe",
+    "raw_text": "ETH Zurich Student Summer Research Internship (SSRF)\nETH Zurich Department of Computer Science\nResearch internship in computer science and artificial intelligence groups for strong undergraduate and master's students.\nEligibility: Bachelor's students in 3rd year or Master's students. CGPA 3.5/4.0 or equivalent.\nFunding: Stipend of CHF 1,700 per month; accommodation provided.\nDeadline: {{today+19}}"
+  },
+  {
+    "source_name": "MBZUAI UGRIP",
+    "source_url": "https://mbzuai.ac.ae/ugrip/",
+    "region": "uae",
+    "raw_text": "MBZUAI Undergraduate Research Internship Program (UGRIP)\nMohamed bin Zayed University of Artificial Intelligence\nFour-week research internship in machine learning, computer vision and NLP for undergraduates, hosted in Abu Dhabi, UAE.\nEligibility: Bachelor's students in 2nd year or later in computer science, engineering or mathematics. CGPA 3.0/4.0 minimum. Open to UAE residents and international students.\nFunding: Fully funded including accommodation and a stipend.\nDeadline: {{today+33}}"
+  },
+  {
+    "source_name": "KAUST VSRP",
+    "source_url": "https://vsrp.kaust.edu.sa/",
+    "region": "gcc",
+    "raw_text": "KAUST Visiting Student Research Program (VSRP)\nKing Abdullah University of Science and Technology\nResearch internship of 3-6 months in faculty labs across computer science, AI, electrical engineering and bioscience, in Saudi Arabia.\nEligibility: Bachelor's or Master's students with CGPA 3.5/4.0. IELTS 6.5 or TOEFL 79.\nFunding: Monthly stipend, housing and travel covered.\nDeadline: {{today+44}}"
   }
 ]

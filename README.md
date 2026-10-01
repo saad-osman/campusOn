@@ -15,7 +15,7 @@ Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 - [x] Phase 1 — Accounts & progress
 - [x] Phase 2 — Application Files & teammates
 - [x] Phase 3 — Scraping pipeline
-- [ ] Phase 4 — Matching
+- [x] Phase 4 — Matching
 - [ ] Phase 5 — Action features
 - [ ] Phase 6 — Engagement & trust
 - [ ] Phase 7 — Institutional & integration
@@ -84,6 +84,26 @@ API (Phase 3): `GET /api/opportunities` (`include_expired`, `degree_level`, `fie
 `POST|DELETE /api/opportunities/{id}/save`, and admin/faculty `GET|POST|PATCH /api/sources`,
 `POST /api/sources/{id}/scrape`, `GET /api/sources/runs/recent`, `POST /api/sources/archive-sweep`.
 The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
+
+## Matching (Phase 4)
+
+- **CV upload (F1):** `POST /api/profile/cv` parses PDF/DOCX in memory (the file is never written
+  to disk), keeps only the extracted text, and returns suggested profile values. The onboarding
+  wizard's first step shows them; nothing is saved until the student reviews each step. Try it with
+  `frontend/public/sample-cv.docx` (a fictional student).
+- **Eligibility (F1):** `services/eligibility.py` is deterministic: degree level, year bounds,
+  CGPA with scale conversion (7.5/10 ≈ 3.0/4), nationality, residency, English tests (any one listed
+  test suffices). Fields are matched with a synonym table (`services/fields.py`); with an API key,
+  the single-opportunity view also asks the LLM about pairs the table can't decide. Verdicts:
+  eligible / partially eligible (with what's missing) / not eligible (with the reason) / unknown.
+- **Match score (F2):** `services/matcher.py`: 45% semantic + 25% eligibility + 15% field overlap +
+  10% deadline feasibility + 5% funding, plus the top 3 reasons in plain language.
+- **Natural-language search (F8):** `POST /api/opportunities/search` with `{q}` interprets the query
+  (Claude with a key, a rule-based parser otherwise) into filters shown as removable chips; sending
+  `{filters}` applies them as-is. Results rank by semantic similarity to the leftover query text plus
+  match score; ones the student isn't eligible for drop lower but stay visible with the reason.
+- UI: `/discover`, `/opportunities/[id]`, the CV step in `/onboarding`, and the dashboard's
+  "Top matches", "Deadlines this week" and "Near you: UAE & GCC" tiles.
 
 ## Tech stack
 

@@ -54,6 +54,7 @@ FUNDING_KEYWORDS = [
 ]
 
 LOCATION_KEYWORDS = {
+    "Switzerland": "europe", "France": "europe", "Netherlands": "europe", "Singapore": "asia", "Japan": "asia",
     "Germany": "europe", "United States": "usa", "USA": "usa", "UAE": "uae", "Abu Dhabi": "uae",
     "Dubai": "uae", "Saudi Arabia": "gcc", "Canada": "usa", "United Kingdom": "europe", "UK": "europe",
     "India": "india", "Qatar": "gcc", "Kuwait": "gcc", "Bahrain": "gcc", "Oman": "gcc",
@@ -89,7 +90,8 @@ def extract_rule_based(raw_text: str, source_name: str, source_url: str) -> dict
     fields = _match_keywords(text_lower, FIELD_KEYWORDS) or ["General"]
     funding_type = _match_priority(text_lower, FUNDING_KEYWORDS) or "unknown"
 
-    location_hits = [loc for loc in LOCATION_KEYWORDS if loc.lower() in text_lower]
+    # Whole-word matches only: "Lausanne" contains "usa", "Bukhara" contains "uk".
+    location_hits = [loc for loc in LOCATION_KEYWORDS if re.search(rf"\b{re.escape(loc.lower())}\b", text_lower)]
     location = ", ".join(location_hits) if location_hits else None
     region_hits = {LOCATION_KEYWORDS[loc] for loc in location_hits}
     is_uae_region = "uae" in region_hits or "gcc" in region_hits

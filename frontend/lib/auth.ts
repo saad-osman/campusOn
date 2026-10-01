@@ -1,5 +1,7 @@
 "use client";
 
+import * as React from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "@/lib/api";
 import type { User } from "@/lib/types";
@@ -43,4 +45,14 @@ export function useLogout() {
     mutationFn: () => api.post<void>("/api/auth/logout"),
     onSuccess: () => qc.setQueryData(["me"], null),
   });
+}
+
+/** Client-side guard for pages behind login: redirects to /login?next=<path>. */
+export function useRequireUser(nextPath: string) {
+  const query = useCurrentUser();
+  const router = useRouter();
+  React.useEffect(() => {
+    if (!query.isLoading && !query.data) router.replace(`/login?next=${encodeURIComponent(nextPath)}`);
+  }, [query.isLoading, query.data, router, nextPath]);
+  return query;
 }

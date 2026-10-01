@@ -3,11 +3,38 @@ from typing import Literal
 
 from pydantic import BaseModel
 
+from app.schemas.search import SearchFilters
+
 
 class LinkedSource(BaseModel):
     name: str
     url: str
     region: str
+
+
+class EligibilityCheckOut(BaseModel):
+    verdict: Literal["eligible", "partially_eligible", "not_eligible", "unknown"]
+    met: list[str] = []
+    missing: list[str] = []
+    blocking: list[str] = []
+    unknown: list[str] = []
+    notes: list[str] = []
+
+
+class MatchOut(BaseModel):
+    score: int
+    reasons: list[str]
+    components: dict[str, float]
+
+
+class EndorsementSummary(BaseModel):
+    id: str
+    faculty_name: str
+    note: str | None
+    target_degree_level: str | None = None
+    target_year: int | None = None
+    target_major: str | None = None
+    created_at: datetime
 
 
 class OpportunityOut(BaseModel):
@@ -36,7 +63,13 @@ class OpportunityOut(BaseModel):
     last_checked: datetime
     source_count: int = 1
     sources: list[LinkedSource] = []
+    regions: list[str] = []
     saved: bool = False
+    endorsements: list[EndorsementSummary] = []
+    # Present when the viewer has a profile to compare against.
+    eligibility_check: EligibilityCheckOut | None = None
+    match: MatchOut | None = None
+    relevance: float | None = None
 
     model_config = {"from_attributes": True}
 
@@ -91,3 +124,10 @@ class OpportunityChangeOut(BaseModel):
     detected_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class SearchResponse(BaseModel):
+    filters: SearchFilters
+    parsed_by: str | None = None
+    results: list[OpportunityOut]
+    total: int

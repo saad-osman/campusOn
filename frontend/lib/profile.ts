@@ -15,6 +15,12 @@ export function usePatchProfile() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: Partial<Profile>) => api.patch<Profile>("/api/profile", body),
-    onSuccess: (profile) => qc.setQueryData(["profile"], profile),
+    onSuccess: (profile) => {
+      qc.setQueryData(["profile"], profile);
+      // Eligibility verdicts and match scores depend on the profile.
+      for (const key of ["opportunities", "top-matches", "search", "opportunity", "saved-opportunities"]) {
+        qc.invalidateQueries({ queryKey: [key] });
+      }
+    },
   });
 }

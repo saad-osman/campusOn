@@ -1,5 +1,6 @@
 "use client";
 
+import { parseServerTime } from "@/lib/format";
 import { useActivity } from "@/lib/workspaces";
 
 const ACTION_LABELS: Record<string, (meta: Record<string, unknown>) => string> = {
@@ -12,7 +13,14 @@ const ACTION_LABELS: Record<string, (meta: Record<string, unknown>) => string> =
   invite_accepted: (m) => `joined as ${m.role}`,
   document_created: (m) => `created the document "${m.title}"`,
   document_edited: (m) => `edited "${m.title}"`,
-  document_restored: (m) => `restored a previous version of a document`,
+  document_restored: () => "restored a previous version of a document",
+  tracker_added: (m) => `added "${m.title}" to the tracker`,
+  tracker_moved: (m) => `moved "${m.title}" to ${String(m.status).replace("_", " ")}`,
+  tracker_assigned: (m) => `assigned "${m.title}" to ${m.assignee_name}`,
+  tracker_removed: (m) => `removed "${m.title}" from the tracker`,
+  outcome_recorded: (m) => `recorded "${m.result}" for "${m.title}"`,
+  kit_generated: (m) => `generated an application kit for "${m.title}"`,
+  ai_draft_created: (m) => `generated an AI draft: "${m.title}"`,
 };
 
 export function ActivityTab({ workspaceId }: { workspaceId: string }) {
@@ -38,7 +46,7 @@ export function ActivityTab({ workspaceId }: { workspaceId: string }) {
               <span className="text-muted-foreground">{describe ? describe(a.meta) : a.action}</span>
             </span>
             <span className="shrink-0 text-xs text-muted-foreground">
-              {new Date(a.created_at).toLocaleString()}
+              {parseServerTime(a.created_at).toLocaleString()}
             </span>
           </div>
         );

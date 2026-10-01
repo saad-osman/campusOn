@@ -18,6 +18,7 @@ export interface Profile {
   skills: string[];
   interests: string[];
   cv_filename: string | null;
+  has_cv: boolean;
   onboarding_step: number;
   onboarding_complete: boolean;
 }
@@ -102,4 +103,127 @@ export interface ActivityLogEntry {
   action: string;
   meta: Record<string, unknown>;
   created_at: string;
+}
+
+// ---------- opportunities (Phase 3/4) ----------
+
+export type OpportunityType =
+  | "research_internship"
+  | "fellowship"
+  | "grant"
+  | "scholarship"
+  | "research_position"
+  | "summer_school";
+export type FundingType = "fully_funded" | "partial" | "stipend" | "unfunded" | "unknown";
+export type Region = "uae" | "gcc" | "global" | "india" | "europe" | "usa" | "asia";
+export type Verdict = "eligible" | "partially_eligible" | "not_eligible" | "unknown";
+
+export interface EligibilityRequirements {
+  degree_levels?: string[];
+  min_year?: number | null;
+  max_year?: number | null;
+  min_cgpa?: { value: number; scale: number } | null;
+  nationality_allowed?: string[];
+  nationality_excluded?: string[];
+  residency_required?: string | null;
+  english_requirements?: Record<string, number | null>;
+  required_fields?: string[];
+  other_requirements?: string[];
+}
+
+export interface EligibilityCheck {
+  verdict: Verdict;
+  met: string[];
+  missing: string[];
+  blocking: string[];
+  unknown: string[];
+  notes: string[];
+}
+
+export interface Match {
+  score: number;
+  reasons: string[];
+  components: Record<string, number>;
+}
+
+export interface Endorsement {
+  id: string;
+  faculty_name: string;
+  note: string | null;
+  target_degree_level: string | null;
+  target_year: number | null;
+  target_major: string | null;
+  created_at: string;
+}
+
+export interface Opportunity {
+  id: string;
+  canonical_id: string | null;
+  title: string;
+  organization: string;
+  url: string | null;
+  type: OpportunityType;
+  degree_levels: string[];
+  fields: string[];
+  funding_type: FundingType;
+  funding_amount: string | null;
+  location: string | null;
+  is_remote: boolean;
+  open_to_uae_residents: boolean | null;
+  deadline: string | null;
+  deadline_text: string | null;
+  eligibility: EligibilityRequirements;
+  description_summary: string | null;
+  confidence: Record<string, number>;
+  overall_confidence: number;
+  verified: boolean;
+  status: "active" | "expired" | "broken" | "pending_review";
+  first_seen: string;
+  last_checked: string;
+  source_count: number;
+  sources: { name: string; url: string; region: Region }[];
+  regions: Region[];
+  saved: boolean;
+  endorsements: Endorsement[];
+  eligibility_check: EligibilityCheck | null;
+  match: Match | null;
+  relevance: number | null;
+}
+
+export interface OpportunityChange {
+  field: string;
+  old_value: string | null;
+  new_value: string | null;
+  summary: string | null;
+  detected_at: string;
+}
+
+export interface SearchFilters {
+  degree_level: "bachelors" | "masters" | "phd" | null;
+  year: number | null;
+  fields: string[];
+  funding: "any" | "funded" | "fully_funded";
+  regions: Region[];
+  types: OpportunityType[];
+  deadline_within_days: number | null;
+  remote_only: boolean;
+  open_to_uae_residents: boolean | null;
+  eligible_only: boolean;
+  verified_only: boolean;
+  include_expired: boolean;
+  semantic_query: string | null;
+}
+
+export interface SearchResponse {
+  filters: SearchFilters;
+  parsed_by: "llm" | "rule_based" | null;
+  results: Opportunity[];
+  total: number;
+}
+
+export interface CVExtraction {
+  cv_filename: string | null;
+  suggestions: Partial<Profile>;
+  method: "llm" | "rule_based";
+  characters: number;
 }

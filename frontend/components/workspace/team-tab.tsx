@@ -1,5 +1,6 @@
 "use client";
 
+import { parseServerTime } from "@/lib/format";
 import * as React from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -208,7 +209,7 @@ export function TeamTab({ workspaceId, isOwner }: { workspaceId: string; isOwner
                 <div>
                   <p>{inv.email}</p>
                   <p className="text-xs text-muted-foreground">
-                    {inv.role} &middot; expires {new Date(inv.expires_at).toLocaleDateString()}
+                    {inv.role} &middot; expires {parseServerTime(inv.expires_at).toLocaleDateString()}
                   </p>
                 </div>
                 <Button

@@ -1,5 +1,6 @@
 "use client";
 
+import { parseServerTime } from "@/lib/format";
 import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -70,7 +71,7 @@ function VersionHistory({ documentId, onRestored }: { documentId: string; onRest
                 <div className="mb-1 flex items-center justify-between">
                   <span className="font-medium">Version {v.version}</span>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(v.created_at).toLocaleString()}
+                    {parseServerTime(v.created_at).toLocaleString()}
                   </span>
                 </div>
                 <p className="mb-2 line-clamp-2 text-xs text-muted-foreground">

@@ -1,5 +1,6 @@
 "use client";
 
+import { parseServerTime } from "@/lib/format";
 import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -108,7 +109,7 @@ export function DocumentsTab({ workspaceId, canEdit }: { workspaceId: string; ca
                   <div>
                     <p className="text-sm font-medium">{doc.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      v{doc.version} &middot; updated {new Date(doc.updated_at).toLocaleString()}
+                      v{doc.version} &middot; updated {parseServerTime(doc.updated_at).toLocaleString()}
                     </p>
                   </div>
                   <Badge variant="outline">{DOC_TYPE_LABELS[doc.type]}</Badge>

@@ -14,11 +14,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
+import { FileText, Upload } from "lucide-react";
 import { useCurrentUser } from "@/lib/auth";
 import { usePatchProfile, useProfile } from "@/lib/profile";
+import { useUploadCV } from "@/lib/opportunities";
 import { useTrackRoute } from "@/lib/state";
+import { ApiError } from "@/lib/api";
+import type { CVExtraction } from "@/lib/types";
 
-const STEPS = ["Academic basics", "Grades", "Background", "Skills & interests"];
+const SUGGESTION_LABELS: Record<string, string> = {
+  degree_level: "Degree level",
+  year_of_study: "Year of study",
+  major: "Major",
+  cgpa: "CGPA",
+  cgpa_scale: "CGPA scale",
+  nationality: "Nationality",
+  country_of_residence: "Lives in",
+  english_tests: "English tests",
+  skills: "Skills",
+  interests: "Interests",
+};
+
+const STEPS = ["Upload your CV", "Academic basics", "Grades", "Background", "Skills & interests"];
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -41,6 +59,37 @@ export default function OnboardingPage() {
     interests: "",
   });
   const hydrated = React.useRef(false);
+  const uploadCV = useUploadCV();
+  const [extraction, setExtraction] = React.useState<CVExtraction | null>(null);
+
+  async function onFile(file: File | undefined) {
+    if (!file) return;
+    try {
+      const result = await uploadCV.mutateAsync(file);
+      setExtraction(result);
+      toast.success(`Read ${result.cv_filename}. Review what we found below.`);
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Upload failed");
+    }
+  }
+
+  /** Copies extracted values into the form; the student reviews every step before saving. */
+  function applySuggestions(s: CVExtraction["suggestions"]) {
+    setForm((f) => ({
+      ...f,
+      degree_level: s.degree_level ?? f.degree_level,
+      year_of_study: s.year_of_study?.toString() ?? f.year_of_study,
+      major: s.major ?? f.major,
+      cgpa: s.cgpa?.toString() ?? f.cgpa,
+      cgpa_scale: s.cgpa_scale?.toString() ?? f.cgpa_scale,
+      nationality: s.nationality ?? f.nationality,
+      country_of_residence: s.country_of_residence ?? f.country_of_residence,
+      ielts: s.english_tests?.IELTS?.toString() ?? f.ielts,
+      toefl: s.english_tests?.TOEFL?.toString() ?? f.toefl,
+      skills: s.skills?.length ? s.skills.join(", ") : f.skills,
+      interests: s.interests?.length ? s.interests.join(", ") : f.interests,
+    }));
+  }
 
   useTrackRoute("/onboarding");
 
@@ -78,20 +127,22 @@ export default function OnboardingPage() {
 
     const payload: Record<string, unknown> = { onboarding_step: nextStep };
     if (step === 0) {
+      if (extraction) applySuggestions(extraction.suggestions);
+    } else if (step === 1) {
       payload.degree_level = form.degree_level || null;
       payload.year_of_study = form.year_of_study ? parseInt(form.year_of_study, 10) : null;
       payload.major = form.major || null;
-    } else if (step === 1) {
+    } else if (step === 2) {
       payload.cgpa = form.cgpa ? parseFloat(form.cgpa) : null;
       payload.cgpa_scale = form.cgpa_scale ? parseFloat(form.cgpa_scale) : 10;
-    } else if (step === 2) {
+    } else if (step === 3) {
       payload.nationality = form.nationality || null;
       payload.country_of_residence = form.country_of_residence || null;
       const english_tests: Record<string, number> = {};
       if (form.ielts) english_tests.IELTS = parseFloat(form.ielts);
       if (form.toefl) english_tests.TOEFL = parseFloat(form.toefl);
       payload.english_tests = english_tests;
-    } else if (step === 3) {
+    } else if (step === 4) {
       payload.skills = form.skills.split(",").map((s) => s.trim()).filter(Boolean);
       payload.interests = form.interests.split(",").map((s) => s.trim()).filter(Boolean);
       payload.onboarding_complete = true;
@@ -128,6 +179,83 @@ export default function OnboardingPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {step === 0 && (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">
+                Upload a CV or transcript (PDF or DOCX, up to 5 MB) and we&apos;ll pre-fill the next steps. You review
+                every value before it&apos;s saved. We keep only the extracted text, never the file.
+              </p>
+              <input
+                type="file"
+                accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                className="sr-only"
+                id="cv-file"
+                onChange={(e) => onFile(e.target.files?.[0])}
+              />
+              <label
+                htmlFor="cv-file"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  onFile(e.dataTransfer.files?.[0]);
+                }}
+                className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed p-8 text-center transition-colors hover:border-primary/50 hover:bg-muted/40"
+              >
+                <Upload className="size-6 text-muted-foreground" aria-hidden />
+                <span className="text-sm font-medium">
+                  {uploadCV.isPending ? "Reading your CV…" : "Drop your CV here or click to choose a file"}
+                </span>
+                {profile?.cv_filename && !extraction && (
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <FileText className="size-3.5" /> Current: {profile.cv_filename}
+                  </span>
+                )}
+              </label>
+              <p className="text-xs text-muted-foreground">
+                No CV handy?{" "}
+                <a href="/sample-cv.docx" download className="underline underline-offset-2">
+                  Download a sample CV
+                </a>{" "}
+                to try it.
+              </p>
+              {extraction && (
+                <div className="rounded-lg border bg-muted/30 p-3 text-sm">
+                  <p className="mb-2 font-medium">
+                    Found in {extraction.cv_filename}
+                    <span className="ml-1 text-xs font-normal text-muted-foreground">
+                      ({extraction.method === "llm" ? "read by AI" : "demo-mode reader"})
+                    </span>
+                  </p>
+                  {Object.keys(extraction.suggestions).length === 0 ? (
+                    <p className="text-muted-foreground">
+                      We couldn&apos;t pick out profile details. Fill them in on the next steps.
+                    </p>
+                  ) : (
+                    <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+                      {Object.entries(extraction.suggestions).map(([k, v]) => (
+                        <React.Fragment key={k}>
+                          <dt className="text-muted-foreground">{SUGGESTION_LABELS[k] ?? k}</dt>
+                          <dd>
+                            {Array.isArray(v)
+                              ? v.join(", ")
+                              : typeof v === "object" && v
+                                ? Object.entries(v)
+                                    .map(([t, n]) => `${t} ${n}`)
+                                    .join(", ")
+                                : String(v)}
+                          </dd>
+                        </React.Fragment>
+                      ))}
+                    </dl>
+                  )}
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Continue to review and correct these. Nothing is saved to your profile until you do.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {step === 1 && (
             <>
               <div className="flex flex-col gap-1.5">
                 <Label>Degree level</Label>
@@ -159,7 +287,7 @@ export default function OnboardingPage() {
             </>
           )}
 
-          {step === 1 && (
+          {step === 2 && (
             <>
               <div className="flex flex-col gap-1.5">
                 <Label>CGPA</Label>
@@ -180,7 +308,7 @@ export default function OnboardingPage() {
             </>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <>
               <div className="flex flex-col gap-1.5">
                 <Label>Nationality</Label>
@@ -206,7 +334,7 @@ export default function OnboardingPage() {
             </>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <>
               <div className="flex flex-col gap-1.5">
                 <Label>Skills (comma separated)</Label>
@@ -231,8 +359,8 @@ export default function OnboardingPage() {
             >
               Back
             </Button>
-            <Button onClick={saveStepAndContinue} disabled={patchProfile.isPending}>
-              {step === STEPS.length - 1 ? "Finish" : "Continue"}
+            <Button onClick={saveStepAndContinue} disabled={patchProfile.isPending || uploadCV.isPending}>
+              {step === STEPS.length - 1 ? "Finish" : step === 0 && !extraction ? "Skip" : "Continue"}
             </Button>
           </div>
         </CardContent>
