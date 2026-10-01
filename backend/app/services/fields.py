@@ -82,8 +82,10 @@ def _hits(student_term: str, field_terms: set[str]) -> bool:
         return False
     if s in field_terms:
         return True
-    # Multi-word containment: "machine learning for robotics" hits "robotics".
-    return any(len(t) > 3 and (t in s or s in t) for t in field_terms)
+    # The student's phrase may contain a field term ("machine learning for robotics"
+    # hits "robotics"), but not the reverse: "engineering" alone must not match
+    # Computer Science just because the group lists "software engineering".
+    return any(len(t) > 3 and t in s for t in field_terms)
 
 
 def match_field_deterministic(field: str, student_terms: list[str]) -> str | None:

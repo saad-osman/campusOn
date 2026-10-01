@@ -208,6 +208,79 @@ def seed_trust_and_endorsements(db, faculty):
     print(f"Verified {len(verified)} listings; endorsement on {'UGRIP' if ugrip else 'nothing'}.")
 
 
+COHORT = [
+    # name, year, major, interests
+    ("Aditi Rao", 4, "Computer Science", ["machine learning", "computer vision"]),
+    ("Yusuf Khan", 3, "Electrical and Electronics Engineering", ["robotics", "embedded systems"]),
+    ("Meera Pillai", 4, "Biotechnology", ["bioinformatics", "machine learning"]),
+    ("Rohan Das", 3, "Mechanical Engineering", ["renewable energy", "robotics"]),
+    ("Fatima Noor", 4, "Economics", ["public policy", "data science"]),
+    ("Karthik Iyer", 2, "Computer Science", ["natural language processing", "machine learning"]),
+    ("Zara Ahmed", 3, "Chemical Engineering", ["sustainability", "climate"]),
+    ("Dev Malhotra", 4, "Computer Science", ["distributed systems", "cybersecurity"]),
+]
+
+# (opportunity title prefix, result, weeks ago reported, shared anonymously)
+COHORT_OUTCOMES = [
+    ("DAAD RISE", "accepted", 30, True), ("DAAD RISE", "accepted", 29, True), ("DAAD RISE", "accepted", 31, True),
+    ("MBZUAI Undergraduate", "accepted", 20, True), ("MBZUAI Undergraduate", "accepted", 21, True),
+    ("CERN Summer", "rejected", 26, False), ("CERN Summer", "accepted", 25, True),
+    ("Mitacs", "waitlisted", 18, False), ("Summer@EPFL", "rejected", 40, False),
+    ("KAUST Visiting", "accepted", 8, True), ("ETH Zurich", "rejected", 6, False),
+    ("Chevening", "rejected", 45, False), ("IISc Summer", "accepted", 50, True),
+]
+
+
+def seed_history(db):
+    """Phase 7 demo state for the admin analytics: listings discovered over the
+    past 12 weeks, and a fictional past cohort with saves, applications and
+    outcomes (some shared anonymously as success stories)."""
+    import random
+    from datetime import datetime
+
+    from app.models.outcome import Outcome
+
+    rng = random.Random(42)
+    now = datetime.utcnow()
+    canonical = db.query(Opportunity).filter(Opportunity.canonical_id.is_(None)).order_by(Opportunity.title).all()
+    for opp in canonical:
+        # Keep a few genuinely new so the weekly digest has fresh matches.
+        weeks = 0 if rng.random() < 0.25 else rng.randint(1, 11)
+        opp.first_seen = now - timedelta(weeks=weeks, days=rng.randint(0, 6), hours=rng.randint(0, 23))
+
+    active = [o for o in canonical if o.status in ("active", "expired")]
+    for i, (name, year, major, interests) in enumerate(COHORT):
+        u = User(email=f"cohort{i + 1}@demo.com", name=name, role="student", password_hash=hash_password(DEMO_PASSWORD))
+        db.add(u)
+        db.flush()
+        db.add(Profile(user_id=u.id, degree_level="bachelors", year_of_study=year, major=major, cgpa=round(rng.uniform(7, 9.4), 1),
+                       cgpa_scale=10, nationality="Indian", country_of_residence="UAE", interests=interests,
+                       onboarding_step=4, onboarding_complete=True))
+        db.add(UserState(user_id=u.id, last_route="/dashboard"))
+        for opp in rng.sample(active, 5):
+            db.add(SavedOpportunity(user_id=u.id, opportunity_id=opp.id,
+                                    created_at=now - timedelta(weeks=rng.randint(0, 11), days=rng.randint(0, 6))))
+        ws = Workspace(name=f"{name.split()[0]}'s applications", owner_id=u.id, icon="🗂️")
+        db.add(ws)
+        db.flush()
+        db.add(WorkspaceMember(workspace_id=ws.id, user_id=u.id, role="owner"))
+        for opp in rng.sample(active, 2):
+            db.add(TrackerItem(workspace_id=ws.id, opportunity_id=opp.id, status="submitted"))
+            db.add(ActivityLog(workspace_id=ws.id, user_id=u.id, action="tracker_moved",
+                               meta={"title": opp.title, "status": "submitted"},
+                               created_at=now - timedelta(weeks=rng.randint(0, 11), days=rng.randint(0, 6))))
+    db.flush()
+
+    cohort = db.query(User).filter(User.email.like("cohort%@demo.com")).order_by(User.email).all()
+    for i, (prefix, result, weeks_ago, shared) in enumerate(COHORT_OUTCOMES):
+        opp = next((o for o in canonical if o.title.startswith(prefix)), None)
+        if opp:
+            db.add(Outcome(user_id=cohort[i % len(cohort)].id, opportunity_id=opp.id, result=result,
+                           share_anonymously=shared, reported_at=now - timedelta(weeks=weeks_ago)))
+    db.commit()
+    print(f"Seeded analytics history: {len(cohort)} past students, {len(COHORT_OUTCOMES)} outcomes.")
+
+
 def main():
     print("Resetting database...")
     reset_db()
@@ -222,6 +295,7 @@ def main():
         if tracked:
             simulate_deadline_extension(db, tracked[0])
         seed_trust_and_endorsements(db, faculty)
+        seed_history(db)
         print("Done.")
     finally:
         db.close()

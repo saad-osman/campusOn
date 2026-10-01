@@ -7,6 +7,7 @@ from app.config import get_settings
 from app.routers import (
     admin,
     auth,
+    public_api,
     endorsements,
     notifications,
     review,
@@ -25,6 +26,23 @@ from app.routers import (
 )
 
 settings = get_settings()
+
+PUBLIC_PATHS = ("/api/public/", "/feed.xml")
+
+
+class PathCORSMiddleware:
+    """Open CORS for the public API, feed and widget (any site may embed them, no
+    cookies); credentialed CORS locked to the frontend origin for everything else."""
+
+    def __init__(self, app, frontend_origin: str):
+        self.public = CORSMiddleware(app, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
+        self.private = CORSMiddleware(app, allow_origins=[frontend_origin], allow_credentials=True,
+                                      allow_methods=["*"], allow_headers=["*"])
+
+    async def __call__(self, scope, receive, send):
+        path = scope.get("path", "") if scope["type"] in ("http", "websocket") else ""
+        target = self.public if path.startswith(PUBLIC_PATHS) else self.private
+        await target(scope, receive, send)
 
 
 @asynccontextmanager
@@ -48,13 +66,7 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[settings.FRONTEND_ORIGIN],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    app.add_middleware(PathCORSMiddleware, frontend_origin=settings.FRONTEND_ORIGIN)
 
     @app.get("/api/health")
     def health():
@@ -77,6 +89,7 @@ def create_app() -> FastAPI:
     app.include_router(review.router)
     app.include_router(endorsements.router)
     app.include_router(admin.router)
+    app.include_router(public_api.router)
 
     return app
 

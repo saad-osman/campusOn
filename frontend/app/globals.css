@@ -84,6 +84,12 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    /* Data-viz roles (validated categorical palette; see README "Analytics"). */
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-3: #1baf7a;
+    --viz-grid: #e4e3dd;
+    --viz-axis: #898781;
   }
   .dark {
     --background: oklch(0.145 0 0);
@@ -117,6 +123,11 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --viz-grid: #2c2c2a;
+    --viz-axis: #898781;
   }
   * {
     @apply border-border outline-ring/50;

@@ -18,7 +18,7 @@ Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 - [x] Phase 4 — Matching
 - [x] Phase 5 — Action features
 - [x] Phase 6 — Engagement & trust
-- [ ] Phase 7 — Institutional & integration
+- [x] Phase 7 — Institutional & integration
 - [ ] Phase 8 — Polish
 
 ## Infra notes (read this first)
@@ -153,6 +153,32 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
   `ENV != production` (previously any keyless deployment exposed them); logout/login clear the client
   cache so a second user never sees the first one's data; account deletion now removes saved items,
   outcomes and notifications and hands shared files to a teammate instead of leaving orphaned rows.
+
+## Institutional & integration (Phase 7)
+
+- **Admin analytics (F13), `/admin`:** headline stats (sources monitored, active opportunities,
+  verified %, average extraction confidence, students with at least one application), anonymous
+  success stories ("3 BPDC students were accepted to DAAD RISE this year"), charts for type, field,
+  funding and region, new opportunities per week, saves and applications per week, top student
+  interests, and outcomes per term, each with a data-table view. **Export CSV** downloads every
+  table. The page also manages sources (add, enable/disable, **Scrape now**), shows recent scrape runs
+  and broken listings, and has **Send digest now** and **Run expiry sweep** for the live demo.
+  Charts use a validated colour-blind-safe palette (`--series-*` tokens in `globals.css`).
+- **Public API (F14):** `GET /api/public/opportunities?degree=&field=&type=&region=&limit=` and
+  `GET /api/public/opportunities/{id}`: active, open listings only, no personal data, CORS `*`.
+  Everything else keeps credentialed CORS locked to `FRONTEND_ORIGIN` (`PathCORSMiddleware` in
+  `main.py`).
+- **RSS:** `/feed.xml` (same filters).
+- **Widget:** `<script src="https://<your-scholarradar>/widget.js" data-degree="bachelors"
+  data-field="computer science" async></script>` renders a compact list in a Shadow DOM, immune to
+  the host page's CSS, and links back to ScholarRadar. Attributes: `data-degree`, `data-field`,
+  `data-type`, `data-region`, `data-limit` (1-20), `data-title`.
+- **Mock portal:** `/demo/portal` is a fictional university portal (deliberately hostile CSS)
+  embedding two widgets.
+- Seed adds listings discovered across the last 12 weeks and 8 fictional past students
+  (`cohort1..8@demo.com`) with saves, applications and outcomes, so the charts have data.
+- Alembic migration `0107c6680fc6` adds the Phase 5-7 tables and user columns; `alembic check`
+  reports no drift.
 
 ## Tech stack
 
