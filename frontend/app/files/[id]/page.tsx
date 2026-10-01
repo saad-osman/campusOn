@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useCurrentUser } from "@/lib/auth";
@@ -11,8 +11,22 @@ import { OverviewTab } from "@/components/workspace/overview-tab";
 import { DocumentsTab } from "@/components/workspace/documents-tab";
 import { TeamTab } from "@/components/workspace/team-tab";
 import { ActivityTab } from "@/components/workspace/activity-tab";
+import { TrackerTab } from "@/components/workspace/tracker-tab";
+
+const TABS = ["overview", "tracker", "documents", "team", "activity"];
 
 export default function WorkspaceDetailPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <WorkspaceDetail />
+    </React.Suspense>
+  );
+}
+
+function WorkspaceDetail() {
+  const searchParams = useSearchParams();
+  const requestedTab = searchParams.get("tab");
+  const [tab, setTab] = React.useState(requestedTab && TABS.includes(requestedTab) ? requestedTab : "overview");
   const params = useParams<{ id: string }>();
   const workspaceId = params.id;
   const router = useRouter();
@@ -60,15 +74,19 @@ export default function WorkspaceDetailPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="overview">
-        <TabsList>
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList className="max-w-full overflow-x-auto">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="tracker">Tracker</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="mt-4">
           <OverviewTab workspace={workspace} />
+        </TabsContent>
+        <TabsContent value="tracker" className="mt-4">
+          <TrackerTab workspaceId={workspace.id} canEdit={canEdit} />
         </TabsContent>
         <TabsContent value="documents" className="mt-4">
           <DocumentsTab workspaceId={workspace.id} canEdit={canEdit} />

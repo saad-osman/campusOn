@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { EligibilityExplanation, EligibilityPill } from "@/components/opportunity/eligibility-badge";
 import { MatchScore } from "@/components/opportunity/match-score";
 import { OpportunityMeta, SaveButton, TrustLine } from "@/components/opportunity/opportunity-card";
+import { OpportunityActions } from "@/components/opportunity/actions";
+import { ProfessorsSection } from "@/components/opportunity/professors-section";
 import { useRequireUser } from "@/lib/auth";
 import { DEGREE_LABELS, TYPE_LABELS, formatDate, parseServerTime } from "@/lib/format";
 import { useOpportunity, useOpportunityChanges } from "@/lib/opportunities";
@@ -177,7 +179,7 @@ export default function OpportunityPage() {
         </div>
       </header>
 
-      <div id="opportunity-actions" />
+      <OpportunityActions opp={opp} />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
         <div className="flex min-w-0 flex-col gap-6">
@@ -227,7 +229,7 @@ export default function OpportunityPage() {
             </CardContent>
           </Card>
 
-          <div id="opportunity-professors" />
+          <ProfessorsSection opp={opp} />
         </div>
 
         <div className="flex flex-col gap-6">

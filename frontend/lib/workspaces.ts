@@ -155,6 +155,7 @@ export function useCreateDocument(workspaceId: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["documents", workspaceId] });
       qc.invalidateQueries({ queryKey: ["workspace", workspaceId] });
+      qc.invalidateQueries({ queryKey: ["activity", workspaceId] });
     },
   });
 }

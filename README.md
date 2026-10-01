@@ -16,7 +16,7 @@ Build follows the phased plan in `SPEC.md` (Section 10). Current progress:
 - [x] Phase 2 — Application Files & teammates
 - [x] Phase 3 — Scraping pipeline
 - [x] Phase 4 — Matching
-- [ ] Phase 5 — Action features
+- [x] Phase 5 — Action features
 - [ ] Phase 6 — Engagement & trust
 - [ ] Phase 7 — Institutional & integration
 - [ ] Phase 8 — Polish
@@ -104,6 +104,29 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
   match score; ones the student isn't eligible for drop lower but stay visible with the reason.
 - UI: `/discover`, `/opportunities/[id]`, the CV step in `/onboarding`, and the dashboard's
   "Top matches", "Deadlines this week" and "Near you: UAE & GCC" tiles.
+
+## Action features (Phase 5)
+
+- **Professor & lab finder (F3):** `services/semantic_scholar.py` searches recent papers, groups
+  them by author, ranks by relevance, recency and citations, and highlights BITS Pilani and UAE
+  affiliations. Results are cached 7 days in `api_cache`; 429s back off exponentially. The public API
+  rate-limits hard without a key (`SEMANTIC_SCHOLAR_API_KEY` raises it). If it's unreachable and
+  nothing is cached, the UI shows a clearly labelled set of **fictional** sample researchers from
+  `seed/cache/professors_sample.json`, so the flow stays demoable offline.
+- **Application copilot (F4):** `POST /api/copilot/kit` writes a checklist, SOP draft and cold email
+  (under 150 words, referencing one of the professor's papers) into an Application File, creating
+  one if needed, and puts the opportunity in the tracker as "preparing". `POST /api/copilot/draft`
+  writes a single document (used by "Generate first draft with AI" in New Document). Prompts live in
+  `backend/app/prompts/` and forbid inventing achievements; drafts start with an "AI draft — edit
+  before sending" label. Without an API key, templates built only from profile facts are used, with
+  `[bracketed]` gaps instead of made-up stories.
+- **Tracker (F9):** Kanban on the file's Tracker tab (dnd-kit, mouse and keyboard), positions
+  persisted via `POST /api/workspaces/{id}/tracker/reorder`. Cards show a deadline countdown (red
+  under 7 days), assignee and eligibility; assigning notifies the teammate. Moving a card to
+  Accepted/Rejected asks for an outcome (`POST /api/outcomes`, optionally shared anonymously).
+- **Calendar:** `.ics` per opportunity and per file, with alarms 7 days and 1 day before.
+- Also: documents poll every 10 s and show "Last edited by X"; checklist documents have clickable
+  checkboxes; the `/files` list shows members, opportunity count, nearest deadline and last activity.
 
 ## Tech stack
 

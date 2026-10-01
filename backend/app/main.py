@@ -6,6 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.routers import (
     auth,
+    calendar,
+    copilot,
+    professors,
+    tracker,
     documents,
     invites,
     opportunities,
@@ -57,6 +61,10 @@ def create_app() -> FastAPI:
     app.include_router(documents.router)
     app.include_router(opportunities.router)
     app.include_router(sources.router)
+    app.include_router(tracker.router)
+    app.include_router(calendar.router)
+    app.include_router(professors.router)
+    app.include_router(copilot.router)
 
     return app
 

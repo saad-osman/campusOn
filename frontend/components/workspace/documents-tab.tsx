@@ -17,6 +17,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ApiError } from "@/lib/api";
+import { useGenerateDraft, useTracker } from "@/lib/actions";
 import { useCreateDocument, useDocuments } from "@/lib/workspaces";
 import type { DocumentType } from "@/lib/types";
 
@@ -32,14 +37,31 @@ function NewDocumentDialog({ workspaceId, canEdit }: { workspaceId: string; canE
   const [open, setOpen] = React.useState(false);
   const [title, setTitle] = React.useState("");
   const [type, setType] = React.useState<DocumentType>("notes");
+  const [oppId, setOppId] = React.useState("none");
+  const [useAI, setUseAI] = React.useState(false);
   const create = useCreateDocument(workspaceId);
+  const draft = useGenerateDraft();
+  const { data: tracker } = useTracker(open ? workspaceId : undefined);
+  const router = useRouter();
+  const linkable = (tracker ?? []).filter((t) => t.opportunity);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await create.mutateAsync({ title, type });
-    setOpen(false);
-    setTitle("");
-    setType("notes");
+    const opportunity_id = oppId === "none" ? undefined : oppId;
+    try {
+      const doc = useAI
+        ? await draft.mutateAsync({ workspace_id: workspaceId, type, title: title || undefined, opportunity_id })
+        : await create.mutateAsync({ title, type, opportunity_id });
+      toast.success(useAI ? "AI draft created" : "Document created");
+      setOpen(false);
+      setTitle("");
+      setType("notes");
+      setOppId("none");
+      setUseAI(false);
+      router.push(`/files/${workspaceId}/docs/${doc.id}`);
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Couldn't create the document");
+    }
   }
 
   if (!canEdit) return null;
@@ -71,13 +93,45 @@ function NewDocumentDialog({ workspaceId, canEdit }: { workspaceId: string; canE
               </Select>
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label>Title</Label>
-              <Input required value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Label htmlFor="doc-title">Title</Label>
+              <Input
+                id="doc-title"
+                required={!useAI}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={useAI ? "Optional: we'll name it for you" : undefined}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label>Linked opportunity</Label>
+              <Select value={oppId} onValueChange={setOppId}>
+                <SelectTrigger aria-label="Linked opportunity">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  {linkable.map((t) => (
+                    <SelectItem key={t.opportunity!.id} value={t.opportunity!.id}>
+                      {t.opportunity!.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {linkable.length === 0 && (
+                <p className="text-xs text-muted-foreground">Add opportunities to this file&apos;s tracker to link them.</p>
+              )}
+            </div>
+            <div className="flex items-start gap-2">
+              <Checkbox id="doc-ai" checked={useAI} onCheckedChange={(v) => setUseAI(v === true)} />
+              <Label htmlFor="doc-ai" className="font-normal leading-snug">
+                Generate a first draft with AI, written from your profile (no invented details) and labelled as an AI
+                draft
+              </Label>
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={create.isPending}>
-              {create.isPending ? "Creating…" : "Create"}
+            <Button type="submit" disabled={create.isPending || draft.isPending}>
+              {draft.isPending ? "Writing draft…" : create.isPending ? "Creating…" : "Create"}
             </Button>
           </DialogFooter>
         </form>
@@ -112,7 +166,10 @@ export function DocumentsTab({ workspaceId, canEdit }: { workspaceId: string; ca
                       v{doc.version} &middot; updated {parseServerTime(doc.updated_at).toLocaleString()}
                     </p>
                   </div>
-                  <Badge variant="outline">{DOC_TYPE_LABELS[doc.type]}</Badge>
+                  <div className="flex shrink-0 items-center gap-1.5">
+                    {doc.content.startsWith("> **AI draft") && <Badge variant="secondary">AI draft</Badge>}
+                    <Badge variant="outline">{DOC_TYPE_LABELS[doc.type]}</Badge>
+                  </div>
                 </CardContent>
               </Card>
             </Link>

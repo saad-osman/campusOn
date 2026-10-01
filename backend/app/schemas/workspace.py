@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, EmailStr, Field
@@ -43,6 +43,10 @@ class WorkspaceOut(BaseModel):
     my_role: str
     member_count: int
     document_count: int
+    opportunity_count: int = 0
+    nearest_deadline: date | None = None
+    last_activity_at: datetime | None = None
+    members: list[dict] = []
 
     model_config = {"from_attributes": True}
 

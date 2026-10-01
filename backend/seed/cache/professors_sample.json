@@ -1,0 +1,412 @@
+{
+  "_note": "Fictional researchers and papers, shown only when the Semantic Scholar API is unreachable and nothing is cached. Not real people.",
+  "authors": [
+    {
+      "author_id": "sample-1",
+      "name": "Dr. Meera Kulkarni (sample)",
+      "affiliations": [
+        "BITS Pilani, Dubai Campus"
+      ],
+      "topics": [
+        "Computer Science",
+        "Machine Learning",
+        "Robotics"
+      ],
+      "h_index": 18,
+      "citation_count": 1450,
+      "paper_count": 23,
+      "profile_url": null,
+      "highlight": "BITS Pilani",
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Lightweight visual odometry for low-cost drones",
+          "year": 2025,
+          "venue": "ICRA",
+          "url": null,
+          "citations": 14
+        },
+        {
+          "title": "Self-supervised segmentation of desert terrain imagery",
+          "year": 2024,
+          "venue": "WACV",
+          "url": null,
+          "citations": 22
+        },
+        {
+          "title": "Curriculum learning for small robot manipulation datasets",
+          "year": 2023,
+          "venue": "CoRL",
+          "url": null,
+          "citations": 31
+        }
+      ]
+    },
+    {
+      "author_id": "sample-2",
+      "name": "Dr. Omar Al Hashimi (sample)",
+      "affiliations": [
+        "Khalifa University, Abu Dhabi, UAE"
+      ],
+      "topics": [
+        "Engineering",
+        "Robotics",
+        "Computer Vision"
+      ],
+      "h_index": 24,
+      "citation_count": 3100,
+      "paper_count": 26,
+      "profile_url": null,
+      "highlight": "UAE",
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Event-camera tracking for aerial inspection",
+          "year": 2025,
+          "venue": "IROS",
+          "url": null,
+          "citations": 9
+        },
+        {
+          "title": "Thermal-visual fusion for night-time search and rescue",
+          "year": 2024,
+          "venue": "RA-L",
+          "url": null,
+          "citations": 27
+        },
+        {
+          "title": "Learning-based control of tethered UAVs",
+          "year": 2022,
+          "venue": "T-RO",
+          "url": null,
+          "citations": 64
+        }
+      ]
+    },
+    {
+      "author_id": "sample-3",
+      "name": "Dr. Lina Haddad (sample)",
+      "affiliations": [
+        "Mohamed bin Zayed University of Artificial Intelligence, UAE"
+      ],
+      "topics": [
+        "Computer Science",
+        "Natural Language Processing"
+      ],
+      "h_index": 21,
+      "citation_count": 2600,
+      "paper_count": 29,
+      "profile_url": null,
+      "highlight": "UAE",
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Arabic dialect identification with multilingual LLMs",
+          "year": 2025,
+          "venue": "ACL",
+          "url": null,
+          "citations": 18
+        },
+        {
+          "title": "Evaluating instruction-tuned models on Gulf Arabic",
+          "year": 2024,
+          "venue": "EMNLP",
+          "url": null,
+          "citations": 40
+        },
+        {
+          "title": "Low-resource machine translation for Emirati Arabic",
+          "year": 2023,
+          "venue": "LREC",
+          "url": null,
+          "citations": 52
+        }
+      ]
+    },
+    {
+      "author_id": "sample-4",
+      "name": "Dr. Rahul Menon (sample)",
+      "affiliations": [
+        "BITS Pilani, Pilani Campus, India"
+      ],
+      "topics": [
+        "Computer Science",
+        "Machine Learning",
+        "Data Science"
+      ],
+      "h_index": 26,
+      "citation_count": 4200,
+      "paper_count": 32,
+      "profile_url": null,
+      "highlight": "BITS Pilani",
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Fairness audits for credit-scoring models in emerging markets",
+          "year": 2025,
+          "venue": "FAccT",
+          "url": null,
+          "citations": 11
+        },
+        {
+          "title": "Graph neural networks for supply-chain risk",
+          "year": 2024,
+          "venue": "KDD",
+          "url": null,
+          "citations": 35
+        },
+        {
+          "title": "Tabular foundation models: a reality check",
+          "year": 2023,
+          "venue": "NeurIPS",
+          "url": null,
+          "citations": 88
+        }
+      ]
+    },
+    {
+      "author_id": "sample-5",
+      "name": "Dr. Sofia Brandt (sample)",
+      "affiliations": [
+        "Technical University of Munich, Germany"
+      ],
+      "topics": [
+        "Computer Science",
+        "Machine Learning",
+        "Robotics"
+      ],
+      "h_index": 33,
+      "citation_count": 7800,
+      "paper_count": 35,
+      "profile_url": null,
+      "highlight": null,
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Diffusion policies for dexterous grasping",
+          "year": 2025,
+          "venue": "RSS",
+          "url": null,
+          "citations": 41
+        },
+        {
+          "title": "Sim-to-real transfer with domain randomised tactile sensing",
+          "year": 2024,
+          "venue": "ICRA",
+          "url": null,
+          "citations": 57
+        },
+        {
+          "title": "Benchmarking open-vocabulary manipulation",
+          "year": 2023,
+          "venue": "CoRL",
+          "url": null,
+          "citations": 120
+        }
+      ]
+    },
+    {
+      "author_id": "sample-6",
+      "name": "Dr. Daniel Okafor (sample)",
+      "affiliations": [
+        "EPFL, Switzerland"
+      ],
+      "topics": [
+        "Computer Science",
+        "Machine Learning"
+      ],
+      "h_index": 29,
+      "citation_count": 6900,
+      "paper_count": 38,
+      "profile_url": null,
+      "highlight": null,
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Privacy-preserving federated learning for hospitals",
+          "year": 2025,
+          "venue": "ICML",
+          "url": null,
+          "citations": 29
+        },
+        {
+          "title": "Robust optimisation under distribution shift",
+          "year": 2024,
+          "venue": "NeurIPS",
+          "url": null,
+          "citations": 76
+        },
+        {
+          "title": "Efficient fine-tuning of vision transformers",
+          "year": 2023,
+          "venue": "CVPR",
+          "url": null,
+          "citations": 140
+        }
+      ]
+    },
+    {
+      "author_id": "sample-7",
+      "name": "Dr. Hana Yusuf (sample)",
+      "affiliations": [
+        "NYU Abu Dhabi, UAE"
+      ],
+      "topics": [
+        "Political Science",
+        "Economics",
+        "Public Policy"
+      ],
+      "h_index": 15,
+      "citation_count": 980,
+      "paper_count": 41,
+      "profile_url": null,
+      "highlight": "UAE",
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Evaluating digital government services in the Gulf",
+          "year": 2025,
+          "venue": "Policy & Internet",
+          "url": null,
+          "citations": 7
+        },
+        {
+          "title": "Labour-market effects of skilled-migration reforms",
+          "year": 2024,
+          "venue": "World Development",
+          "url": null,
+          "citations": 19
+        },
+        {
+          "title": "Measuring policy diffusion across GCC states",
+          "year": 2022,
+          "venue": "Governance",
+          "url": null,
+          "citations": 33
+        }
+      ]
+    },
+    {
+      "author_id": "sample-8",
+      "name": "Dr. Arjun Iyer (sample)",
+      "affiliations": [
+        "Indian Institute of Science, Bengaluru, India"
+      ],
+      "topics": [
+        "Physics",
+        "Materials Science",
+        "Engineering"
+      ],
+      "h_index": 22,
+      "citation_count": 2300,
+      "paper_count": 44,
+      "profile_url": null,
+      "highlight": null,
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Perovskite stability under desert heat cycles",
+          "year": 2025,
+          "venue": "Nature Energy",
+          "url": null,
+          "citations": 21
+        },
+        {
+          "title": "Machine-learned potentials for battery cathodes",
+          "year": 2024,
+          "venue": "npj Comput. Mater.",
+          "url": null,
+          "citations": 44
+        },
+        {
+          "title": "Thin-film solar degradation in humid climates",
+          "year": 2023,
+          "venue": "Solar Energy",
+          "url": null,
+          "citations": 37
+        }
+      ]
+    },
+    {
+      "author_id": "sample-9",
+      "name": "Dr. Grace Liu (sample)",
+      "affiliations": [
+        "National University of Singapore"
+      ],
+      "topics": [
+        "Computer Science",
+        "Human-Computer Interaction"
+      ],
+      "h_index": 19,
+      "citation_count": 2100,
+      "paper_count": 47,
+      "profile_url": null,
+      "highlight": null,
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Accessible interfaces for visually impaired programmers",
+          "year": 2025,
+          "venue": "CHI",
+          "url": null,
+          "citations": 16
+        },
+        {
+          "title": "LLM tutors in introductory programming courses",
+          "year": 2024,
+          "venue": "SIGCSE",
+          "url": null,
+          "citations": 58
+        },
+        {
+          "title": "Measuring cognitive load in AR assembly tasks",
+          "year": 2023,
+          "venue": "UIST",
+          "url": null,
+          "citations": 49
+        }
+      ]
+    },
+    {
+      "author_id": "sample-10",
+      "name": "Dr. Karim Nassar (sample)",
+      "affiliations": [
+        "American University of Sharjah, UAE"
+      ],
+      "topics": [
+        "Engineering",
+        "Environmental Science",
+        "Data Science"
+      ],
+      "h_index": 17,
+      "citation_count": 1300,
+      "paper_count": 50,
+      "profile_url": null,
+      "highlight": "UAE",
+      "sample": true,
+      "recent_papers": [
+        {
+          "title": "Forecasting district cooling demand with transformers",
+          "year": 2025,
+          "venue": "Applied Energy",
+          "url": null,
+          "citations": 12
+        },
+        {
+          "title": "Sensor networks for urban heat islands in Sharjah",
+          "year": 2024,
+          "venue": "Sustainable Cities and Society",
+          "url": null,
+          "citations": 25
+        },
+        {
+          "title": "Desalination energy optimisation with RL",
+          "year": 2023,
+          "venue": "Desalination",
+          "url": null,
+          "citations": 38
+        }
+      ]
+    }
+  ]
+}

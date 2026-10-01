@@ -46,6 +46,10 @@ export interface Workspace {
   my_role: MemberRole;
   member_count: number;
   document_count: number;
+  opportunity_count: number;
+  nearest_deadline: string | null;
+  last_activity_at: string | null;
+  members: { user_id: string; name: string }[];
 }
 
 export interface WorkspaceMember {
@@ -226,4 +230,75 @@ export interface CVExtraction {
   suggestions: Partial<Profile>;
   method: "llm" | "rule_based";
   characters: number;
+}
+
+// ---------- Phase 5: tracker, professors, copilot ----------
+
+export type TrackerStatus = "saved" | "preparing" | "submitted" | "accepted" | "rejected";
+
+export interface TrackerItem {
+  id: string;
+  workspace_id: string;
+  opportunity_id: string | null;
+  status: TrackerStatus;
+  position: number;
+  notes: string | null;
+  assignee_id: string | null;
+  assignee_name: string | null;
+  updated_at: string;
+  opportunity: {
+    id: string;
+    title: string;
+    organization: string;
+    type: OpportunityType;
+    deadline: string | null;
+    deadline_text: string | null;
+    status: string;
+    url: string | null;
+    eligibility_verdict: Verdict | null;
+    match_score: number | null;
+  } | null;
+}
+
+export interface Paper {
+  title: string | null;
+  year: number | null;
+  venue: string | null;
+  url: string | null;
+  citations: number;
+}
+
+export interface Professor {
+  author_id: string;
+  name: string | null;
+  affiliations: string[];
+  topics: string[];
+  h_index: number | null;
+  citation_count: number | null;
+  paper_count: number | null;
+  profile_url: string | null;
+  highlight: "BITS Pilani" | "UAE" | null;
+  sample: boolean;
+  recent_papers: Paper[];
+}
+
+export interface ProfessorSearch {
+  query: string;
+  source: "live" | "cache" | "sample";
+  fetched_at: string | null;
+  authors: Professor[];
+}
+
+export interface ProfessorRef {
+  name: string;
+  affiliation?: string | null;
+  paper_title?: string | null;
+  paper_year?: number | null;
+}
+
+export interface KitResponse {
+  workspace_id: string;
+  workspace_name: string;
+  documents: Document[];
+  method: "llm" | "template" | "mixed";
 }

@@ -31,6 +31,7 @@ def _create_tables():
 
 
 PHASE_3_TABLES = [
+    "outcomes", "api_cache",
     "opportunity_changes", "opportunity_sources", "saved_opportunities",
     "raw_pages", "scrape_runs", "opportunities", "sources",
 ]

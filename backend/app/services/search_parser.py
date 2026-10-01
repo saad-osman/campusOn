@@ -10,7 +10,7 @@ the demo-mode path and the fallback if the model call fails.
 import re
 
 from app.schemas.search import SearchFilters
-from app.services.llm import LLMUnavailable, complete_json, llm_enabled
+from app.services.llm import LLMUnavailable, complete_json, llm_enabled, load_prompt
 
 DEGREE_PATTERNS = [
     ("phd", r"\b(phd|ph\.d|doctoral|doctorate)\b"),
@@ -128,18 +128,7 @@ def parse_query_rule_based(q: str) -> SearchFilters:
     return f
 
 
-SYSTEM = (
-    "You convert a student's search for research opportunities into structured filters. "
-    "Return only a JSON object with these keys (omit nothing; use null or [] when not stated): "
-    "degree_level (bachelors|masters|phd|null), year (integer year of study or null), "
-    "fields (array, values only from: AI/ML, Computer Science, Data Science, Engineering, Public Policy, "
-    "Business, Natural Sciences, Social Sciences, Medicine), "
-    "funding (any|funded|fully_funded), regions (array from: uae, gcc, europe, usa, india, asia), "
-    "types (array from: research_internship, fellowship, grant, scholarship, research_position, summer_school), "
-    "deadline_within_days (integer or null), remote_only (bool), open_to_uae_residents (bool or null), "
-    "semantic_query (the topical words left over, e.g. 'summer robotics internships', or null). "
-    "Only set a filter when the query clearly asks for it."
-)
+SYSTEM = load_prompt("search_query.md")
 
 
 def parse_query(q: str) -> tuple[SearchFilters, str]:

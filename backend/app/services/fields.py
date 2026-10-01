@@ -7,7 +7,7 @@ the LLM only to map fuzzy fields"). LLM answers are memoised per process.
 import logging
 import re
 
-from app.services.llm import LLMUnavailable, complete_json, llm_enabled
+from app.services.llm import LLMUnavailable, complete_json, llm_enabled, load_prompt
 
 logger = logging.getLogger("scholarradar.fields")
 
@@ -103,8 +103,7 @@ def _llm_match(field: str, student_terms: list[str]) -> bool:
         return _llm_cache[key]
     try:
         data = complete_json(
-            "You decide whether a student's academic background fits a research opportunity's "
-            "required field. Answer only with JSON: {\"match\": true|false}.",
+            load_prompt("field_match.md"),
             f"Required field: {field}\nStudent's major, interests and skills: {', '.join(student_terms)}\n"
             "Would a reasonable admissions reviewer consider this student to be in, or closely "
             "adjacent to, the required field?",

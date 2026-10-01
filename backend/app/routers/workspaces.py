@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -8,7 +8,8 @@ from app.config import get_settings
 from app.db import get_db
 from app.deps import get_current_user
 from app.models.document import Document
-from app.models.tracker import ActivityLog
+from app.models.opportunity import Opportunity
+from app.models.tracker import ActivityLog, TrackerItem
 from app.models.user import User
 from app.models.workspace import Invite, Workspace, WorkspaceMember
 from app.schemas.workspace import (
@@ -24,6 +25,7 @@ from app.schemas.workspace import (
     WorkspacePatch,
 )
 from app.services.activity import log_activity
+from app.services.notifications import notify
 from app.services.workspace_access import require_workspace_role
 
 router = APIRouter(prefix="/api/workspaces", tags=["workspaces"])
@@ -43,9 +45,33 @@ TEMPLATE_DOCS = {
 
 
 def _to_workspace_out(ws: Workspace, my_role: str, db: Session) -> dict:
-    member_count = db.query(WorkspaceMember).filter(WorkspaceMember.workspace_id == ws.id).count()
+    members = (
+        db.query(User.id, User.name)
+        .join(WorkspaceMember, WorkspaceMember.user_id == User.id)
+        .filter(WorkspaceMember.workspace_id == ws.id)
+        .all()
+    )
     document_count = db.query(Document).filter(Document.workspace_id == ws.id).count()
+    opp_ids = [r.opportunity_id for r in db.query(TrackerItem.opportunity_id)
+               .filter(TrackerItem.workspace_id == ws.id, TrackerItem.opportunity_id.isnot(None)).all()]
+    upcoming = (
+        db.query(Opportunity.deadline)
+        .filter(Opportunity.id.in_(opp_ids), Opportunity.deadline >= date.today())
+        .order_by(Opportunity.deadline)
+        .first()
+    ) if opp_ids else None
+    last = (
+        db.query(ActivityLog.created_at)
+        .filter(ActivityLog.workspace_id == ws.id)
+        .order_by(ActivityLog.created_at.desc())
+        .first()
+    )
     return {
+        "members": [{"user_id": m.id, "name": m.name} for m in members],
+        "member_count": len(members),
+        "opportunity_count": len(opp_ids),
+        "nearest_deadline": upcoming[0] if upcoming else None,
+        "last_activity_at": last[0] if last else ws.updated_at,
         "id": ws.id,
         "name": ws.name,
         "description": ws.description,
@@ -55,7 +81,6 @@ def _to_workspace_out(ws: Workspace, my_role: str, db: Session) -> dict:
         "created_at": ws.created_at,
         "updated_at": ws.updated_at,
         "my_role": my_role,
-        "member_count": member_count,
         "document_count": document_count,
     }
 
@@ -129,6 +154,9 @@ def delete_workspace(
     db: Session = Depends(get_db),
 ):
     ws = db.get(Workspace, workspace_id)
+    # Members, documents and invites cascade via the ORM; these tables don't.
+    db.query(TrackerItem).filter(TrackerItem.workspace_id == workspace_id).delete()
+    db.query(ActivityLog).filter(ActivityLog.workspace_id == workspace_id).delete()
     db.delete(ws)
     db.commit()
     return None
@@ -153,7 +181,11 @@ def duplicate_workspace(
     db.add(WorkspaceMember(workspace_id=copy.id, user_id=user.id, role="owner"))
 
     for doc in db.query(Document).filter(Document.workspace_id == workspace_id).all():
-        db.add(Document(workspace_id=copy.id, type=doc.type, title=doc.title, content=doc.content, updated_by=user.id))
+        db.add(Document(workspace_id=copy.id, type=doc.type, title=doc.title, content=doc.content,
+                        opportunity_id=doc.opportunity_id, updated_by=user.id))
+    for item in db.query(TrackerItem).filter(TrackerItem.workspace_id == workspace_id).all():
+        db.add(TrackerItem(workspace_id=copy.id, opportunity_id=item.opportunity_id, status=item.status,
+                           notes=item.notes, position=item.position))
 
     log_activity(db, copy.id, user.id, "workspace_duplicated", {"from": workspace_id})
     db.commit()
@@ -268,9 +300,11 @@ def create_invite(
     db.commit()
     db.refresh(invite)
 
-    # In-app notification for existing users lands in Phase 6 once the notifications
-    # model exists; for now the invite link itself (shown + copyable in the UI) is
-    # how the flow works, matching the spec's "works without email" design.
+    if existing_user:
+        ws = db.get(Workspace, workspace_id)
+        notify(db, existing_user.id, "invite", f"{user.name} invited you to “{ws.name}”",
+               f"Join as {payload.role}.", f"/invite/{token}")
+        db.commit()
 
     return InviteOut(
         id=invite.id,

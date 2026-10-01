@@ -11,3 +11,6 @@ from app.models import workspace, document, tracker  # noqa: F401
 
 # Phase 3
 from app.models import source, opportunity, scrape_run  # noqa: F401
+
+# Phase 5
+from app.models import notification, outcome, api_cache  # noqa: F401

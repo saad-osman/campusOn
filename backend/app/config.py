@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     SCRAPER_MIN_DELAY_SECONDS: float = 2.0
     SCRAPER_TIMEOUT_SECONDS: float = 15.0
 
+    # External APIs
+    SEMANTIC_SCHOLAR_API_KEY: str | None = None  # optional; raises the public rate limit
+
     # Notifications
     SMTP_HOST: str | None = None
     SMTP_PORT: int = 587

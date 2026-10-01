@@ -9,7 +9,7 @@ import io
 import re
 from datetime import date
 
-from app.services.llm import LLMUnavailable, complete_json, llm_enabled
+from app.services.llm import LLMUnavailable, complete_json, llm_enabled, load_prompt
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt"}
 
@@ -144,15 +144,7 @@ def extract_profile_rule_based(text: str, today: date | None = None) -> dict:
     return out
 
 
-PROFILE_SYSTEM = (
-    "Extract a student's academic profile from their CV or transcript. Return only a JSON object "
-    "with these keys, using null (or empty list/object) when the CV doesn't say: degree_level "
-    "(bachelors|masters|phd), year_of_study (integer, current year of the degree), major (string), "
-    "cgpa (number), cgpa_scale (4 or 10 or as stated), nationality (string), country_of_residence "
-    "(string), english_tests (object like {\"IELTS\": 7.0, \"TOEFL\": 100}), skills (list of "
-    "technical skills), interests (list of research interests). Copy facts only; never guess or "
-    "infer values the CV does not state."
-)
+PROFILE_SYSTEM = load_prompt("profile_extraction.md")
 
 PROFILE_KEYS = ["degree_level", "year_of_study", "major", "cgpa", "cgpa_scale", "nationality",
                 "country_of_residence", "english_tests", "skills", "interests"]

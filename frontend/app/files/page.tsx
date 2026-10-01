@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DeadlineBadge } from "@/components/opportunity/deadline-badge";
+import { initials, timeAgo } from "@/lib/format";
 import {
   Dialog,
   DialogContent,
@@ -137,8 +139,12 @@ export default function FilesPage() {
       {isLoading ? (
         <div className="text-muted-foreground">Loading&hellip;</div>
       ) : !workspaces || workspaces.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-          No Application Files yet. Create one to start tracking an application.
+        <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed p-10 text-center">
+          <p className="font-medium">No Application Files yet</p>
+          <p className="max-w-md text-sm text-muted-foreground">
+            Create one to track an application with teammates, or open any opportunity and click{" "}
+            <strong>Generate application kit</strong>; it makes a file for you.
+          </p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -152,12 +158,43 @@ export default function FilesPage() {
                     {ws.archived && <Badge variant="outline">archived</Badge>}
                   </div>
                 </CardHeader>
-                <CardContent className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>
-                    {ws.member_count} member{ws.member_count !== 1 ? "s" : ""} &middot; {ws.document_count} doc
-                    {ws.document_count !== 1 ? "s" : ""}
-                  </span>
-                  <Badge variant="secondary">{ws.my_role}</Badge>
+                <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
+                  {ws.description && <p className="line-clamp-2 text-xs">{ws.description}</p>}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex -space-x-2" aria-label={`Members: ${ws.members.map((m) => m.name).join(", ")}`}>
+                      {ws.members.slice(0, 4).map((m) => (
+                        <span
+                          key={m.user_id}
+                          title={m.name}
+                          className="flex size-7 items-center justify-center rounded-full border-2 border-card bg-muted text-[10px] font-semibold text-foreground"
+                        >
+                          {initials(m.name)}
+                        </span>
+                      ))}
+                      {ws.members.length > 4 && (
+                        <span className="flex size-7 items-center justify-center rounded-full border-2 border-card bg-muted text-[10px]">
+                          +{ws.members.length - 4}
+                        </span>
+                      )}
+                    </div>
+                    <Badge variant="secondary">{ws.my_role}</Badge>
+                  </div>
+                  <dl className="grid grid-cols-3 gap-2 text-xs">
+                    <div>
+                      <dt className="text-muted-foreground">Opportunities</dt>
+                      <dd className="font-medium text-foreground">{ws.opportunity_count}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Next deadline</dt>
+                      <dd className="font-medium text-foreground">
+                        {ws.nearest_deadline ? <DeadlineBadge deadline={ws.nearest_deadline} className="text-xs" /> : "—"}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Last activity</dt>
+                      <dd className="font-medium text-foreground">{timeAgo(ws.last_activity_at)}</dd>
+                    </div>
+                  </dl>
                 </CardContent>
               </Card>
             </Link>
