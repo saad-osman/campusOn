@@ -77,7 +77,7 @@ def _call_openai_compatible(model: str, system: str, user: str, max_tokens: int)
         raise LLMUnavailable("LLM_BASE_URL is not set")
     messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": user}]
     if settings.LLM_PROVIDER == "gemini":
-        # Gemini 2.5 counts its thinking tokens against the output budget; leave room.
+        # Gemini models can count thinking tokens against the output budget; leave room.
         max_tokens = max(max_tokens, 8192)
     try:
         r = httpx.post(

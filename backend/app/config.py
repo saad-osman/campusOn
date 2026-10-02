@@ -77,10 +77,12 @@ class Settings(BaseSettings):
 # (extraction model, writing model) per provider when EXTRACTION_MODEL / WRITING_MODEL are unset.
 _DEFAULT_MODELS = {
     "anthropic": ("claude-haiku-4-5-20251001", "claude-sonnet-5-5"),
-    "gemini": ("gemini-2.5-flash", "gemini-2.5-flash"),
+    # Google's "-latest" alias tracks the current Flash-Lite, so retiring a version doesn't
+    # break the app. Lite answers in ~1-2 s; full Flash took 11-30 s and often returned 503.
+    "gemini": ("gemini-flash-lite-latest", "gemini-flash-lite-latest"),
 }
 
-PLACEHOLDER_SECRETS ={"dev-secret-change-me", "change-me-to-a-random-string", ""}
+PLACEHOLDER_SECRETS = {"dev-secret-change-me", "change-me-to-a-random-string", ""}
 
 
 @lru_cache

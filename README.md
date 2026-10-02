@@ -237,7 +237,7 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
   `student`, `faculty`, `admin`.
 - **AI:** `LLM_PROVIDER` = `anthropic` (Anthropic SDK; defaults `claude-haiku-4-5-20251001` /
   `claude-sonnet-5-5`), `gemini` (free tier, OpenAI-compatible endpoint; default
-  `gemini-2.5-flash`) or `openai_compatible` (any OpenAI-style API via `LLM_BASE_URL`).
+  `gemini-flash-lite-latest`) or `openai_compatible` (any OpenAI-style API via `LLM_BASE_URL`).
   `EXTRACTION_MODEL` covers extraction/parsing/classification, `WRITING_MODEL` SOP/email
   drafting. Demo mode (no external calls) when the provider has no key.
 - **Embeddings:** all-MiniLM-L6-v2 via fastembed (ONNX Runtime, no torch); the API peaks

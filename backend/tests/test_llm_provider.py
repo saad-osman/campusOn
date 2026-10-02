@@ -46,7 +46,7 @@ def test_gemini_defaults_and_json(gemini):
     sent = calls[0]
     assert sent["url"] == "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
     assert sent["headers"]["Authorization"] == "Bearer test-key"
-    assert sent["json"]["model"] == "gemini-2.5-flash"
+    assert sent["json"]["model"] == "gemini-flash-lite-latest"
     assert sent["json"]["messages"][0] == {"role": "system", "content": "sys"}
     assert sent["json"]["max_tokens"] >= 8192
 
