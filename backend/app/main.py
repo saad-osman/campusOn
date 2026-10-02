@@ -70,7 +70,12 @@ def create_app() -> FastAPI:
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "app": settings.APP_NAME, "demo_mode": settings.demo_mode_effective}
+        return {
+            "status": "ok",
+            "app": settings.APP_NAME,
+            "demo_mode": settings.demo_mode_effective,
+            "llm_provider": None if settings.demo_mode_effective else settings.LLM_PROVIDER,
+        }
 
     app.include_router(auth.router)
     app.include_router(profile.router)

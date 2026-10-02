@@ -263,23 +263,24 @@ def test_scrape_run_counts_new_opportunity(db_session, monkeypatch):
     assert run.finished_at is not None
 
 
-class _FakeMessages:
+class _FakeLLM:
+    """Stands in for the provider call in app.services.llm, returning canned replies."""
+
     def __init__(self, replies):
         self.replies = list(replies)
         self.calls = 0
 
-    def create(self, **kwargs):
+    def __call__(self, model, system, user, max_tokens):
         self.calls += 1
-        text = self.replies.pop(0)
-        return type("Resp", (), {"content": [type("Block", (), {"text": text})()]})()
+        return self.replies.pop(0)
 
 
-def _patch_anthropic(monkeypatch, replies):
-    import anthropic
+def _patch_llm(monkeypatch, replies):
+    from app.services import llm
 
-    messages = _FakeMessages(replies)
-    monkeypatch.setattr(anthropic, "Anthropic", lambda **kw: type("C", (), {"messages": messages})())
-    return messages
+    fake = _FakeLLM(replies)
+    monkeypatch.setattr(llm, "_call", fake)
+    return fake
 
 
 VALID_LLM_JSON = json.dumps({
@@ -298,7 +299,7 @@ VALID_LLM_JSON = json.dumps({
 
 
 def test_llm_extraction_retries_once_after_invalid_json(monkeypatch):
-    messages = _patch_anthropic(monkeypatch, ["not json at all", "```json\n" + VALID_LLM_JSON + "\n```"])
+    messages = _patch_llm(monkeypatch, ["not json at all", "```json\n" + VALID_LLM_JSON + "\n```"])
     data = extractor.extract_llm(DAAD_TEXT, "DAAD", "https://daad.de")
     assert messages.calls == 2
     assert data["deadline"] == "2027-10-15"
@@ -307,7 +308,7 @@ def test_llm_extraction_retries_once_after_invalid_json(monkeypatch):
 
 def test_llm_extraction_invalid_twice_forces_review(monkeypatch):
     bad_schema = json.dumps({**json.loads(VALID_LLM_JSON), "type": "party"})
-    messages = _patch_anthropic(monkeypatch, [bad_schema, bad_schema])
+    messages = _patch_llm(monkeypatch, [bad_schema, bad_schema])
     data = extractor.extract_llm(DAAD_TEXT, "DAAD", "https://daad.de")
     assert messages.calls == 2
     assert data["overall_confidence"] == 0.0  # -> pending_review in ingest

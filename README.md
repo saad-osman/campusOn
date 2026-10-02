@@ -45,9 +45,10 @@ and `/feed.xml` to FastAPI (`frontend/next.config.mjs`), so the session cookie i
 | `faculty@demo.com` | Review queue (`/faculty/review`) and endorsements (`/faculty/endorse`) |
 | `admin@demo.com` | Analytics, sources, digest and demo controls (`/admin`) |
 
-No API keys are needed. Without `ANTHROPIC_API_KEY` the app runs in **demo mode** (banner at the
-top): rule-based extraction, CV parsing and query parsing, and template drafts. Set the key in
-`backend/.env` to use Claude (`EXTRACTION_MODEL` for extraction, `WRITING_MODEL` for drafts).
+No API keys are needed. Without an LLM key the app runs in **demo mode** (banner at the top):
+rule-based extraction, CV parsing and query parsing, and template drafts. To turn AI on, set in
+`backend/.env` either `LLM_PROVIDER=gemini` + `LLM_API_KEY` (free key from
+https://aistudio.google.com/apikey) or `LLM_PROVIDER=anthropic` + `ANTHROPIC_API_KEY`.
 [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) walks through a 3-minute demo. UI work follows
 [`DESIGN.md`](DESIGN.md), the design system as built.
 
@@ -102,7 +103,7 @@ extract → embed → dedupe → change detection, and logs every run to `scrape
 
 - **Fetching** (`services/scraper.py`): robots.txt checked first, `ScholarRadarBot/1.0` User-Agent
   with `SCRAPER_CONTACT_EMAIL`, max 1 request / 2 s per domain, 15 s timeout, exponential backoff.
-- **Extraction** (`services/extractor.py`): with `ANTHROPIC_API_KEY` set, Claude
+- **Extraction** (`services/extractor.py`): with an LLM key set, the model
   (`EXTRACTION_MODEL`) returns JSON validated by Pydantic; invalid output is retried once, then
   flagged `pending_review`. Without a key (demo mode), a rule-based extractor runs instead, at
   honestly lower confidence scores. Anything under 0.7 confidence or with no deadline goes to
@@ -234,10 +235,13 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
 - **Database:** SQLite (see Infra notes above).
 - **Auth:** email + password (argon2), JWT in an httpOnly `SameSite=Lax` cookie; roles
   `student`, `faculty`, `admin`.
-- **AI:** Anthropic Python SDK. `EXTRACTION_MODEL` (default `claude-haiku-4-5-20251001`) for
-  extraction/parsing/classification, `WRITING_MODEL` (default `claude-sonnet-5-5`) for
-  SOP/email drafting. Runs in demo mode (cached outputs, no external calls) when
-  `ANTHROPIC_API_KEY` is unset.
+- **AI:** `LLM_PROVIDER` = `anthropic` (Anthropic SDK; defaults `claude-haiku-4-5-20251001` /
+  `claude-sonnet-5-5`), `gemini` (free tier, OpenAI-compatible endpoint; default
+  `gemini-2.5-flash`) or `openai_compatible` (any OpenAI-style API via `LLM_BASE_URL`).
+  `EXTRACTION_MODEL` covers extraction/parsing/classification, `WRITING_MODEL` SOP/email
+  drafting. Demo mode (no external calls) when the provider has no key.
+- **Embeddings:** all-MiniLM-L6-v2 via fastembed (ONNX Runtime, no torch); the API peaks
+  around 250 MB RAM.
 
 ## Repository layout
 
@@ -264,6 +268,15 @@ campusOn/
     scripts/        # generate-icons.mjs (dev-only, uses sharp)
   docker/           # backend/frontend Dockerfiles (unverified)
 ```
+
+## Deployment
+
+- **Backend → Render (free):** render.com → New → Blueprint → this repo. `render.yaml` sets
+  everything; Render asks for `LLM_API_KEY` (Gemini). The build seeds the demo data. Free
+  instances sleep after 15 min idle (~1 min to wake) and reset to the seeded data on restart.
+- **Frontend → Vercel:** root directory `frontend`, env `BACKEND_URL` = the Render service URL
+  (read at build time, so redeploy after changing it). `/api` is proxied, so the session
+  cookie stays first-party. `FRONTEND_ORIGIN` on Render must equal the Vercel URL.
 
 ## Environment variables
 

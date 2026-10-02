@@ -1,6 +1,6 @@
 """LLM-backed opportunity extraction with a rule-based fallback.
 
-Runs through Claude (EXTRACTION_MODEL) when ANTHROPIC_API_KEY is set; otherwise
+Runs through the configured LLM (EXTRACTION_MODEL) when an API key is set; otherwise
 falls back to a regex/keyword extractor so the pipeline works end to end in
 demo mode, at an honestly-lower confidence. See Section 5.1 for the eligibility
 JSON schema and Section 7 for the scraping/extraction rules this follows
@@ -250,25 +250,17 @@ def _strip_fences(text: str) -> str:
 
 
 def extract_llm(raw_text: str, source_name: str, source_url: str) -> dict:
-    import anthropic
-
-    client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+    from app.services.llm import complete_text
 
     def _call() -> dict:
-        resp = client.messages.create(
-            model=settings.EXTRACTION_MODEL,
+        text = complete_text(
+            "",
+            EXTRACTION_SCHEMA_PROMPT.format(source_name=source_name, source_url=source_url, text=raw_text[:6000]),
+            model=settings.extraction_model,
             max_tokens=1500,
-            messages=[{
-                "role": "user",
-                "content": EXTRACTION_SCHEMA_PROMPT.format(
-                    source_name=source_name, source_url=source_url, text=raw_text[:6000]
-                ),
-            }],
         )
-        text = _strip_fences(resp.content[0].text)
-        validated = ExtractedOpportunity.model_validate(json.loads(text))
-        data = validated.model_dump(mode="json")
-        return data
+        validated = ExtractedOpportunity.model_validate(json.loads(_strip_fences(text)))
+        return validated.model_dump(mode="json")
 
     data = None
     for _attempt in range(2):  # retry once per Section 7

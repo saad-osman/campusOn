@@ -1,0 +1,42 @@
+# Render Blueprint for the Lodestar API (render.com -> New -> Blueprint -> this repo).
+# The web app is on Vercel and proxies /api here (set BACKEND_URL there to this service's URL).
+#
+# Free plan: 512 MB RAM, sleeps after 15 min idle (the next request wakes it in ~1 min),
+# and the disk resets on restart. The build seeds the demo database, so every start
+# (including waking up) begins from the same demo data.
+services:
+  - type: web
+    name: lodestar-api
+    runtime: python
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    buildCommand: >-
+      pip install -r requirements.txt &&
+      python -m app.services.embeddings &&
+      mkdir -p data/uploads &&
+      DEMO_MODE=true python -m app.seed
+    startCommand: sh start.sh
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///./data/lodestar.db
+      - key: UPLOAD_DIR
+        value: ./data/uploads
+      - key: FRONTEND_ORIGIN
+        value: https://lodestar-campusops.vercel.app
+      - key: LLM_PROVIDER
+        value: gemini
+      # Free key from https://aistudio.google.com/apikey; Render asks for it on first deploy.
+      - key: LLM_API_KEY
+        sync: false
+      - key: DEMO_MODE
+        value: "false"
+      - key: ENABLE_SCHEDULER
+        value: "true"

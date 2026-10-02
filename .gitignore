@@ -3,6 +3,7 @@
 node_modules/
 frontend/.next/
 frontend/.next-build/
+frontend/.next-dev/
 frontend/out/
 npm-debug.log*
 
@@ -22,6 +23,8 @@ frontend/.env.local
 *.sqlite3
 backend/app/*.db
 backend/uploads/
+backend/data/
+backend/.fastembed_cache/
 
 # Logs
 *.log

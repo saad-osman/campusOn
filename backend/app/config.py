@@ -17,10 +17,17 @@ class Settings(BaseSettings):
     JWT_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
     COOKIE_NAME: str = "sr_session"
 
-    # LLM
+    # LLM. LLM_PROVIDER picks the backend for every AI feature:
+    #   anthropic          ANTHROPIC_API_KEY, Claude models (default)
+    #   gemini             LLM_API_KEY from Google AI Studio (free tier), OpenAI-compatible endpoint
+    #   openai_compatible  LLM_API_KEY + LLM_BASE_URL (Groq, Hugging Face router, OpenAI, ...)
+    LLM_PROVIDER: str = "anthropic"
     ANTHROPIC_API_KEY: str | None = None
-    EXTRACTION_MODEL: str = "claude-haiku-4-5-20251001"
-    WRITING_MODEL: str = "claude-sonnet-5-5"
+    LLM_API_KEY: str | None = None
+    LLM_BASE_URL: str | None = None
+    # Empty means the provider's default (see extraction_model / writing_model below).
+    EXTRACTION_MODEL: str = ""
+    WRITING_MODEL: str = ""
     DEMO_MODE: bool = False
     ENABLE_SCHEDULER: bool = True
 
@@ -45,11 +52,35 @@ class Settings(BaseSettings):
     MAX_CV_BYTES: int = 5 * 1024 * 1024
 
     @property
+    def llm_api_key(self) -> str | None:
+        return self.ANTHROPIC_API_KEY if self.LLM_PROVIDER == "anthropic" else self.LLM_API_KEY
+
+    @property
+    def llm_base_url(self) -> str | None:
+        if self.LLM_PROVIDER == "gemini":
+            return self.LLM_BASE_URL or "https://generativelanguage.googleapis.com/v1beta/openai"
+        return self.LLM_BASE_URL
+
+    @property
+    def extraction_model(self) -> str:
+        return self.EXTRACTION_MODEL or _DEFAULT_MODELS.get(self.LLM_PROVIDER, _DEFAULT_MODELS["anthropic"])[0]
+
+    @property
+    def writing_model(self) -> str:
+        return self.WRITING_MODEL or _DEFAULT_MODELS.get(self.LLM_PROVIDER, _DEFAULT_MODELS["anthropic"])[1]
+
+    @property
     def demo_mode_effective(self) -> bool:
-        return self.DEMO_MODE or not self.ANTHROPIC_API_KEY
+        return self.DEMO_MODE or not self.llm_api_key
 
 
-PLACEHOLDER_SECRETS = {"dev-secret-change-me", "change-me-to-a-random-string", ""}
+# (extraction model, writing model) per provider when EXTRACTION_MODEL / WRITING_MODEL are unset.
+_DEFAULT_MODELS = {
+    "anthropic": ("claude-haiku-4-5-20251001", "claude-sonnet-5-5"),
+    "gemini": ("gemini-2.5-flash", "gemini-2.5-flash"),
+}
+
+PLACEHOLDER_SECRETS ={"dev-secret-change-me", "change-me-to-a-random-string", ""}
 
 
 @lru_cache
