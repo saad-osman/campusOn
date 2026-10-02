@@ -34,7 +34,7 @@ export function FileSelect({ value, onChange, allowNew = true }: { value: string
         {allowNew && <SelectItem value={NEW_FILE}>+ New Application File</SelectItem>}
         {files.map((f) => (
           <SelectItem key={f.id} value={f.id}>
-            {f.icon} {f.name}
+            {f.name}
           </SelectItem>
         ))}
       </SelectContent>

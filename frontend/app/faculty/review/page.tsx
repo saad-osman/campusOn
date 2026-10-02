@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { IconTile } from "@/components/icon-tile";
 import { ApiError } from "@/lib/api";
 import { FUNDING_LABELS, TYPE_LABELS, timeAgo } from "@/lib/format";
 import { useRequireRole } from "@/lib/auth";
@@ -139,7 +140,7 @@ function ReviewPanel({ id, onDone }: { id: string; onDone: () => void }) {
           <span className="font-semibold uppercase tracking-wide">Source page</span>
           {data.raw_url && (
             <a href={data.raw_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">
-              Open original <ExternalLink className="size-3" />
+              Open original <ExternalLink className="size-4" />
             </a>
           )}
         </div>
@@ -264,8 +265,8 @@ export default function ReviewQueuePage() {
     <div className="flex flex-col gap-5">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-heading flex items-center gap-2 text-2xl font-semibold tracking-tight">
-            <ShieldCheck className="size-6 text-primary" aria-hidden /> Review queue
+          <h1 className="font-heading flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <IconTile icon={ShieldCheck} /> Review queue
           </h1>
           <p className="text-sm text-muted-foreground">
             Extractions under 70% confidence or without a deadline wait here. Approving adds &ldquo;Verified by BPDC faculty&rdquo;.

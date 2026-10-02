@@ -5,6 +5,7 @@ import { parseServerTime, timeAgo } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -317,8 +318,8 @@ export default function DocumentEditorPage() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <Link href={`/files/${workspaceId}?tab=documents`} className="text-sm text-muted-foreground hover:underline">
-          &larr; {workspace ? `${workspace.icon} ${workspace.name}` : "Back to file"}
+        <Link href={`/files/${workspaceId}?tab=documents`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+          <ArrowLeft className="size-4" aria-hidden /> {workspace ? workspace.name : "Back to file"}
         </Link>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground" role="status" aria-live="polite">

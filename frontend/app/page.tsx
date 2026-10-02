@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { BentoCell, BentoGrid, type BentoSpan } from "@/components/bento/bento";
 import { HomeCTA } from "@/components/home-cta";
+import { LodestarMark } from "@/components/brand/logo";
 
 const STEPS = [
   { icon: FileUp, title: "Upload your CV", body: "We read it and fill in your profile. You check every value before it's saved." },
@@ -54,7 +55,7 @@ export default function Home() {
       {/* Full-width hero above the grid; the only gradient on the site. */}
       <section className="flex flex-col items-start gap-6 rounded-xl bg-gradient-to-b from-accent/70 to-transparent px-5 py-12 sm:px-10 sm:py-16">
         <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground">
-          <Sparkles className="size-3.5" aria-hidden /> Built for BPDC students &middot; CampusOPS 2026
+          <Sparkles className="size-4" aria-hidden /> Built for BPDC students &middot; CampusOPS 2026
         </span>
         <div className="flex flex-col gap-2">
           <h1 className="font-heading text-5xl font-semibold tracking-tight sm:text-6xl">Lodestar</h1>
@@ -126,7 +127,7 @@ export default function Home() {
             </Link>
           </BentoCell>
           <BentoCell span={6} label="Widget embed code">
-            <pre className="flex-1 overflow-x-auto rounded-lg bg-hero p-4 text-xs leading-relaxed text-hero-foreground" aria-label="Widget embed code">
+            <pre className="scrollbar-none flex-1 overflow-x-auto overflow-y-hidden rounded-lg bg-hero p-4 text-xs leading-relaxed text-hero-foreground" aria-label="Widget embed code">
               <Code2 className="mb-3 size-4 text-hero-muted" aria-hidden />
               {`<script src="https://your-lodestar.example/widget.js"
         data-degree="bachelors"
@@ -139,7 +140,8 @@ export default function Home() {
       </section>
 
       <footer className="flex flex-col gap-1 text-xs text-muted-foreground">
-        <p>
+        <p className="flex items-center gap-2">
+          <LodestarMark className="size-5" />
           <span className="font-heading text-sm font-semibold text-foreground">Lodestar</span> &middot; Find your direction.
         </p>
         <p>CampusOPS (IEEE BPDC), Problem Statement 03</p>

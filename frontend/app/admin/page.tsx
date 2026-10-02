@@ -157,7 +157,7 @@ function SourcesTable() {
                 <tr key={s.id} className="border-b last:border-0">
                   <td className="max-w-64 py-2 pr-3">
                     <a href={s.base_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">
-                      <span className="truncate">{s.name}</span> <ExternalLink className="size-3 shrink-0 text-muted-foreground" />
+                      <span className="truncate">{s.name}</span> <ExternalLink className="size-4 shrink-0 text-muted-foreground" />
                     </a>
                   </td>
                   <td className="py-2 pr-3 text-xs uppercase text-muted-foreground">{s.region}</td>
@@ -327,7 +327,7 @@ export default function AdminPage() {
           {data.success_stories.length > 0 && (
             <section className="rounded-xl border bg-card p-5 shadow-[0_1px_2px_rgb(0_0_0/0.04)]" aria-label="Success stories">
               <h2 className="flex items-center gap-2 text-sm font-semibold">
-                <Trophy className="size-4 text-emerald-600 dark:text-emerald-400" aria-hidden /> Success stories
+                <Trophy className="size-4 text-honor" aria-hidden /> Success stories
               </h2>
               <p className="mb-2 text-xs text-muted-foreground">From outcomes students chose to share anonymously.</p>
               <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

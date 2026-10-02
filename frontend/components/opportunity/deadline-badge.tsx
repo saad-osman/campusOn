@@ -29,7 +29,7 @@ export function DeadlineBadge({
   }
   return (
     <span className={cn("inline-flex items-center gap-1 text-xs", tone, className)} title={formatDate(deadline)}>
-      <CalendarClock className="size-3.5" aria-hidden />
+      <CalendarClock className="size-4" aria-hidden />
       {label}
     </span>
   );

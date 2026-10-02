@@ -11,7 +11,7 @@ export function LodestarMark({ className }: { className?: string }) {
       <rect width="64" height="64" rx="14" fill="#1b345e" />
       {/* In dark mode the navy tile sits on navy; a hairline keeps its edge visible. */}
       <rect width="63" height="63" x="0.5" y="0.5" rx="13.5" fill="none" className="stroke-transparent dark:stroke-white/15" />
-      <path d="M32 6 L40 24 L58 32 L40 40 L32 58 L24 40 L6 32 L24 24 Z" fill="#e1b75c" />
+      <path d="M32 13 L37 27 L47 32 L37 37 L32 51 L27 37 L17 32 L27 27 Z" fill="#e1b75c" />
     </svg>
   );
 }

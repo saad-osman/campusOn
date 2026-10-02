@@ -35,6 +35,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-gold: var(--gold);
+  --color-honor: var(--honor);
   --color-hero: var(--hero);
   --color-hero-foreground: var(--hero-foreground);
   --color-hero-muted: var(--hero-muted);
@@ -50,6 +51,13 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  /* Hide a scroller's scrollbar but keep swipe / trackpad / keyboard scrolling. */
+  .scrollbar-none {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
@@ -74,6 +82,9 @@
     --input: oklch(0.9 0.01 85);
     --ring: oklch(0.75 0.12 85);
     --gold: oklch(0.8 0.12 85);
+    /* Honors (endorsements, verified, file tiles): pure gold is 1.8:1 on white, so light mode
+       uses a deeper gold that clears 4.5:1 on card, background and accent. */
+    --honor: oklch(0.52 0.11 75);
     /* Bento hero cells: navy surface in both modes (primary turns gold in dark). */
     --hero: oklch(0.33 0.08 260);
     --hero-foreground: oklch(0.98 0.01 85);
@@ -119,6 +130,7 @@
     --input: oklch(1 0 0 / 14%);
     --ring: oklch(0.7 0.1 85);
     --gold: oklch(0.83 0.11 85);
+    --honor: oklch(0.83 0.11 85);
     --hero: oklch(0.28 0.065 262);
     --hero-foreground: oklch(0.96 0.01 85);
     --hero-muted: oklch(0.8 0.02 260);
@@ -146,6 +158,10 @@
   }
   body {
     @apply bg-background font-sans text-foreground;
+  }
+  /* One stroke weight for every Lucide icon in the app. */
+  svg.lucide {
+    stroke-width: 1.75;
   }
   html {
     @apply font-sans;

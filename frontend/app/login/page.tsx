@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { LodestarMark } from "@/components/brand/logo";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,6 +43,7 @@ function LoginForm() {
     <div className="mx-auto flex max-w-sm flex-col justify-center py-16">
       <Card>
         <CardHeader>
+          <LodestarMark className="mb-2 size-10" />
           <CardTitle>Log in</CardTitle>
           <CardDescription>Welcome back to Lodestar.</CardDescription>
         </CardHeader>

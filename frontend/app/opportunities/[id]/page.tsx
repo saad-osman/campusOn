@@ -185,7 +185,7 @@ export default function OpportunityPage() {
         <div className="flex min-w-0 flex-col gap-6">
           {opp.endorsements.map((e) => (
             <div key={e.id} className="flex gap-3 rounded-xl border border-gold/40 bg-accent p-4 text-sm text-accent-foreground">
-              <Sparkles className="mt-0.5 size-4 shrink-0 text-accent-foreground dark:text-gold" aria-hidden />
+              <Sparkles className="mt-0.5 size-4 shrink-0 text-honor" aria-hidden />
               <div>
                 <p className="font-medium">Recommended by {e.faculty_name}</p>
                 {e.note && <p className="mt-0.5 text-muted-foreground">“{e.note}”</p>}

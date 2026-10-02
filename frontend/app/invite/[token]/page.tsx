@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { LodestarMark } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -47,6 +48,7 @@ export default function InvitePage() {
     <div className="mx-auto max-w-sm py-16">
       <Card>
         <CardHeader>
+          <LodestarMark className="mb-2 size-10" />
           <CardTitle className="flex items-center gap-2 text-lg">
             <span className="text-2xl">{preview.workspace_icon}</span>
             {preview.workspace_name}

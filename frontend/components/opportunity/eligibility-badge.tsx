@@ -30,7 +30,7 @@ export function EligibilityPill({ verdict, className }: { verdict: Verdict; clas
         className
       )}
     >
-      <Icon className="size-3.5" aria-hidden />
+      <Icon className="size-4" aria-hidden />
       {VERDICT_LABELS[verdict]}
     </span>
   );
@@ -83,7 +83,7 @@ export function EligibilityBadge({ check }: { check: EligibilityCheck }) {
         className="inline-flex w-fit items-center gap-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <EligibilityPill verdict={check.verdict} />
-        <ChevronDown className={cn("size-3.5 text-muted-foreground transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", open && "rotate-180")} />
         <span className="sr-only">{open ? "Hide" : "Show"} eligibility details</span>
       </button>
       {open && (

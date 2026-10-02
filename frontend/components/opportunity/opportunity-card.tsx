@@ -45,18 +45,18 @@ export function OpportunityMeta({ opp }: { opp: Opportunity }) {
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
       <DeadlineBadge deadline={opp.deadline} deadlineText={opp.deadline_text} />
       <span className="inline-flex items-center gap-1">
-        <Wallet className="size-3.5" aria-hidden />
+        <Wallet className="size-4" aria-hidden />
         {opp.funding_amount ? `${FUNDING_LABELS[opp.funding_type]} · ${opp.funding_amount}` : FUNDING_LABELS[opp.funding_type]}
       </span>
       {(opp.location || opp.regions.length > 0) && (
         <span className="inline-flex items-center gap-1">
-          <MapPin className="size-3.5" aria-hidden />
+          <MapPin className="size-4" aria-hidden />
           {opp.location || opp.regions.map((r) => REGION_LABELS[r]).join(", ")}
           {opp.is_remote && " · remote"}
         </span>
       )}
       <span className="inline-flex items-center gap-1">
-        <GraduationCap className="size-3.5" aria-hidden />
+        <GraduationCap className="size-4" aria-hidden />
         {opp.degree_levels.includes("any")
           ? "Any level"
           : opp.degree_levels.map((d) => ({ bachelors: "UG", masters: "Master's", phd: "PhD", postdoc: "Postdoc" })[d] || d).join(" · ")}
@@ -69,13 +69,13 @@ export function TrustLine({ opp }: { opp: Opportunity }) {
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
       {opp.verified && (
-        <span className="inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400">
-          <ShieldCheck className="size-3.5" aria-hidden /> Verified by BPDC faculty
+        <span className="inline-flex items-center gap-1 font-medium text-honor">
+          <ShieldCheck className="size-4" aria-hidden /> Verified by BPDC faculty
         </span>
       )}
       {opp.source_count > 1 && (
         <span className="inline-flex items-center gap-1">
-          <Layers className="size-3.5" aria-hidden /> Found on {opp.source_count} sources
+          <Layers className="size-4" aria-hidden /> Found on {opp.source_count} sources
         </span>
       )}
       <span>Last checked {timeAgo(opp.last_checked)}</span>
@@ -115,7 +115,7 @@ export function OpportunityCard({ opp, compact = false }: { opp: Opportunity; co
         <ul className="flex flex-col gap-1 text-sm">
           {opp.match.reasons.map((reason) => (
             <li key={reason} className="flex items-start gap-1.5">
-              <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+              <Check className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
               <span>{reason}</span>
             </li>
           ))}
@@ -124,7 +124,7 @@ export function OpportunityCard({ opp, compact = false }: { opp: Opportunity; co
 
       {endorsement && (
         <p className="relative z-10 flex items-start gap-1.5 rounded-md border border-gold/40 bg-accent px-2.5 py-1.5 text-xs text-accent-foreground">
-          <Sparkles className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+          <Sparkles className="mt-0.5 size-4 shrink-0 text-honor" aria-hidden />
           <span>
             <strong>Recommended by {endorsement.faculty_name}</strong>
             {endorsement.note ? `: “${endorsement.note}”` : ""}

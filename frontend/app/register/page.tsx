@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { LodestarMark } from "@/components/brand/logo";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +35,7 @@ function RegisterForm() {
   return (
     <Card>
       <CardHeader>
+        <LodestarMark className="mb-2 size-10" />
         <CardTitle>Create your account</CardTitle>
         <CardDescription>Students only &mdash; faculty/admin accounts are provisioned separately.</CardDescription>
       </CardHeader>

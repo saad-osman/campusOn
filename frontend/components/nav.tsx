@@ -65,7 +65,7 @@ function NotificationBell() {
               onClick={() => markRead.mutate("all")}
               className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
-              <CheckCheck className="size-3.5" /> Mark all read
+              <CheckCheck className="size-4" /> Mark all read
             </button>
           )}
         </div>

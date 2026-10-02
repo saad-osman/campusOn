@@ -355,7 +355,7 @@ export default function DashboardPage() {
               <div key={o.id}>
                 <MiniOpportunity opp={o} />
                 {o.endorsements[0]?.note && (
-                  <p className="ml-12 line-clamp-1 text-xs text-accent-foreground dark:text-gold">
+                  <p className="ml-12 line-clamp-1 text-xs text-honor">
                     {o.endorsements[0].faculty_name}: &ldquo;{o.endorsements[0].note}&rdquo;
                   </p>
                 )}

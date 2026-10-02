@@ -149,7 +149,7 @@ function Discover() {
         {activeCount > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-              <Sparkles className="size-3.5" aria-hidden />
+              <Sparkles className="size-4" aria-hidden />
               {data?.parsed_by ? "Understood as" : "Filters"}:
             </span>
             <FilterChips filters={filters} onChange={applyFilters} />

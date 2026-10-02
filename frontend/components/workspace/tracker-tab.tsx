@@ -17,7 +17,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CalendarPlus, GripVertical, MoreHorizontal, Plus } from "lucide-react";
+import { CalendarPlus, Check, GripVertical, MoreHorizontal, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -100,7 +100,8 @@ function AssigneeMenu({ item, members, canEdit, workspaceId }: { item: TrackerIt
               toast.success(`Assigned to ${m.name}`);
             }}
           >
-            {m.name} {m.user_id === item.assignee_id && "✓"}
+            {m.name}
+            {m.user_id === item.assignee_id && <Check className="ml-auto size-4" aria-label="currently assigned" />}
           </DropdownMenuItem>
         ))}
         {item.assignee_id && (
@@ -398,7 +399,7 @@ export function TrackerTab({ workspaceId, canEdit }: { workspaceId: string; canE
         </div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd} onDragCancel={() => setDragging(null)}>
-          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0">
+          <div className="scrollbar-none -mx-4 flex gap-3 overflow-x-auto overflow-y-hidden px-4 py-0.5 md:mx-0 md:px-0">
             {COLUMNS.map((c) => (
               <Column key={c.id} {...c} items={board[c.id]}>
                 {board[c.id].length === 0 && (

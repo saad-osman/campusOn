@@ -62,7 +62,7 @@ export function FilterChips({ filters, onChange }: { filters: SearchFilters; onC
             className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/8 px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:border-destructive/40 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {chip.label}
-            <X className="size-3" aria-hidden />
+            <X className="size-4" aria-hidden />
             <span className="sr-only">Remove filter</span>
           </button>
         </li>

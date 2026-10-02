@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { IconTile } from "@/components/icon-tile";
 import { ApiError } from "@/lib/api";
 import { DEGREE_LABELS, TYPE_LABELS, timeAgo } from "@/lib/format";
 import { useRequireRole } from "@/lib/auth";
@@ -64,8 +65,8 @@ export default function EndorsePage() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <h1 className="font-heading flex items-center gap-2 text-2xl font-semibold tracking-tight">
-          <Sparkles className="size-6 text-accent-foreground dark:text-gold" aria-hidden /> Endorse opportunities
+        <h1 className="font-heading flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <IconTile icon={Sparkles} /> Endorse opportunities
         </h1>
         <p className="text-sm text-muted-foreground">
           Recommend an opportunity to the students it suits. They get a notification, the card shows your note, and it ranks

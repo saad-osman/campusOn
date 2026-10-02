@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DeadlineBadge } from "@/components/opportunity/deadline-badge";
+import { ProjectIcon } from "@/components/workspace/project-icon";
 import { initials, timeAgo } from "@/lib/format";
 import {
   Dialog,
@@ -152,8 +153,8 @@ export default function FilesPage() {
             <Link key={ws.id} href={`/files/${ws.id}`}>
               <Card className="h-full transition-colors hover:border-primary/50">
                 <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{ws.icon}</span>
+                  <div className="flex items-center gap-3">
+                    <ProjectIcon icon={ws.icon} />
                     <CardTitle className="text-base">{ws.name}</CardTitle>
                     {ws.archived && <Badge variant="outline">archived</Badge>}
                   </div>

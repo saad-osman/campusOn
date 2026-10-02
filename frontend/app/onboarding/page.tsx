@@ -200,13 +200,13 @@ export default function OnboardingPage() {
                 }}
                 className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed p-8 text-center transition-colors hover:border-primary/50 hover:bg-muted/40"
               >
-                <Upload className="size-6 text-muted-foreground" aria-hidden />
+                <Upload className="size-5 text-muted-foreground" aria-hidden />
                 <span className="text-sm font-medium">
                   {uploadCV.isPending ? "Reading your CV…" : "Drop your CV here or click to choose a file"}
                 </span>
                 {profile?.cv_filename && !extraction && (
                   <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                    <FileText className="size-3.5" /> Current: {profile.cv_filename}
+                    <FileText className="size-4" /> Current: {profile.cv_filename}
                   </span>
                 )}
               </label>

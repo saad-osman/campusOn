@@ -21,6 +21,14 @@ function fullBleed(scale) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="${NAVY}"/><g transform="translate(${offset} ${offset}) scale(${scale})">${star}</g></svg>`;
 }
 
+// Optical sizing: at 16px the 60% star is ~10px tall and blurs, so the 16px favicon
+// frame alone scales the star up (same rounded tile, same shape, same colours).
+function smallSize(scale) {
+  const offset = 32 - 32 * scale;
+  const tile = svg.match(/<rect[^>]*\/>/)[0];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">${tile}<g transform="translate(${offset} ${offset}) scale(${scale})">${star}</g></svg>`;
+}
+
 // ICO container holding PNG-encoded images (supported by every current browser).
 function ico(images) {
   const header = Buffer.alloc(6);
@@ -45,11 +53,14 @@ function ico(images) {
   return Buffer.concat([header, ...entries, ...images.map((i) => i.data)]);
 }
 
-const favicon = await Promise.all([16, 32, 48].map(async (size) => ({ size, data: await png(svg, size) })));
+const favicon = await Promise.all(
+  [16, 32, 48].map(async (size) => ({ size, data: await png(size === 16 ? smallSize(1.3) : svg, size) }))
+);
 writeFileSync(join(root, "app/favicon.ico"), ico(favicon));
-writeFileSync(join(root, "app/apple-icon.png"), await png(fullBleed(0.8), 180)); // iOS rounds the corners itself
+writeFileSync(join(root, "app/apple-icon.png"), await png(fullBleed(1), 180)); // iOS rounds the corners itself
 writeFileSync(join(root, "public/icon-192.png"), await png(svg, 192));
 writeFileSync(join(root, "public/icon-512.png"), await png(svg, 512));
-// Maskable: launchers crop to a circle/squircle; keep the star inside the 80% safe zone.
-writeFileSync(join(root, "public/icon-maskable-512.png"), await png(fullBleed(0.66), 512));
+// Maskable: launchers crop to a circle/squircle. The star reaches 30% from centre, inside
+// the 40%-radius safe zone, so it stays whole at full scale.
+writeFileSync(join(root, "public/icon-maskable-512.png"), await png(fullBleed(1), 512));
 console.log("icons written");

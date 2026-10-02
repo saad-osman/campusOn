@@ -12,6 +12,7 @@ import { DocumentsTab } from "@/components/workspace/documents-tab";
 import { TeamTab } from "@/components/workspace/team-tab";
 import { ActivityTab } from "@/components/workspace/activity-tab";
 import { TrackerTab } from "@/components/workspace/tracker-tab";
+import { ProjectIcon } from "@/components/workspace/project-icon";
 
 const TABS = ["overview", "tracker", "documents", "team", "activity"];
 
@@ -64,7 +65,7 @@ function WorkspaceDetail() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <span className="text-3xl">{workspace.icon}</span>
+        <ProjectIcon icon={workspace.icon} />
         <div>
           <h1 className="font-heading flex items-center gap-2 text-2xl font-semibold">
             {workspace.name}
@@ -75,7 +76,7 @@ function WorkspaceDetail() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="max-w-full overflow-x-auto">
+        <TabsList className="scrollbar-none h-auto group-data-horizontal/tabs:h-auto max-w-full justify-start overflow-x-auto overflow-y-hidden py-0.5 *:shrink-0 *:whitespace-nowrap *:after:hidden">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="tracker">Tracker</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>

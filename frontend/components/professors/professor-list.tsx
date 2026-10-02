@@ -51,7 +51,7 @@ export function ProfessorCard({ p, onDraftEmail }: { p: Professor; onDraftEmail?
           </div>
           {p.affiliations.length > 0 && (
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <MapPin className="size-3" aria-hidden /> {p.affiliations.slice(0, 2).join(" · ")}
+              <MapPin className="size-4" aria-hidden /> {p.affiliations.slice(0, 2).join(" · ")}
             </p>
           )}
           <p className="mt-1 text-xs text-muted-foreground">
@@ -64,7 +64,7 @@ export function ProfessorCard({ p, onDraftEmail }: { p: Professor; onDraftEmail?
       <ul className="flex flex-col gap-1.5">
         {p.recent_papers.map((paper, i) => (
           <li key={i} className="flex gap-2 text-sm">
-            <Quote className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+            <Quote className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
             <span>
               {paper.url ? (
                 <a href={paper.url} target="_blank" rel="noopener noreferrer" className="hover:underline">

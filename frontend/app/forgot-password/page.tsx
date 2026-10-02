@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { LodestarMark } from "@/components/brand/logo";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,6 +39,7 @@ function RequestResetForm() {
   return (
     <Card>
       <CardHeader>
+        <LodestarMark className="mb-2 size-10" />
         <CardTitle>Forgot your password?</CardTitle>
         <CardDescription>We&apos;ll send a reset link to your email.</CardDescription>
       </CardHeader>
@@ -111,6 +113,7 @@ function ResetPasswordForm({ token }: { token: string }) {
   return (
     <Card>
       <CardHeader>
+        <LodestarMark className="mb-2 size-10" />
         <CardTitle>Set a new password</CardTitle>
       </CardHeader>
       <CardContent>
