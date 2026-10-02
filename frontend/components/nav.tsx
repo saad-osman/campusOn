@@ -122,9 +122,18 @@ export function Nav() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const links = linksFor(user);
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  // Publish the sticky header's height (it includes the demo banner) as --header-h, for panels that stick below it.
+  const headerRef = React.useRef<HTMLElement>(null);
+  React.useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+    <header ref={headerRef} className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <DemoBanner />
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
         <div className="flex items-center gap-2">

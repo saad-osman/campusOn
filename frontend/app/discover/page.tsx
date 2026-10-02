@@ -6,9 +6,9 @@ import { useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FilterChips, FilterSidebar, filterChips } from "@/components/discover/filters";
+import { FilterChips, FilterCount, FilterHeader, FilterSections, filterChips } from "@/components/discover/filters";
 import { OpportunityCard, OpportunityCardSkeleton } from "@/components/opportunity/opportunity-card";
 import { useRequireUser } from "@/lib/auth";
 import { EMPTY_FILTERS, useSearch, type SearchArgs } from "@/lib/opportunities";
@@ -89,6 +89,11 @@ function Discover() {
     setArgs({ filters: next, sort });
   }
 
+  function clearAll() {
+    setInput("");
+    applyFilters(EMPTY_FILTERS);
+  }
+
   function changeSort(next: Sort) {
     setSort(next);
     setArgs({ filters, sort: next });
@@ -156,10 +161,7 @@ function Discover() {
             <button
               type="button"
               className="text-xs text-muted-foreground underline-offset-2 hover:underline"
-              onClick={() => {
-                setInput("");
-                applyFilters(EMPTY_FILTERS);
-              }}
+              onClick={clearAll}
             >
               Clear all
             </button>
@@ -177,9 +179,16 @@ function Discover() {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-        <aside className="hidden lg:block" aria-label="Filters">
-          <FilterSidebar filters={filters} onChange={applyFilters} />
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+        {/* Desktop: its own surface, pinned below the nav, scrolling independently of the results. */}
+        <aside
+          aria-label="Filters"
+          className="sticky top-[calc(var(--header-h,57px)+1rem)] hidden h-[calc(100vh-var(--header-h,57px)-2rem)] flex-col self-start overflow-hidden rounded-xl border bg-sidebar text-sidebar-foreground lg:flex"
+        >
+          <FilterHeader count={activeCount} onClear={clearAll} className="shrink-0" />
+          <div className="scrollbar-thin min-h-0 flex-1 overflow-y-auto">
+            <FilterSections filters={filters} onChange={applyFilters} />
+          </div>
         </aside>
 
         <section className="flex min-w-0 flex-col gap-4" aria-live="polite" aria-busy={isFetching}>
@@ -192,16 +201,29 @@ function Discover() {
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" size="sm" className="lg:hidden">
-                    <SlidersHorizontal /> Filters{activeCount ? ` (${activeCount})` : ""}
+                    <SlidersHorizontal /> Filters
+                    <FilterCount count={activeCount} />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="overflow-y-auto">
-                  <SheetHeader>
-                    <SheetTitle>Filters</SheetTitle>
-                  </SheetHeader>
-                  <div className="px-4 pb-6">
-                    <FilterSidebar filters={filters} onChange={applyFilters} />
+                <SheetContent side="left" aria-describedby={undefined} className="gap-0 bg-sidebar p-0 text-sidebar-foreground">
+                  <FilterHeader
+                    count={activeCount}
+                    title={<SheetTitle className="font-heading text-lg font-semibold tracking-tight">Filters</SheetTitle>}
+                    className="shrink-0 pr-12"
+                  />
+                  <div className="scrollbar-thin min-h-0 flex-1 overflow-y-auto">
+                    <FilterSections filters={filters} onChange={applyFilters} />
                   </div>
+                  <SheetFooter className="mt-0 shrink-0 flex-row gap-2 border-t px-5 py-4">
+                    <Button variant="outline" onClick={clearAll} disabled={!activeCount}>
+                      Clear all
+                    </Button>
+                    <SheetClose asChild>
+                      <Button className="flex-1">
+                        {data ? `Show ${data.total} result${data.total === 1 ? "" : "s"}` : "Show results"}
+                      </Button>
+                    </SheetClose>
+                  </SheetFooter>
                 </SheetContent>
               </Sheet>
               <Select value={sort} onValueChange={(v: string) => changeSort(v as Sort)}>
@@ -222,7 +244,7 @@ function Discover() {
               Search failed. Check that the backend is running, then try again.
             </div>
           ) : isLoading || !data ? (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {Array.from({ length: 6 }).map((_, i) => (
                 <OpportunityCardSkeleton key={i} />
               ))}
@@ -238,7 +260,7 @@ function Discover() {
               </Button>
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {data.results.map((opp) => (
                 <OpportunityCard key={opp.id} opp={opp} />
               ))}
