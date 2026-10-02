@@ -48,13 +48,14 @@ and `/feed.xml` to FastAPI (`frontend/next.config.mjs`), so the session cookie i
 No API keys are needed. Without `ANTHROPIC_API_KEY` the app runs in **demo mode** (banner at the
 top): rule-based extraction, CV parsing and query parsing, and template drafts. Set the key in
 `backend/.env` to use Claude (`EXTRACTION_MODEL` for extraction, `WRITING_MODEL` for drafts).
-`DEMO_SCRIPT.md` walks through a 3-minute demo.
+[`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) walks through a 3-minute demo. UI work follows
+[`DESIGN.md`](DESIGN.md), the design system as built.
 
 Tests: `make test` (116 backend tests). Production build check: `make build`.
 
 ## Status
 
-All phases of `SPEC.md` Section 10 are built:
+All phases of [`docs/SPEC.md`](docs/SPEC.md) Section 10 are built:
 
 - [x] Phase 0 — Scaffold
 - [x] Phase 1 — Accounts & progress
@@ -234,7 +235,7 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
 - **Auth:** email + password (argon2), JWT in an httpOnly `SameSite=Lax` cookie; roles
   `student`, `faculty`, `admin`.
 - **AI:** Anthropic Python SDK. `EXTRACTION_MODEL` (default `claude-haiku-4-5-20251001`) for
-  extraction/parsing/classification, `WRITING_MODEL` (default `claude-sonnet-5`) for
+  extraction/parsing/classification, `WRITING_MODEL` (default `claude-sonnet-5-5`) for
   SOP/email drafting. Runs in demo mode (cached outputs, no external calls) when
   `ANTHROPIC_API_KEY` is unset.
 
@@ -247,13 +248,20 @@ campusOn/
   scripts/             # setup.ps1, dev.ps1 (Windows)
   .env.example
   README.md
-  DEMO_SCRIPT.md
+  DESIGN.md            # design system (tokens, typography, bento, cards, don'ts)
+  CLAUDE.md            # instructions for AI coding assistants
+  docs/                # SPEC.md (product spec), DEMO_SCRIPT.md (3-minute demo)
   backend/
     app/            # main, config, db, models/, schemas/, routers/, services/, jobs/, prompts/
     seed/           # opportunities.json (58 illustrative listings), cache/
     alembic/
     tests/
-  frontend/         # Next.js App Router app; public/widget.js, public/sample-cv.docx
+  frontend/
+    app/            # App Router pages; globals.css holds all design tokens
+    components/     # ui/ (shadcn), bento/, brand/, home/, discover/, opportunity/, workspace/, ...
+    lib/            # API client, React Query hooks, types, formatting
+    public/         # widget.js, sample-cv.docx, PWA icons
+    scripts/        # generate-icons.mjs (dev-only, uses sharp)
   docker/           # backend/frontend Dockerfiles (unverified)
 ```
 

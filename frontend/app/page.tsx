@@ -15,7 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import { BentoCell, BentoGrid, type BentoSpan } from "@/components/bento/bento";
-import { HomeCTA } from "@/components/home-cta";
+import { HomeCTA } from "@/components/home/home-cta";
 import { HeroPreview } from "@/components/home/hero-preview";
 import { StarChart } from "@/components/home/star-chart";
 import { LodestarMark } from "@/components/brand/logo";
