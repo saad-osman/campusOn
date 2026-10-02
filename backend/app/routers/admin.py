@@ -34,7 +34,7 @@ def analytics_export(_: User = Depends(admin_only), db: Session = Depends(get_db
     return Response(
         content=analytics_csv(build_analytics(db)),
         media_type="text/csv; charset=utf-8",
-        headers={"Content-Disposition": f'attachment; filename="scholarradar-report-{date.today().isoformat()}.csv"'},
+        headers={"Content-Disposition": f'attachment; filename="lodestar-report-{date.today().isoformat()}.csv"'},
     )
 
 

@@ -25,10 +25,16 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const TITLE = "Lodestar — Find your direction.";
+const DESCRIPTION =
+  "Find research internships, fellowships and scholarships you actually qualify for, who to contact, and what to send.";
+
 export const metadata: Metadata = {
-  title: { default: "ScholarRadar", template: "%s · ScholarRadar" },
-  description:
-    "Find research internships, fellowships and scholarships you actually qualify for, who to contact, and what to send.",
+  title: { default: TITLE, template: "%s · Lodestar" },
+  description: DESCRIPTION,
+  applicationName: "Lodestar",
+  openGraph: { title: TITLE, description: DESCRIPTION, siteName: "Lodestar", type: "website" },
+  twitter: { card: "summary", title: TITLE, description: DESCRIPTION },
 };
 
 export default function RootLayout({

@@ -43,7 +43,7 @@ function LoginForm() {
       <Card>
         <CardHeader>
           <CardTitle>Log in</CardTitle>
-          <CardDescription>Welcome back to ScholarRadar.</CardDescription>
+          <CardDescription>Welcome back to Lodestar.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="flex flex-col gap-4">

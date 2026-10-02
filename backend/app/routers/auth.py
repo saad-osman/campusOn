@@ -128,7 +128,7 @@ def forgot_password(payload: ForgotPasswordIn, db: Session = Depends(get_db)):
 
     reset_link = f"{settings.FRONTEND_ORIGIN}/forgot-password?token={token}"
     sent = send_email(
-        user.email, "Reset your ScholarRadar password",
+        user.email, "Reset your Lodestar password",
         f"Someone asked to reset the password for {user.email}.\n\nReset it here (valid for 1 hour):\n"
         f"{reset_link}\n\nIf this wasn't you, ignore this email.",
     )

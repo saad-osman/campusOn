@@ -59,7 +59,7 @@ def new_link_code() -> tuple[str, datetime]:
 # ---------- command handling ----------
 
 HELP = (
-    "ScholarRadar bot\n"
+    "Lodestar bot\n"
     "/matches: your top matches\n"
     "/deadlines: saved deadlines in the next 14 days\n"
     "/digest: this week's digest"
@@ -79,7 +79,7 @@ def handle_message(db, chat_id: str, text: str) -> str:
 
     if command == "/start":
         if len(parts) < 2:
-            return ("Hi! To connect, open ScholarRadar > Settings > Telegram, generate a code, "
+            return ("Hi! To connect, open Lodestar > Settings > Telegram, generate a code, "
                     "then send /start <code> here.") if not user else f"You're connected as {user.name}.\n\n{HELP}"
         code = parts[1].strip().upper()
         target = db.query(User).filter(User.telegram_link_code == code).first()
@@ -93,7 +93,7 @@ def handle_message(db, chat_id: str, text: str) -> str:
         return f"Connected! You'll get your weekly digest here, {target.name.split(' ')[0]}.\n\n{HELP}"
 
     if not user:
-        return "This chat isn't connected yet. Generate a code in ScholarRadar > Settings > Telegram and send /start <code>."
+        return "This chat isn't connected yet. Generate a code in Lodestar > Settings > Telegram and send /start <code>."
 
     base = settings.FRONTEND_ORIGIN
     if command == "/matches":
@@ -102,7 +102,7 @@ def handle_message(db, chat_id: str, text: str) -> str:
         payloads = [p for p in payloads if p["eligibility_check"]["verdict"] != "not_eligible"]
         payloads.sort(key=lambda p: p["match"]["score"], reverse=True)
         if not payloads:
-            return "No matches yet. Complete your profile on ScholarRadar first."
+            return "No matches yet. Complete your profile on Lodestar first."
         lines = ["Your top matches:"]
         for p in payloads[:5]:
             lines.append(f"• {p['title']} ({p['match']['score']}): {p['match']['reasons'][0] if p['match']['reasons'] else ''}\n  {base}/opportunities/{p['id']}")

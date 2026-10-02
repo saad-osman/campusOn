@@ -68,7 +68,7 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "scholarradar-my-data.json";
+    a.download = "lodestar-my-data.json";
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -139,7 +139,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Your data</CardTitle>
-          <CardDescription>Download everything ScholarRadar has stored about you.</CardDescription>
+          <CardDescription>Download everything Lodestar has stored about you.</CardDescription>
         </CardHeader>
         <CardContent>
           <Button variant="secondary" onClick={exportData}>

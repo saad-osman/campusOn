@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     # Core
-    APP_NAME: str = "ScholarRadar"
+    APP_NAME: str = "Lodestar"
     ENV: str = "development"
     SECRET_KEY: str = "dev-secret-change-me"
     DATABASE_URL: str = "sqlite:///./scholarradar.db"

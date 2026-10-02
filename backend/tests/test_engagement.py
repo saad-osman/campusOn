@@ -136,7 +136,7 @@ def test_telegram_linking_and_commands(client, db_session):
     # codes are single-use
     assert "invalid" in telegram_bot.handle_message(db_session, "556", f"/start {code}")
     assert "No saved deadlines" in telegram_bot.handle_message(db_session, "555", "/deadlines")
-    assert "ScholarRadar week" in telegram_bot.handle_message(db_session, "555", "/digest")
+    assert "Lodestar week" in telegram_bot.handle_message(db_session, "555", "/digest")
     client.delete("/api/settings/telegram")
     db_session.expire_all()
     assert db_session.get(User, uid).telegram_chat_id is None

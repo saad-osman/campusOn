@@ -304,7 +304,7 @@ def create_invite(
     ws = db.get(Workspace, workspace_id)
     invite_link = f"{settings.FRONTEND_ORIGIN}/invite/{token}"
     send_email(  # no-op without SMTP; the copyable link in the UI still works
-        invite.email, f"{user.name} invited you to “{ws.name}” on ScholarRadar",
+        invite.email, f"{user.name} invited you to “{ws.name}” on Lodestar",
         f"{user.name} invited you to collaborate on the Application File “{ws.name}” as {payload.role}.\n\n"
         f"Accept the invite (valid for 7 days):\n{invite_link}\n",
     )

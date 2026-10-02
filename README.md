@@ -1,11 +1,19 @@
-# ScholarRadar
+# Lodestar
 
-From discovery to a submitted application: ScholarRadar tells students what research
+*Find your direction.*
+
+From discovery to a submitted application: Lodestar tells students what research
 opportunities exist, what they're actually eligible for, who to contact, and what to send —
 and lets them work on applications together with teammates.
 
 Built for CampusOPS (IEEE BPDC), Problem Statement 03: Research Opportunity Aggregation &
 Discovery Platform.
+
+Formerly called ScholarRadar. Some internal identifiers keep the old name on purpose, because
+renaming them would break existing data or integrations: the SQLite file (`scholarradar.db`), the
+public API field `scholarradar_url`, the widget's `data-scholarradar-widget` attribute, calendar
+event UIDs (`…@scholarradar`), the scraper's `ScholarRadarBot/1.0` User-Agent (sites' robots.txt
+rules may name it), logger names, and the placeholder `@scholarradar.local` email defaults.
 
 ## Quick start
 
@@ -205,9 +213,9 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
   Everything else keeps credentialed CORS locked to `FRONTEND_ORIGIN` (`PathCORSMiddleware` in
   `main.py`).
 - **RSS:** `/feed.xml` (same filters).
-- **Widget:** `<script src="https://<your-scholarradar>/widget.js" data-degree="bachelors"
+- **Widget:** `<script src="https://<your-lodestar>/widget.js" data-degree="bachelors"
   data-field="computer science" async></script>` renders a compact list in a Shadow DOM, immune to
-  the host page's CSS, and links back to ScholarRadar. Attributes: `data-degree`, `data-field`,
+  the host page's CSS, and links back to Lodestar. Attributes: `data-degree`, `data-field`,
   `data-type`, `data-region`, `data-limit` (1-20), `data-title`.
 - **Mock portal:** `/demo/portal` is a fictional university portal (deliberately hostile CSS)
   embedding two widgets.
@@ -233,7 +241,7 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
 ## Repository layout
 
 ```
-scholarradar/
+campusOn/
   Makefile
   docker-compose.yml   # unverified
   scripts/             # setup.ps1, dev.ps1 (Windows)

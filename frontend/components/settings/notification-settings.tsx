@@ -99,7 +99,7 @@ export function TelegramCard() {
             {code ? (
               <div className="rounded-lg border bg-muted/40 p-3">
                 <p>
-                  Send this to {bot ? <a className="font-medium underline" href={`https://t.me/${bot}`} target="_blank" rel="noopener noreferrer">@{bot}</a> : "the ScholarRadar bot"}:
+                  Send this to {bot ? <a className="font-medium underline" href={`https://t.me/${bot}`} target="_blank" rel="noopener noreferrer">@{bot}</a> : "the Lodestar bot"}:
                 </p>
                 <p className="my-2 font-mono text-lg font-semibold tracking-wider">/start {code.code}</p>
                 <p className="text-xs text-muted-foreground">

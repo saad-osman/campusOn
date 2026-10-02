@@ -4,7 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Bell, CheckCheck, Menu, Radar } from "lucide-react";
+import { Bell, CheckCheck, Menu } from "lucide-react";
+import { LodestarWordmark } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -136,8 +137,8 @@ export function Nav() {
               </SheetTrigger>
               <SheetContent side="left" className="w-64">
                 <SheetHeader>
-                  <SheetTitle className="flex items-center gap-2">
-                    <Radar className="size-5 text-primary" /> ScholarRadar
+                  <SheetTitle>
+                    <LodestarWordmark />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-1 px-2" aria-label="Main">
@@ -159,9 +160,8 @@ export function Nav() {
               </SheetContent>
             </Sheet>
           )}
-          <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2 font-semibold">
-            <Radar className="size-5 text-primary" aria-hidden />
-            ScholarRadar
+          <Link href={user ? "/dashboard" : "/"} className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <LodestarWordmark />
           </Link>
         </div>
         <nav className="hidden items-center gap-1 text-sm md:flex" aria-label="Main">

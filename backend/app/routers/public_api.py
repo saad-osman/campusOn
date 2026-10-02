@@ -119,7 +119,7 @@ def rss_feed(
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<rss version="2.0"><channel>'
-        "<title>ScholarRadar: research opportunities</title>"
+        "<title>Lodestar: research opportunities</title>"
         f"<link>{escape(site)}/discover</link>"
         "<description>Research internships, fellowships and scholarships, checked and deduplicated.</description>"
         "<language>en</language>"

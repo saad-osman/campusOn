@@ -264,7 +264,7 @@ export default function AdminPage() {
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-heading text-2xl font-semibold tracking-tight">Admin</h1>
-          <p className="text-sm text-muted-foreground">Coverage, quality and student outcomes across ScholarRadar.</p>
+          <p className="text-sm text-muted-foreground">Coverage, quality and student outcomes across Lodestar.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button

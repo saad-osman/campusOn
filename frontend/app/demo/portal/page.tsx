@@ -4,7 +4,7 @@ import * as React from "react";
 
 /**
  * Mock university portal for the live demo (Feature 14). A fictional university,
- * deliberately styled unlike ScholarRadar (serif type, its own colours and an
+ * deliberately styled unlike Lodestar (serif type, its own colours and an
  * aggressive global stylesheet) to show the embedded widgets stay intact.
  */
 
@@ -37,7 +37,7 @@ function Widget(props: Record<string, string>) {
 }
 
 export default function DemoPortalPage() {
-  const [origin, setOrigin] = React.useState("https://your-scholarradar.example");
+  const [origin, setOrigin] = React.useState("https://your-lodestar.example");
   React.useEffect(() => setOrigin(window.location.origin), []);
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -45,7 +45,7 @@ export default function DemoPortalPage() {
       <style dangerouslySetInnerHTML={{ __html: PORTAL_CSS }} />
       <div className="portal">
         <div style={{ background: "#7a1f2b", color: "#fff", padding: "6px 24px", fontSize: 12, fontFamily: "Arial, sans-serif" }}>
-          Demo page: a fictional university portal embedding the ScholarRadar widget with one script tag.
+          Demo page: a fictional university portal embedding the Lodestar widget with one script tag.
         </div>
         <header style={{ background: "#fff", borderBottom: "4px solid #c9a227", padding: "18px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
@@ -76,7 +76,7 @@ export default function DemoPortalPage() {
             </ul>
             <h3 style={{ fontSize: 16, marginTop: 16 }}>From the Office of Undergraduate Research</h3>
             <p>
-              Below is a live feed of open research opportunities for our students, provided by ScholarRadar. Every listing is
+              Below is a live feed of open research opportunities for our students, provided by Lodestar. Every listing is
               checked regularly and links to full eligibility details.
             </p>
           </section>
@@ -98,7 +98,7 @@ export default function DemoPortalPage() {
           </section>
         </main>
         <footer style={{ textAlign: "center", padding: 24, fontSize: 12, color: "#6b7280", fontFamily: "Arial, sans-serif" }}>
-          © Crescent University (fictional) · Demo for ScholarRadar
+          © Crescent University (fictional) · Demo for Lodestar
         </footer>
       </div>
     </div>

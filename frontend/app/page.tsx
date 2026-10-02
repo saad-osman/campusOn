@@ -56,13 +56,17 @@ export default function Home() {
         <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground">
           <Sparkles className="size-3.5" aria-hidden /> Built for BPDC students &middot; CampusOPS 2026
         </span>
-        <h1 className="max-w-3xl text-balance font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
-          From discovery to a <span className="text-primary">submitted application</span>.
-        </h1>
-        <p className="max-w-2xl text-balance text-lg text-muted-foreground">
-          ScholarRadar finds research internships, fellowships and scholarships, tells you which ones you actually qualify
-          for, who to contact, and what to send, and lets you apply with your teammates.
-        </p>
+        <div className="flex flex-col gap-2">
+          <h1 className="font-heading text-5xl font-semibold tracking-tight sm:text-6xl">Lodestar</h1>
+          <p className="font-heading text-2xl font-medium tracking-tight text-primary sm:text-3xl">Find your direction.</p>
+        </div>
+        <div className="flex max-w-2xl flex-col gap-2">
+          <p className="text-balance text-lg font-medium">From discovery to a submitted application.</p>
+          <p className="text-balance text-lg text-muted-foreground">
+            Lodestar finds research internships, fellowships and scholarships, tells you which ones you actually qualify
+            for, who to contact, and what to send, and lets you apply with your teammates.
+          </p>
+        </div>
         <HomeCTA />
       </section>
 
@@ -124,7 +128,7 @@ export default function Home() {
           <BentoCell span={6} label="Widget embed code">
             <pre className="flex-1 overflow-x-auto rounded-lg bg-hero p-4 text-xs leading-relaxed text-hero-foreground" aria-label="Widget embed code">
               <Code2 className="mb-3 size-4 text-hero-muted" aria-hidden />
-              {`<script src="https://your-scholarradar.example/widget.js"
+              {`<script src="https://your-lodestar.example/widget.js"
         data-degree="bachelors"
         data-field="computer science"
         data-region="uae"
@@ -135,7 +139,10 @@ export default function Home() {
       </section>
 
       <footer className="flex flex-col gap-1 text-xs text-muted-foreground">
-        <p>ScholarRadar &middot; CampusOPS (IEEE BPDC), Problem Statement 03</p>
+        <p>
+          <span className="font-heading text-sm font-semibold text-foreground">Lodestar</span> &middot; Find your direction.
+        </p>
+        <p>CampusOPS (IEEE BPDC), Problem Statement 03</p>
         <p>Demo listings are illustrative. Always confirm details on the official page before applying.</p>
       </footer>
     </div>

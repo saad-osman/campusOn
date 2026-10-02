@@ -54,12 +54,12 @@ def _event(opp, now: datetime) -> list[str]:
     return lines
 
 
-def build_calendar(opportunities, name: str = "ScholarRadar deadlines") -> str:
+def build_calendar(opportunities, name: str = "Lodestar deadlines") -> str:
     now = datetime.utcnow()
     lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
-        "PRODID:-//ScholarRadar//Deadlines//EN",
+        "PRODID:-//Lodestar//Deadlines//EN",
         "CALSCALE:GREGORIAN",
         "METHOD:PUBLISH",
         f"X-WR-CALNAME:{_escape(name)}",

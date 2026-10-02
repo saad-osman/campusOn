@@ -71,7 +71,7 @@ def is_empty(d: dict) -> bool:
 
 def render_text(user: User, d: dict, link_base: str | None = None) -> str:
     base = link_base or settings.FRONTEND_ORIGIN
-    lines = [f"Hi {user.name.split(' ')[0]}, here's your ScholarRadar week."]
+    lines = [f"Hi {user.name.split(' ')[0]}, here's your Lodestar week."]
     if d["matches"]:
         lines.append(f"\nNew matches above {MATCH_THRESHOLD} ({d['match_count']}):")
         lines += [f"• {m['title']} ({m['score']}): {m['reason']}\n  {base}/opportunities/{m['id']}" for m in d["matches"]]

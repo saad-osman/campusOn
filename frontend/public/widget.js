@@ -1,14 +1,14 @@
 /*!
- * ScholarRadar embeddable widget (Feature 14).
+ * Lodestar embeddable widget (Feature 14).
  *
- *   <script src="https://YOUR-SCHOLARRADAR/widget.js"
+ *   <script src="https://YOUR-LODESTAR/widget.js"
  *           data-degree="bachelors" data-field="computer science"
  *           data-region="uae" data-type="research_internship" data-limit="5"
  *           data-title="Research opportunities" async></script>
  *
  * Renders a compact list right after the script tag, inside a Shadow DOM so it
  * neither inherits nor leaks styles. Reads only the public API (no cookies, no
- * personal data) and links back to ScholarRadar.
+ * personal data) and links back to Lodestar.
  */
 (function () {
   "use strict";
@@ -81,7 +81,7 @@
     box.setAttribute("aria-label", d.title || "Research opportunities");
     var head = el("div", "sr-head");
     head.appendChild(el("h2", "sr-title", d.title || "Research opportunities"));
-    var brand = el("a", "sr-brand", "via ScholarRadar");
+    var brand = el("a", "sr-brand", "via Lodestar");
     brand.href = origin;
     brand.target = "_blank";
     brand.rel = "noopener";
@@ -121,7 +121,7 @@
         });
         box.replaceChild(list, body);
         var foot = el("div", "sr-foot");
-        var more = el("a", null, "Check your eligibility on ScholarRadar →");
+        var more = el("a", null, "Check your eligibility on Lodestar →");
         more.href = origin + "/discover";
         more.target = "_blank";
         more.rel = "noopener";
