@@ -36,6 +36,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-gold: var(--gold);
   --color-honor: var(--honor);
+  --color-raised: var(--raised);
   --color-hero: var(--hero);
   --color-hero-foreground: var(--hero-foreground);
   --color-hero-muted: var(--hero-muted);
@@ -52,6 +53,41 @@
   .text-balance {
     text-wrap: balance;
   }
+  /* Home hero star chart: 1.5px dots on a 28px grid, tiled from the top-right corner so
+     dot centres sit at (right 14 + 28n, top 14 + 28m) at any width. */
+  .star-chart {
+    background-image: radial-gradient(circle, var(--grid-dot) 0 1.5px, transparent 2px);
+    background-size: 28px 28px;
+    background-position: top right;
+  }
+  /* Hero (lg+): dots across the right half. Clear behind the text column (fade from
+     ~46% to ~62% of the width, i.e. ending around the paragraph) and fading at the bottom. */
+  .star-chart-mask-hero {
+    mask-image:
+      linear-gradient(to right, transparent 46%, black 62%),
+      linear-gradient(to bottom, black calc(100% - 96px), transparent);
+    mask-composite: intersect;
+  }
+  /* Panel (<lg): behind the preview block only; soft fades on every edge but the right. */
+  .star-chart-mask-panel {
+    mask-image:
+      linear-gradient(to right, transparent, black 30%),
+      linear-gradient(to bottom, black calc(100% - 56px), transparent);
+    mask-composite: intersect;
+  }
+  .star-twinkle {
+    animation: star-twinkle 5s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .star-twinkle {
+      animation: none;
+    }
+  }
+  /* A quiet scrollbar for inner scrollers (filter sidebar): thin, thumb in --border. */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
   /* Hide a scroller's scrollbar but keep swipe / trackpad / keyboard scrolling. */
   .scrollbar-none {
     scrollbar-width: none;
@@ -66,6 +102,7 @@
     --background: oklch(0.985 0.004 85);
     --foreground: oklch(0.21 0.03 260);
     --card: oklch(1 0 0);
+    --raised: oklch(1 0 0); /* floating surfaces (home preview) */
     --card-foreground: oklch(0.21 0.03 260);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.21 0.03 260);
@@ -85,6 +122,8 @@
     /* Honors (endorsements, verified, file tiles): pure gold is 1.8:1 on white, so light mode
        uses a deeper gold that clears 4.5:1 on card, background and accent. */
     --honor: oklch(0.52 0.11 75);
+    /* Home hero star-chart dots: navy ink at 14% on paper. */
+    --grid-dot: oklch(0.21 0.03 260 / 14%);
     /* Bento hero cells: navy surface in both modes (primary turns gold in dark). */
     --hero: oklch(0.33 0.08 260);
     --hero-foreground: oklch(0.98 0.01 85);
@@ -95,7 +134,7 @@
     --chart-4: oklch(0.65 0.1 70);
     --chart-5: oklch(0.72 0.03 260);
     --radius: 0.5rem;
-    --sidebar: oklch(0.975 0.006 85);
+    --sidebar: oklch(1 0 0);
     --sidebar-foreground: oklch(0.21 0.03 260);
     --sidebar-primary: oklch(0.33 0.08 260);
     --sidebar-primary-foreground: oklch(0.98 0.01 85);
@@ -111,19 +150,20 @@
     --viz-axis: #898781;
   }
   .dark {
-    --background: oklch(0.16 0.02 260);
+    --background: oklch(0.18 0.035 260);
     --foreground: oklch(0.95 0.01 85);
-    --card: oklch(0.2 0.025 260);
+    --card: oklch(0.22 0.038 260);
+    --raised: oklch(0.24 0.03 260);
     --card-foreground: oklch(0.95 0.01 85);
-    --popover: oklch(0.2 0.025 260);
+    --popover: oklch(0.22 0.038 260);
     --popover-foreground: oklch(0.95 0.01 85);
     --primary: oklch(0.82 0.11 85);
-    --primary-foreground: oklch(0.2 0.03 260);
-    --secondary: oklch(0.25 0.025 260);
+    --primary-foreground: oklch(0.2 0.035 260);
+    --secondary: oklch(0.27 0.035 260);
     --secondary-foreground: oklch(0.95 0.01 85);
-    --muted: oklch(0.24 0.02 260);
+    --muted: oklch(0.26 0.032 260);
     --muted-foreground: oklch(0.7 0.02 260);
-    --accent: oklch(0.27 0.03 260);
+    --accent: oklch(0.29 0.04 260);
     --accent-foreground: oklch(0.95 0.01 85);
     --destructive: oklch(0.7 0.18 25);
     --border: oklch(1 0 0 / 9%);
@@ -131,7 +171,9 @@
     --ring: oklch(0.7 0.1 85);
     --gold: oklch(0.83 0.11 85);
     --honor: oklch(0.83 0.11 85);
-    --hero: oklch(0.28 0.065 262);
+    /* Gold-grey at 18% on navy. */
+    --grid-dot: oklch(0.82 0.05 85 / 18%);
+    --hero: oklch(0.3 0.07 262);
     --hero-foreground: oklch(0.96 0.01 85);
     --hero-muted: oklch(0.8 0.02 260);
     --chart-1: oklch(0.82 0.11 85);
@@ -139,18 +181,18 @@
     --chart-3: oklch(0.7 0.06 70);
     --chart-4: oklch(0.45 0.05 260);
     --chart-5: oklch(0.85 0.02 85);
-    --sidebar: oklch(0.18 0.022 260);
+    --sidebar: oklch(0.21 0.03 260);
     --sidebar-foreground: oklch(0.95 0.01 85);
     --sidebar-primary: oklch(0.82 0.11 85);
     --sidebar-primary-foreground: oklch(0.2 0.03 260);
-    --sidebar-accent: oklch(0.27 0.03 260);
+    --sidebar-accent: oklch(0.29 0.04 260);
     --sidebar-accent-foreground: oklch(0.95 0.01 85);
     --sidebar-border: oklch(1 0 0 / 9%);
     --sidebar-ring: oklch(0.7 0.1 85);
     --series-1: #3987e5;
     --series-2: #d95926;
     --series-3: #199e70;
-    --viz-grid: #2a2f3d;
+    --viz-grid: #2c3550;
     --viz-axis: #898781;
   }
   * {
@@ -165,5 +207,15 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
   }
 }

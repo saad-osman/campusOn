@@ -23,7 +23,7 @@ import type { Opportunity, SearchFilters } from "@/lib/types";
 
 const HONORIFICS = /^(dr|prof|mr|mrs|ms|mx|sir|eng)\.?$/i;
 
-/** "Dr. Fatima Faculty" -> "Fatima", "Sara Student" -> "Sara". */
+/** "Dr. Fatima Al Mansouri" -> "Fatima", "Sara Student" -> "Sara". */
 function firstName(name: string) {
   const parts = name.split(/\s+/).filter(Boolean);
   return parts.find((p) => !HONORIFICS.test(p)) ?? name;

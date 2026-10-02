@@ -36,4 +36,4 @@ Log in as `faculty@demo.com`:
 - **Review** → pick a 30%-confidence item, fix the title and deadline beside the source text,
   *Approve & verify*. It now shows "Verified by BPDC faculty" to students.
 - **Endorse** → pick an opportunity, target "Year 3 · Computer Science", add a note. Matching
-  students are notified and see "Recommended by Dr. Fatima Faculty" on the card.
+  students are notified and see "Recommended by Dr. Fatima Al Mansouri" on the card.

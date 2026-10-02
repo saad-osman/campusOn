@@ -61,7 +61,7 @@ def reset_db():
 def create_demo_users(db):
     student = User(email="student@demo.com", name="Sara Student", role="student", password_hash=hash_password(DEMO_PASSWORD))
     teammate = User(email="teammate@demo.com", name="Tariq Teammate", role="student", password_hash=hash_password(DEMO_PASSWORD))
-    faculty = User(email="faculty@demo.com", name="Dr. Fatima Faculty", role="faculty", password_hash=hash_password(DEMO_PASSWORD))
+    faculty = User(email="faculty@demo.com", name="Dr. Fatima Al Mansouri", role="faculty", password_hash=hash_password(DEMO_PASSWORD))
     admin = User(email="admin@demo.com", name="Aisha Admin", role="admin", password_hash=hash_password(DEMO_PASSWORD))
     db.add_all([student, teammate, faculty, admin])
     db.flush()

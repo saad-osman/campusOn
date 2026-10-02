@@ -24,3 +24,15 @@ export function LodestarWordmark({ className }: { className?: string }) {
     </span>
   );
 }
+
+/**
+ * The mark's star on its own (no tile), cropped to the star's bounds so the
+ * element's centre is the star's centre: (32, 32) in the mark's coordinates.
+ */
+export function LodestarStar({ className }: { className?: string }) {
+  return (
+    <svg viewBox="17 13 30 38" className={cn("h-8 w-auto", className)} aria-hidden focusable="false">
+      <path d="M32 13 L37 27 L47 32 L37 37 L32 51 L27 37 L17 32 L27 27 Z" className="fill-gold" />
+    </svg>
+  );
+}

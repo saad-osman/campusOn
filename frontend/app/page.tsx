@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { BentoCell, BentoGrid, type BentoSpan } from "@/components/bento/bento";
 import { HomeCTA } from "@/components/home-cta";
+import { HeroPreview } from "@/components/home/hero-preview";
+import { StarChart } from "@/components/home/star-chart";
 import { LodestarMark } from "@/components/brand/logo";
 
 const STEPS = [
@@ -52,23 +54,28 @@ function SectionHeading({ id, children }: { id: string; children: React.ReactNod
 export default function Home() {
   return (
     <div className="flex flex-col gap-16 pb-16 pt-2 sm:pt-6">
-      {/* Full-width hero above the grid; the only gradient on the site. */}
-      <section className="flex flex-col items-start gap-6 rounded-xl bg-gradient-to-b from-accent/70 to-transparent px-5 py-12 sm:px-10 sm:py-16">
-        <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground">
-          <Sparkles className="size-4" aria-hidden /> Built for BPDC students &middot; CampusOPS 2026
-        </span>
-        <div className="flex flex-col gap-2">
-          <h1 className="font-heading text-5xl font-semibold tracking-tight sm:text-6xl">Lodestar</h1>
-          <p className="font-heading text-2xl font-medium tracking-tight text-primary sm:text-3xl">Find your direction.</p>
-        </div>
-        <div className="flex max-w-2xl flex-col gap-2">
-          <p className="text-balance text-lg font-medium">From discovery to a submitted application.</p>
-          <p className="text-balance text-lg text-muted-foreground">
-            Lodestar finds research internships, fellowships and scholarships, tells you which ones you actually qualify
-            for, who to contact, and what to send, and lets you apply with your teammates.
+      {/* Full-width hero: text left, product preview right (stacked below lg), on a star-chart backdrop. */}
+      <section className="relative isolate grid grid-cols-[minmax(0,1fr)] items-center gap-10 rounded-xl px-5 py-12 sm:px-10 sm:py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
+        <StarChart variant="hero" className="hidden lg:block" />
+        <div className="flex flex-col items-start gap-6">
+          <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground">
+            <Sparkles className="size-4" aria-hidden /> Built for BPDC students &middot; CampusOPS 2026
+          </span>
+          <div className="flex flex-col gap-2">
+            <h1 className="font-heading text-5xl font-semibold tracking-tight sm:text-6xl">Lodestar</h1>
+            <p className="font-heading text-2xl font-medium tracking-tight text-primary sm:text-3xl">Find your direction.</p>
+          </div>
+          <p className="max-w-xl text-pretty text-lg text-muted-foreground">
+            <span className="text-foreground">From discovery to a submitted application.</span> Lodestar finds research
+            internships, fellowships and scholarships, tells you which ones you actually qualify for, who to contact, and
+            what to send, and lets you apply with your teammates.
           </p>
+          <HomeCTA />
         </div>
-        <HomeCTA />
+        <div className="relative isolate pb-6 pt-14 lg:py-0">
+          <StarChart variant="panel" className="-inset-x-5 sm:-inset-x-10 lg:hidden" />
+          <HeroPreview />
+        </div>
       </section>
 
       <section aria-labelledby="how" className="flex flex-col gap-4">
