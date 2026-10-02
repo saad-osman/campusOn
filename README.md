@@ -42,7 +42,7 @@ top): rule-based extraction, CV parsing and query parsing, and template drafts. 
 `backend/.env` to use Claude (`EXTRACTION_MODEL` for extraction, `WRITING_MODEL` for drafts).
 `DEMO_SCRIPT.md` walks through a 3-minute demo.
 
-Tests: `make test` (115 backend tests). Production build check: `make build`.
+Tests: `make test` (116 backend tests). Production build check: `make build`.
 
 ## Status
 
