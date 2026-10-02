@@ -114,7 +114,7 @@ export default function ProfessorsPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Professor &amp; lab finder</h1>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight">Professor &amp; lab finder</h1>
           <p className="text-sm text-muted-foreground">
             Find researchers publishing in your area right now, then draft a specific, short cold email.
           </p>

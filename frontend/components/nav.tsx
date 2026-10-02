@@ -107,7 +107,7 @@ function DemoBanner() {
   });
   if (!data?.demo_mode) return null;
   return (
-    <div className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-1 text-center text-xs text-amber-900 dark:text-amber-200">
+    <div className="border-b border-gold/40 bg-accent px-4 py-1 text-center text-xs text-accent-foreground">
       <strong>Demo mode:</strong> no AI key configured, so extraction and drafts use built-in rules and templates.
     </div>
   );

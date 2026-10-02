@@ -66,7 +66,7 @@ function WorkspaceDetail() {
       <div className="flex items-center gap-3">
         <span className="text-3xl">{workspace.icon}</span>
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-semibold">
+          <h1 className="font-heading flex items-center gap-2 text-2xl font-semibold">
             {workspace.name}
             {workspace.archived && <Badge variant="outline">archived</Badge>}
           </h1>

@@ -64,8 +64,8 @@ export default function EndorsePage() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
-          <Sparkles className="size-6 text-violet-600 dark:text-violet-400" aria-hidden /> Endorse opportunities
+        <h1 className="font-heading flex items-center gap-2 text-2xl font-semibold tracking-tight">
+          <Sparkles className="size-6 text-accent-foreground dark:text-gold" aria-hidden /> Endorse opportunities
         </h1>
         <p className="text-sm text-muted-foreground">
           Recommend an opportunity to the students it suits. They get a notification, the card shows your note, and it ranks
@@ -90,7 +90,7 @@ export default function EndorsePage() {
                     type="button"
                     onClick={() => setPicked(o)}
                     aria-pressed={picked?.id === o.id}
-                    className={cn("flex w-full flex-col items-start rounded-lg border p-2.5 text-left text-sm hover:bg-muted/60", picked?.id === o.id && "border-violet-500 bg-violet-500/5")}
+                    className={cn("flex w-full flex-col items-start rounded-lg border p-2.5 text-left text-sm hover:bg-muted/60", picked?.id === o.id && "border-gold bg-accent")}
                   >
                     <span className="font-medium">{o.title}</span>
                     <span className="text-xs text-muted-foreground">

@@ -51,7 +51,7 @@ import type { TrackerItem, TrackerStatus, WorkspaceMember } from "@/lib/types";
 const COLUMNS: { id: TrackerStatus; label: string; tone: string }[] = [
   { id: "saved", label: "Saved", tone: "bg-slate-400" },
   { id: "preparing", label: "Preparing", tone: "bg-sky-500" },
-  { id: "submitted", label: "Submitted", tone: "bg-violet-500" },
+  { id: "submitted", label: "Submitted", tone: "bg-gold" },
   { id: "accepted", label: "Accepted", tone: "bg-emerald-500" },
   { id: "rejected", label: "Rejected", tone: "bg-rose-500" },
 ];
@@ -120,7 +120,7 @@ function CardBody({ item, members, canEdit, workspaceId, handle }: {
   const remove = useDeleteTrackerItem(workspaceId);
   const opp = item.opportunity;
   return (
-    <div className="flex flex-col gap-2 rounded-lg border bg-card p-3 text-sm shadow-xs">
+    <div className="flex flex-col gap-2 rounded-lg border bg-card p-3 text-sm shadow-[0_1px_2px_rgb(0_0_0/0.04)]">
       <div className="flex items-start gap-1.5">
         {handle}
         <div className="min-w-0 flex-1">

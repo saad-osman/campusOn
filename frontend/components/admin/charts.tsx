@@ -75,7 +75,7 @@ function DataTable({ rows, columns }: { rows: Row[]; columns: { key: string; lab
 
 export function ChartCard({ title, subtitle, children, className }: { title: string; subtitle?: string; children: React.ReactNode; className?: string }) {
   return (
-    <section className={`flex min-w-0 flex-col rounded-2xl border bg-card p-5 ${className ?? ""}`} aria-label={title}>
+    <section className={`flex min-w-0 flex-col rounded-xl border bg-card p-5 ${className ?? ""}`} aria-label={title}>
       <h3 className="text-sm font-semibold">{title}</h3>
       {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
       <div className="mt-3">{children}</div>

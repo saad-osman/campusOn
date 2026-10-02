@@ -264,7 +264,7 @@ export default function ReviewQueuePage() {
     <div className="flex flex-col gap-5">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+          <h1 className="font-heading flex items-center gap-2 text-2xl font-semibold tracking-tight">
             <ShieldCheck className="size-6 text-primary" aria-hidden /> Review queue
           </h1>
           <p className="text-sm text-muted-foreground">

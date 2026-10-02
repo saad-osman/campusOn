@@ -18,8 +18,8 @@ export function HomeCTA() {
     );
   }
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="flex flex-wrap justify-center gap-3">
+    <div className="flex flex-col items-start gap-3">
+      <div className="flex flex-wrap gap-3">
         <Button size="lg" asChild className="h-11 px-5">
           <Link href="/register">
             Get started free <ArrowRight />

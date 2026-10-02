@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <div className="flex flex-col items-center gap-3 py-24 text-center">
       <p className="text-sm font-semibold text-primary">404</p>
-      <h1 className="text-2xl font-semibold tracking-tight">This page doesn&apos;t exist</h1>
+      <h1 className="font-heading text-2xl font-semibold tracking-tight">This page doesn&apos;t exist</h1>
       <p className="max-w-md text-sm text-muted-foreground">
         The link may be old, or the opportunity may have been removed after a re-check.
       </p>

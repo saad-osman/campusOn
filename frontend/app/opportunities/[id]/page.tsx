@@ -155,7 +155,7 @@ export default function OpportunityPage() {
         <ArrowLeft className="size-4" /> Discover
       </Link>
 
-      <header className="flex flex-col gap-4 rounded-2xl border bg-card p-5 sm:flex-row sm:items-start">
+      <header className="flex flex-col gap-4 rounded-xl border bg-card p-5 sm:flex-row sm:items-start">
         {opp.match && <MatchScore score={opp.match.score} size={72} />}
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -163,7 +163,7 @@ export default function OpportunityPage() {
             <span>{opp.organization}</span>
             {opp.status !== "active" && <Badge variant="outline">{opp.status.replace("_", " ")}</Badge>}
           </div>
-          <h1 className="text-2xl font-semibold leading-tight tracking-tight">{opp.title}</h1>
+          <h1 className="font-heading text-2xl font-semibold leading-tight tracking-tight">{opp.title}</h1>
           <OpportunityMeta opp={opp} />
           <TrustLine opp={opp} />
         </div>
@@ -184,8 +184,8 @@ export default function OpportunityPage() {
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
         <div className="flex min-w-0 flex-col gap-6">
           {opp.endorsements.map((e) => (
-            <div key={e.id} className="flex gap-3 rounded-xl border border-violet-500/30 bg-violet-500/8 p-4 text-sm">
-              <Sparkles className="mt-0.5 size-4 shrink-0 text-violet-600 dark:text-violet-400" aria-hidden />
+            <div key={e.id} className="flex gap-3 rounded-xl border border-gold/40 bg-accent p-4 text-sm text-accent-foreground">
+              <Sparkles className="mt-0.5 size-4 shrink-0 text-accent-foreground dark:text-gold" aria-hidden />
               <div>
                 <p className="font-medium">Recommended by {e.faculty_name}</p>
                 {e.note && <p className="mt-0.5 text-muted-foreground">“{e.note}”</p>}

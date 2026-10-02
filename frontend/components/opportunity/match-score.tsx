@@ -34,7 +34,7 @@ export function MatchScore({ score, size = 48, className }: { score: number; siz
         />
       </svg>
       <span
-        className="absolute inset-0 flex items-center justify-center font-semibold tabular-nums text-foreground"
+        className="absolute inset-0 flex items-center justify-center font-semibold tabular-nums tracking-tight text-foreground"
         style={{ fontSize: size * 0.3 }}
       >
         {score}

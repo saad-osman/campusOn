@@ -32,7 +32,7 @@ import type { FundingType, OpportunityType, Region } from "@/lib/types";
 
 function Stat({ label, value, hint }: { label: string; value: React.ReactNode; hint?: string }) {
   return (
-    <div className="flex flex-col gap-1 rounded-2xl border bg-card p-4">
+    <div className="flex flex-col gap-1 rounded-xl border bg-card p-4">
       <span className="text-xs text-muted-foreground">{label}</span>
       <span className="text-2xl font-semibold tabular-nums tracking-tight">{value}</span>
       {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
@@ -126,7 +126,7 @@ function SourcesTable() {
   }
 
   return (
-    <section className="flex flex-col gap-3 rounded-2xl border bg-card p-5" aria-label="Sources">
+    <section className="flex flex-col gap-3 rounded-xl border bg-card p-5" aria-label="Sources">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 className="text-sm font-semibold">Sources</h2>
@@ -186,7 +186,7 @@ function RunsTable() {
   const { data: sources } = useSources();
   const names = new Map((sources ?? []).map((s) => [s.id, s.name]));
   return (
-    <section className="flex flex-col gap-3 rounded-2xl border bg-card p-5" aria-label="Recent scrape runs">
+    <section className="flex flex-col gap-3 rounded-xl border bg-card p-5" aria-label="Recent scrape runs">
       <h2 className="text-sm font-semibold">Recent scrape runs</h2>
       {!runs?.length ? (
         <p className="text-sm text-muted-foreground">No runs yet. Use &ldquo;Scrape now&rdquo; on a source.</p>
@@ -229,7 +229,7 @@ function RunsTable() {
 function BrokenList() {
   const { data } = useReviewQueue("broken");
   return (
-    <section className="flex flex-col gap-2 rounded-2xl border bg-card p-5" aria-label="Broken or rejected listings">
+    <section className="flex flex-col gap-2 rounded-xl border bg-card p-5" aria-label="Broken or rejected listings">
       <h2 className="text-sm font-semibold">Broken or rejected listings</h2>
       <p className="text-xs text-muted-foreground">Hidden from students. Links that returned 404/410 twice, or that a reviewer rejected.</p>
       {!data?.length ? (
@@ -263,7 +263,7 @@ export default function AdminPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight">Admin</h1>
           <p className="text-sm text-muted-foreground">Coverage, quality and student outcomes across ScholarRadar.</p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -312,7 +312,7 @@ export default function AdminPage() {
 
       {isLoading || !data || !h ? (
         <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5" aria-busy>
-          {Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}
+          {Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />)}
         </div>
       ) : (
         <>
@@ -325,7 +325,7 @@ export default function AdminPage() {
           </div>
 
           {data.success_stories.length > 0 && (
-            <section className="rounded-2xl border bg-gradient-to-br from-emerald-500/10 via-card to-card p-5" aria-label="Success stories">
+            <section className="rounded-xl border bg-card p-5 shadow-[0_1px_2px_rgb(0_0_0/0.04)]" aria-label="Success stories">
               <h2 className="flex items-center gap-2 text-sm font-semibold">
                 <Trophy className="size-4 text-emerald-600 dark:text-emerald-400" aria-hidden /> Success stories
               </h2>

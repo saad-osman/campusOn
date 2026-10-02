@@ -88,7 +88,7 @@ export function OpportunityCard({ opp, compact = false }: { opp: Opportunity; co
   return (
     <article
       className={cn(
-        "group relative flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-colors hover:border-primary/40",
+        "group relative flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-colors hover:border-primary/40",
         opp.status === "expired" && "opacity-70"
       )}
     >
@@ -123,7 +123,7 @@ export function OpportunityCard({ opp, compact = false }: { opp: Opportunity; co
       )}
 
       {endorsement && (
-        <p className="relative z-10 flex items-start gap-1.5 rounded-md bg-violet-500/10 px-2.5 py-1.5 text-xs text-violet-800 dark:text-violet-300">
+        <p className="relative z-10 flex items-start gap-1.5 rounded-md border border-gold/40 bg-accent px-2.5 py-1.5 text-xs text-accent-foreground">
           <Sparkles className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           <span>
             <strong>Recommended by {endorsement.faculty_name}</strong>

@@ -94,7 +94,7 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto flex max-w-lg flex-col gap-6 py-10">
       <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
+        <h1 className="font-heading text-2xl font-semibold">Settings</h1>
         <p className="text-sm text-muted-foreground">
           {user.name} &middot; {user.email} &middot; {user.role}
         </p>

@@ -101,7 +101,7 @@ function Discover() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Discover</h1>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight">Discover</h1>
           <p className="text-sm text-muted-foreground">
             Search the way you&apos;d ask a senior. We turn it into filters you can see and correct.
           </p>
