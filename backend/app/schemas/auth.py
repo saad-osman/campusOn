@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from typing import Annotated
+
+from pydantic import BaseModel, EmailStr, Field, StringConstraints
 
 
 class RegisterIn(BaseModel):
@@ -22,6 +24,11 @@ class UserOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class UpdateMeIn(BaseModel):
+    # Surrounding whitespace is stripped before the length check, so "   " is rejected.
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=80)]
 
 
 class ChangePasswordIn(BaseModel):

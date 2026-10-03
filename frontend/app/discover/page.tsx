@@ -12,7 +12,7 @@ import { FilterChips, FilterCount, FilterHeader, FilterSections, filterChips } f
 import { OpportunityCard, OpportunityCardSkeleton } from "@/components/opportunity/opportunity-card";
 import { useRequireUser } from "@/lib/auth";
 import { EMPTY_FILTERS, useSearch, type SearchArgs } from "@/lib/opportunities";
-import { useProfile } from "@/lib/profile";
+import { profileEditHref, useProfile } from "@/lib/profile";
 import { usePatchState, useTrackRoute, useUserState } from "@/lib/state";
 import type { SearchFilters } from "@/lib/types";
 
@@ -67,7 +67,13 @@ function Discover() {
     setArgs({ filters: { ...EMPTY_FILTERS, ...(saved.filters ?? {}) }, sort: saved.sort ?? "match" });
   }, [stateFetched, state, args, searchParams]);
 
-  const { data, isLoading, isFetching, isError } = useSearch(args);
+  const { data, isLoading, isFetching, isError, isPlaceholderData } = useSearch(args);
+  // Replays the results entrance only for a genuinely new result set: the key comes from
+  // settled data, so placeholder data, a background refetch or a save toggle (same ids)
+  // keeps the last key and nothing re-animates.
+  const settledKey = React.useRef("");
+  if (data && !isPlaceholderData) settledKey.current = JSON.stringify([args, data.results.map((r) => r.id)]);
+  const resultsKey = settledKey.current;
   const filters = data?.filters ?? args?.filters ?? EMPTY_FILTERS;
 
   // Persist query + interpreted filters, debounced (server also caps at ~1 write / 2.5 s).
@@ -173,7 +179,7 @@ function Discover() {
         <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm">
           <strong>Get eligibility verdicts and match scores.</strong> Finish your profile (or upload your CV) and every
           result will tell you whether you qualify and why.{" "}
-          <Link href="/onboarding" className="font-medium underline underline-offset-2">
+          <Link href={profileEditHref(profile)} className="font-medium underline underline-offset-2">
             Set up profile
           </Link>
         </div>
@@ -260,9 +266,9 @@ function Discover() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {data.results.map((opp) => (
-                <OpportunityCard key={opp.id} opp={opp} />
+            <div key={resultsKey} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {data.results.map((opp, i) => (
+                <OpportunityCard key={opp.id} opp={opp} enterIndex={i} />
               ))}
             </div>
           )}

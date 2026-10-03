@@ -28,6 +28,9 @@ never raw values. Light / dark values are oklch.
 | `--honor` | Readable gold *text*: endorsements, verified, icon tiles, counts | `0.52 0.11 75` (4.5:1) | = gold |
 | `--hero`, `--hero-foreground`, `--hero-muted` | Bento hero cells, code blocks: navy in **both** modes | | |
 | `--grid-dot` | Home star-chart dots | navy 14% | gold-grey 18% |
+| `--folder-back` / `--folder-front` | FolderFloat folder on /files (back = `--hero` navy, front one step lighter) | `0.33` / `0.39 0.08 260` | `0.27` / `0.32` navy, above `--card` |
+| `--folder-paper` / `--folder-pill` / `--folder-pill-ink` | Folder paper and document pills: warm paper with navy ink, both modes | paper `0.97`, pill `0.985 0.004 85` | paper `0.95`, pill `0.97 0.01 85` |
+| `--folder-label` | Folder flap label (= `--hero-foreground`); the sublabel uses `--gold` | | |
 | `--chart-1..5` | shadcn chart slots (navy/gold family) | | |
 
 Rules of thumb: gold as a *fill or line* uses `gold`; gold as *text* uses `honor` (pure gold
@@ -82,6 +85,35 @@ These encode meaning and are tuned independently of the brand. Do not retheme th
 detail, Settings, Onboarding, Admin, Faculty review/endorse, auth pages, demo portal. Those use
 plain cards and lists.
 
+**Dashboard layout** (`app/dashboard/page.tsx`). No cell spans two rows; each row's cells hold
+similar amounts of content. Phone order is source order (greeting, hero, stats, ...):
+
+| Row | Cells (span) | Notes |
+|---|---|---|
+| 1 | Greeting (8) · TopMatchHero / DeadlineHero (4, **hero**) | greeting: date, "Welcome back", count summary, search, suggested searches, completeness bar if < 100% |
+| 2 | Saved · Due this week · Strong matches · Application Files (3 each) | whole cell links; `font-heading text-4xl` count-up number; due > 0 gets a rose border |
+| 3 | Top matches (6) · Deadline timeline (6) | 4 match rows: score, 2-line title, up to 2 reason chips, pill + deadline on the right |
+| 4 | Continue where you left off (8) · Application Files (4) | files: name, up to 3 member initials, nearest deadline |
+| 5 | Near you: UAE & GCC (6) · Recommended by faculty (6) | Near you excludes the hero and Top matches; faculty name once per row |
+| 6 | Notifications (12) | up to 6, two columns on lg, an icon per type, footer "N unread · Mark all read" |
+
+Every empty state is an `IconTile`, one sentence and a primary action; every loading state is a
+skeleton shaped like the final rows.
+
+**Deadline timeline** (`components/dashboard/deadline-timeline.tsx`): the next 30 days as a
+track (Today marker, week ticks). Each saved deadline in range is a focusable link marker placed
+by days left: rose ≤ 7 days, amber ≤ 14, `muted-foreground` otherwise; same-day markers stack.
+Below it the next 3 deadlines and a legend. Plain divs and tokens, no chart library or gradient;
+at phone width the track scrolls inside the cell (`scrollbar-none`). With nothing in range it
+lists the next saved deadlines further out.
+
+**Settings layout** (`app/settings/layout.tsx`): title + "name · email", then on lg a sticky
+left nav (`w-56`, `bg-sidebar rounded-xl border`, under `--header-h`, `aria-current` on the
+active link) beside a `max-w-2xl` column of standard cards (`CardTitle font-heading text-base`).
+Below lg the nav is a horizontal tab row (`overflow-x-auto scrollbar-none`). Sections:
+Profile (one form, sticky save bar only when dirty), Notifications, Account & access (danger
+zone last).
+
 ## Cards and surfaces
 
 - One card recipe everywhere: `rounded-xl border bg-card` + `shadow-[0_1px_2px_rgb(0_0_0/0.04)]`
@@ -105,8 +137,45 @@ plain cards and lists.
 
 ## Motion
 
-Subtle and functional: color/shadow transitions ~150ms, chevrons rotate, sheets slide.
-The home star twinkles slowly and stops under `prefers-reduced-motion`.
+Motion explains order and change; it never decorates. Shared helpers live in `lib/motion.ts`:
+`usePrefersReducedMotion()`, `prefersReducedMotionNow()`, `useCountUp()` and `EASE_OUT`
+(`cubic-bezier(0.2, 0.7, 0.2, 1)`, the one entrance easing).
+
+| Component (`components/motion/`) | Where | What |
+|---|---|---|
+| `BlurText` | Home hero only | "Lodestar" (`h1`) letter by letter: 70ms apart from 100ms; tagline word by word: 150ms apart from 650ms; 0.35s per step, blur 10→0, y ±50→0 |
+| `ScrollReveal` | Home section headings only | Words fade 0.1→1 and unblur 4px→0, heading rotates 3°→0, scrubbed to scroll (reverses going up) |
+| `ScrollRevealGroup` | Home "How it works" and features bento grids only | Cells fade in, rise 16px, unblur 4px, stagger 0.12, scrubbed; wraps the whole `BentoGrid` (`:scope > div > *`) |
+| `FolderFloat` | `/files` only (`next/dynamic`, `ssr: false`) | Each Application File's documents spring out of a folder as draggable pills (matter-js); hover (mouse) or tap opens it |
+
+Other motion:
+- **Home hero entrance** (`globals.css`): preview cards `.hero-rise` 750ms (main card at 700ms,
+  checklist at 950ms); progress fill `.hero-fill` scales 0→1 over 1000ms at 1500ms; the
+  `PreviewScore` counts up over 1000ms at 1000ms; the star `.star-intro` (0.5→1, 800ms at
+  1200ms) then twinkles from 2000ms. Keyframes use the `translate`/`scale` properties, never
+  `transform`, so the star keeps its grid-dot position.
+- **Discover results:** `OpportunityCard enterIndex={i}` fades and slides cards in (500ms,
+  `min(i, 8) × 60ms` stagger) and delays the score count-up to match. The results grid is keyed
+  only on settled data, so a new query, filter or sort replays it; a save toggle, a background
+  refetch or placeholder data does not. Without `enterIndex` a card is static.
+- **`MatchScore`:** counts up over 1000ms by default (`animate`, `delay`); colour and label always
+  use the final score. Dashboard tiles ripple down each list instead of all at once
+  (`delay = min(index, 8) × 60ms + 150ms`, the same timing as Discover's cards).
+- **Filter groups:** Radix Collapsible height animation (300ms) via `motion-safe:` classes, and
+  the chevron rotates over 300ms.
+- **Elsewhere:** colour, border and shadow transitions ~150ms; sheets and menus slide.
+
+Rules:
+- **Reduced motion is mandatory:** final state immediately, with no blur, movement, count-up,
+  collapsible animation, twinkle or physics (opacity fades of 200ms or less are allowed). Gate
+  JS animations on `usePrefersReducedMotion()`, and check `prefersReducedMotionNow()` again
+  before creating GSAP triggers; use `motion-safe:` for Tailwind animations.
+- **Animate only `transform`/`translate`/`scale`, `opacity` and `filter`**, never width, height
+  or margins. The one exception is the Collapsible height animation from tw-animate-css.
+- BlurText and ScrollReveal stay on the home page; motion elsewhere is functional, not showy.
+- No layout shift and no hydration warnings: anything server-rendered starts in a state the
+  server can produce (BlurText has a CSS reduced-motion fallback; count-ups render the final
+  number on the server).
 
 ## Don't
 

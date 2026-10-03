@@ -15,6 +15,7 @@ import { ProfessorsSection } from "@/components/opportunity/professors-section";
 import { useRequireUser } from "@/lib/auth";
 import { DEGREE_LABELS, TYPE_LABELS, formatDate, parseServerTime } from "@/lib/format";
 import { useOpportunity, useOpportunityChanges } from "@/lib/opportunities";
+import { profileEditHref, useProfile } from "@/lib/profile";
 import { useTrackRoute } from "@/lib/state";
 import type { EligibilityRequirements, Opportunity } from "@/lib/types";
 
@@ -128,6 +129,7 @@ export default function OpportunityPage() {
   useRequireUser(`/opportunities/${id}`);
   useTrackRoute(`/opportunities/${id}`);
   const { data: opp, isLoading, error } = useOpportunity(id);
+  const { data: profile } = useProfile();
 
   if (isLoading) {
     return (
@@ -219,7 +221,7 @@ export default function OpportunityPage() {
                 <EligibilityExplanation check={opp.eligibility_check} />
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  <Link href="/onboarding" className="underline">Complete your profile</Link> to see whether you qualify.
+                  <Link href={profileEditHref(profile)} className="underline">Complete your profile</Link> to see whether you qualify.
                 </p>
               )}
               <div>

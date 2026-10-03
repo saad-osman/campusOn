@@ -184,3 +184,22 @@ def test_login_upgrades_legacy_heavy_hash(client, db_session):
     db_session.expire_all()
     upgraded = db_session.query(User).filter(User.email == "legacy@example.com").one().password_hash
     assert extract_parameters(upgraded).memory_cost <= 19 * 1024
+
+
+def test_update_me_changes_name(client):
+    reset_rate_limits()
+    _register(client, email="rename@example.com", password="correcthorse", name="Old Name")
+    r = client.patch("/api/auth/me", json={"name": "  New Name  "})
+    assert r.status_code == 200
+    assert r.json()["name"] == "New Name"  # stripped
+    assert client.get("/api/auth/me").json()["name"] == "New Name"
+
+
+def test_update_me_validates_and_requires_login(client):
+    reset_rate_limits()
+    _register(client, email="rename2@example.com", password="correcthorse")
+    assert client.patch("/api/auth/me", json={"name": "   "}).status_code == 422
+    assert client.patch("/api/auth/me", json={"name": "x" * 81}).status_code == 422
+    assert client.patch("/api/auth/me", json={"name": "x" * 80}).status_code == 200
+    client.cookies.clear()
+    assert client.patch("/api/auth/me", json={"name": "Nobody"}).status_code == 401

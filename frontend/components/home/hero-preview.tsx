@@ -2,13 +2,16 @@
 
 import { Sparkles } from "lucide-react";
 import { EligibilityPill } from "@/components/opportunity/eligibility-badge";
+import { useCountUp } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 /*
  * Product preview for the home hero: simplified, display-only versions of what the
  * seeded demo student (student@demo.com) sees, i.e. their top match (MBZUAI UGRIP,
  * deadline 33 days out in the seed) and the seeded "Application Checklist".
- * Decorative: inert and hidden from assistive tech.
+ * Decorative: inert and hidden from assistive tech. Entrance (after the title): cards rise
+ * (.hero-rise), the score counts up, the progress bar fills (.hero-fill); all off under
+ * reduced motion.
  */
 
 const SURFACE =
@@ -22,6 +25,7 @@ const CHECKLIST = [
 
 /** Gold, serif take on the match score, for the hero only (the app keeps MatchScore). */
 function PreviewScore({ score, size = 52 }: { score: number; size?: number }) {
+  const shown = useCountUp(score, { duration: 1000, delay: 1000 });
   const stroke = 2;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
@@ -37,11 +41,11 @@ function PreviewScore({ score, size = 52 }: { score: number; size?: number }) {
           stroke="currentColor"
           strokeWidth={stroke}
           strokeDasharray={c}
-          strokeDashoffset={c * (1 - score / 100)}
+          strokeDashoffset={c * (1 - shown / 100)}
         />
       </svg>
       <span className="absolute inset-0 flex items-center justify-center font-heading text-lg font-semibold tabular-nums text-honor">
-        {score}
+        {Math.round(shown)}
       </span>
     </div>
   );
@@ -49,7 +53,11 @@ function PreviewScore({ score, size = 52 }: { score: number; size?: number }) {
 
 function MainCard({ className }: { className?: string }) {
   return (
-    <div data-preview-card className={cn(SURFACE, "flex flex-col gap-4 p-6", className)}>
+    <div
+      data-preview-card
+      className={cn(SURFACE, "hero-rise flex flex-col gap-4 p-6", className)}
+      style={{ animationDelay: "700ms" }}
+    >
       <div className="flex items-center gap-4">
         <PreviewScore score={100} />
         <div className="flex flex-col">
@@ -76,7 +84,11 @@ function ChecklistCard({ className }: { className?: string }) {
   const done = 1;
   const total = 5;
   return (
-    <div data-preview-card className={cn(SURFACE, "flex flex-col gap-3 p-4", className)}>
+    <div
+      data-preview-card
+      className={cn(SURFACE, "hero-rise flex flex-col gap-3 p-4", className)}
+      style={{ animationDelay: "950ms" }}
+    >
       <div className="flex items-baseline justify-between gap-3">
         <p className="text-sm font-medium">Application checklist</p>
         <span className="text-xs tabular-nums text-muted-foreground">
@@ -84,7 +96,7 @@ function ChecklistCard({ className }: { className?: string }) {
         </span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-        <div className="h-full rounded-full bg-primary" style={{ width: `${(done / total) * 100}%` }} />
+        <div className="hero-fill h-full origin-left rounded-full bg-primary" style={{ width: `${(done / total) * 100}%` }} />
       </div>
       <ul className="flex flex-col gap-2">
         {CHECKLIST.map((item) => (

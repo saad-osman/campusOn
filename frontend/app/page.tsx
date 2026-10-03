@@ -19,6 +19,9 @@ import { HomeCTA } from "@/components/home/home-cta";
 import { HeroPreview } from "@/components/home/hero-preview";
 import { StarChart } from "@/components/home/star-chart";
 import { LodestarMark } from "@/components/brand/logo";
+import { BlurText } from "@/components/motion/blur-text";
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
+import { ScrollRevealGroup } from "@/components/motion/scroll-reveal-group";
 
 const STEPS = [
   { icon: FileUp, title: "Upload your CV", body: "We read it and fill in your profile. You check every value before it's saved." },
@@ -43,11 +46,12 @@ const FEATURES: { icon: React.ElementType; title: string; body: string; span: Be
   { icon: CalendarClock, title: "Never miss a deadline", body: "Countdowns, a weekly digest, Telegram, and one-click calendar export with reminders.", span: 4 },
 ];
 
-function SectionHeading({ id, children }: { id: string; children: React.ReactNode }) {
+/** Reveals word by word while scrolling (ScrollReveal splits strings, so headings are plain text). */
+function SectionHeading({ id, children }: { id: string; children: string }) {
   return (
-    <h2 id={id} className="font-heading text-2xl font-semibold tracking-tight">
+    <ScrollReveal as="h2" id={id} className="font-heading text-2xl font-semibold tracking-tight">
       {children}
-    </h2>
+    </ScrollReveal>
   );
 }
 
@@ -62,8 +66,26 @@ export default function Home() {
             <Sparkles className="size-4" aria-hidden /> Built for BPDC students &middot; CampusOPS 2026
           </span>
           <div className="flex flex-col gap-2">
-            <h1 className="font-heading text-5xl font-semibold tracking-tight sm:text-6xl">Lodestar</h1>
-            <p className="font-heading text-2xl font-medium tracking-tight text-primary sm:text-3xl">Find your direction.</p>
+            <BlurText
+              as="h1"
+              text="Lodestar"
+              animateBy="letters"
+              direction="top"
+              delay={70}
+              stepDuration={0.35}
+              startDelay={100}
+              className="font-heading text-5xl font-semibold tracking-tight sm:text-6xl"
+            />
+            <BlurText
+              as="p"
+              text="Find your direction."
+              animateBy="words"
+              direction="top"
+              delay={150}
+              stepDuration={0.35}
+              startDelay={650}
+              className="font-heading text-2xl font-medium tracking-tight text-primary sm:text-3xl"
+            />
           </div>
           <p className="max-w-xl text-pretty text-lg text-muted-foreground">
             <span className="text-foreground">From discovery to a submitted application.</span> Lodestar finds research
@@ -80,40 +102,44 @@ export default function Home() {
 
       <section aria-labelledby="how" className="flex flex-col gap-4">
         <SectionHeading id="how">How it works</SectionHeading>
-        <BentoGrid>
-          {STEPS.map((s, i) => (
-            <BentoCell key={s.title} span={3} label={s.title}>
-              <span className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                <span className="flex size-6 items-center justify-center rounded-full bg-primary tabular-nums text-primary-foreground">{i + 1}</span>
-                Step {i + 1}
-              </span>
-              <s.icon className="size-4 text-muted-foreground" aria-hidden />
-              <h3 className="font-heading text-base font-semibold tracking-tight">{s.title}</h3>
-              <p className="text-sm text-muted-foreground">{s.body}</p>
-            </BentoCell>
-          ))}
-        </BentoGrid>
+        <ScrollRevealGroup selector=":scope > div > *">
+          <BentoGrid>
+            {STEPS.map((s, i) => (
+              <BentoCell key={s.title} span={3} label={s.title}>
+                <span className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                  <span className="flex size-6 items-center justify-center rounded-full bg-primary tabular-nums text-primary-foreground">{i + 1}</span>
+                  Step {i + 1}
+                </span>
+                <s.icon className="size-4 text-muted-foreground" aria-hidden />
+                <h3 className="font-heading text-base font-semibold tracking-tight">{s.title}</h3>
+                <p className="text-sm text-muted-foreground">{s.body}</p>
+              </BentoCell>
+            ))}
+          </BentoGrid>
+        </ScrollRevealGroup>
       </section>
 
       <section aria-labelledby="features" className="flex flex-col gap-4">
         <SectionHeading id="features">More than a list of links</SectionHeading>
-        <BentoGrid>
-          {FEATURES.map((f) =>
-            f.hero ? (
-              <BentoCell key={f.title} span={f.span} variant="hero" label={f.title} className="justify-end">
-                <f.icon className="size-4 text-hero-muted" aria-hidden />
-                <h3 className="font-heading text-2xl font-semibold tracking-tight text-gold">{f.title}</h3>
-                <p className="max-w-xl text-sm text-hero-muted">{f.body}</p>
-              </BentoCell>
-            ) : (
-              <BentoCell key={f.title} span={f.span} label={f.title}>
-                <f.icon className="size-4 text-muted-foreground" aria-hidden />
-                <h3 className="font-heading text-base font-semibold tracking-tight">{f.title}</h3>
-                <p className="text-sm text-muted-foreground">{f.body}</p>
-              </BentoCell>
-            )
-          )}
-        </BentoGrid>
+        <ScrollRevealGroup selector=":scope > div > *">
+          <BentoGrid>
+            {FEATURES.map((f) =>
+              f.hero ? (
+                <BentoCell key={f.title} span={f.span} variant="hero" label={f.title} className="justify-end">
+                  <f.icon className="size-4 text-hero-muted" aria-hidden />
+                  <h3 className="font-heading text-2xl font-semibold tracking-tight text-gold">{f.title}</h3>
+                  <p className="max-w-xl text-sm text-hero-muted">{f.body}</p>
+                </BentoCell>
+              ) : (
+                <BentoCell key={f.title} span={f.span} label={f.title}>
+                  <f.icon className="size-4 text-muted-foreground" aria-hidden />
+                  <h3 className="font-heading text-base font-semibold tracking-tight">{f.title}</h3>
+                  <p className="text-sm text-muted-foreground">{f.body}</p>
+                </BentoCell>
+              )
+            )}
+          </BentoGrid>
+        </ScrollRevealGroup>
       </section>
 
       <section aria-labelledby="unis" className="flex flex-col gap-4">

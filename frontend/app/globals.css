@@ -78,9 +78,36 @@
   .star-twinkle {
     animation: star-twinkle 5s ease-in-out infinite;
   }
+  /* Home hero entrance (DESIGN.md "Motion"): the star appears after the preview, then
+     twinkles. Keyframes use the individual `scale` / `translate` properties, never
+     `transform`, so the star's Tailwind translate (its grid-dot position) is untouched. */
+  .star-twinkle.star-intro {
+    animation:
+      star-intro 800ms cubic-bezier(0.2, 0.7, 0.2, 1) 1200ms both,
+      star-twinkle 5s ease-in-out 2000ms infinite;
+  }
+  /* ScrollReveal (home section headings): each word is its own box to fade and blur. */
+  .scroll-reveal .word {
+    display: inline-block;
+  }
+  .hero-rise {
+    animation: hero-rise 750ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .hero-fill {
+    animation: hero-fill 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) 1500ms both;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .star-twinkle {
+    .star-twinkle,
+    .star-twinkle.star-intro,
+    .hero-rise,
+    .hero-fill {
       animation: none;
+    }
+    /* BlurText's server HTML carries its start state; show the final text before JS runs. */
+    [data-blur-text] > span {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
     }
   }
   /* A quiet scrollbar for inner scrollers (filter sidebar): thin, thumb in --border. */
@@ -124,6 +151,13 @@
     --honor: oklch(0.52 0.11 75);
     /* Home hero star-chart dots: navy ink at 14% on paper. */
     --grid-dot: oklch(0.21 0.03 260 / 14%);
+    /* FolderFloat on /files: a navy folder (back = --hero), lighter front, paper pills. */
+    --folder-back: oklch(0.33 0.08 260);
+    --folder-front: oklch(0.39 0.08 260);
+    --folder-paper: oklch(0.97 0.01 85);
+    --folder-pill: oklch(0.985 0.004 85);
+    --folder-pill-ink: oklch(0.21 0.03 260);
+    --folder-label: oklch(0.98 0.01 85);
     /* Bento hero cells: navy surface in both modes (primary turns gold in dark). */
     --hero: oklch(0.33 0.08 260);
     --hero-foreground: oklch(0.98 0.01 85);
@@ -173,6 +207,13 @@
     --honor: oklch(0.83 0.11 85);
     /* Gold-grey at 18% on navy. */
     --grid-dot: oklch(0.82 0.05 85 / 18%);
+    /* Folder one step above --card, front one more; same paper pills with navy ink. */
+    --folder-back: oklch(0.27 0.045 260);
+    --folder-front: oklch(0.32 0.055 260);
+    --folder-paper: oklch(0.95 0.01 85);
+    --folder-pill: oklch(0.97 0.01 85);
+    --folder-pill-ink: oklch(0.21 0.03 260);
+    --folder-label: oklch(0.96 0.01 85);
     --hero: oklch(0.3 0.07 262);
     --hero-foreground: oklch(0.96 0.01 85);
     --hero-muted: oklch(0.8 0.02 260);
@@ -207,6 +248,37 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@keyframes star-intro {
+  from {
+    opacity: 0;
+    scale: 0.5;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    translate: 0 22px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes hero-fill {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
   }
 }
 

@@ -6,21 +6,20 @@ import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, CheckCheck, Menu } from "lucide-react";
 import { LodestarWordmark } from "@/components/brand/logo";
+import { AccountMenu } from "@/components/account-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
-import { initials, timeAgo } from "@/lib/format";
-import { useCurrentUser, useLogout } from "@/lib/auth";
+import { timeAgo } from "@/lib/format";
+import { useCurrentUser } from "@/lib/auth";
 import { useMarkRead, useNotifications } from "@/lib/engagement";
 import type { User } from "@/lib/types";
 
@@ -116,8 +115,6 @@ function DemoBanner() {
 
 export function Nav() {
   const { data: user, isLoading } = useCurrentUser();
-  const logout = useLogout();
-  const router = useRouter();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const links = linksFor(user);
@@ -193,33 +190,7 @@ export function Nav() {
           {isLoading ? null : user ? (
             <>
               <NotificationBell />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full" aria-label="Account menu">
-                    <Avatar className="h-7 w-7">
-                      <AvatarFallback className="text-xs">{initials(user.name)}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <div className="px-2 py-1.5 text-sm">
-                    <p className="font-medium">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
-                    {user.role !== "student" && <p className="text-xs capitalize text-muted-foreground">{user.role}</p>}
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/onboarding">Edit profile</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings">Settings</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => logout.mutate(undefined, { onSuccess: () => router.push("/") })}>
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <AccountMenu user={user} />
             </>
           ) : (
             <>

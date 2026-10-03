@@ -197,22 +197,36 @@ function CheckGroup<T extends string>({
             <span className="normal-case tracking-normal text-honor">{selected.length} selected</span>
           )}
         </span>
-        <ChevronDown className="size-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" aria-hidden />
+        <ChevronDown
+          className="size-4 text-muted-foreground transition-transform duration-300 group-data-[state=closed]:-rotate-90 motion-reduce:transition-none"
+          aria-hidden
+        />
       </Collapsible.Trigger>
-      <Collapsible.Content role="group" aria-labelledby={`${id}-label`} className="flex flex-col gap-2.5 pt-3">
-        {visible.map((o) => (
-          <CheckRow key={o} id={`f-${id}-${o}`} label={label(o)} checked={selected.includes(o)} onChange={() => onToggle(o)} />
-        ))}
-        {hidden > 0 && (
-          <button
-            type="button"
-            onClick={() => setExpanded((e) => !e)}
-            aria-expanded={expanded}
-            className="w-fit rounded-sm text-sm font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {expanded ? "Show less" : `Show ${hidden} more`}
-          </button>
-        )}
+      {/* Height animates open/closed (tw-animate-css + Radix's measured height); the layout
+          lives on the inner div so its padding is part of that height. motion-safe: (not
+          motion-reduce:animate-none, which the data-[state] variant outranks) keeps reduced
+          motion instant. The -mx-1 px-1 / -mb-1 pb-1
+          pair gives checkbox focus rings room inside overflow-hidden without moving anything. */}
+      <Collapsible.Content
+        role="group"
+        aria-labelledby={`${id}-label`}
+        className="-mx-1 -mb-1 overflow-hidden px-1 pb-1 duration-300 motion-safe:data-[state=closed]:animate-collapsible-up motion-safe:data-[state=open]:animate-collapsible-down"
+      >
+        <div className="flex flex-col gap-2.5 pt-3">
+          {visible.map((o) => (
+            <CheckRow key={o} id={`f-${id}-${o}`} label={label(o)} checked={selected.includes(o)} onChange={() => onToggle(o)} />
+          ))}
+          {hidden > 0 && (
+            <button
+              type="button"
+              onClick={() => setExpanded((e) => !e)}
+              aria-expanded={expanded}
+              className="w-fit rounded-sm text-sm font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {expanded ? "Show less" : `Show ${hidden} more`}
+            </button>
+          )}
+        </div>
       </Collapsible.Content>
     </Collapsible.Root>
   );

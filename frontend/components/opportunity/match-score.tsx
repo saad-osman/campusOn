@@ -1,3 +1,6 @@
+"use client";
+
+import { useCountUp } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 function tone(score: number) {
@@ -7,8 +10,24 @@ function tone(score: number) {
   return "text-rose-600 dark:text-rose-400";
 }
 
-/** Circular 0-100 match score (Feature 2). */
-export function MatchScore({ score, size = 48, className }: { score: number; size?: number; className?: string }) {
+/**
+ * Circular 0-100 match score (Feature 2). Counts up on mount (`animate`, after `delay` ms);
+ * the colour and the accessible label always use the final score.
+ */
+export function MatchScore({
+  score,
+  size = 48,
+  className,
+  animate = true,
+  delay = 0,
+}: {
+  score: number;
+  size?: number;
+  className?: string;
+  animate?: boolean;
+  delay?: number;
+}) {
+  const shown = useCountUp(score, { duration: 1000, delay, enabled: animate });
   const stroke = Math.max(4, Math.round(size / 11));
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
@@ -30,14 +49,14 @@ export function MatchScore({ score, size = 48, className }: { score: number; siz
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}
-          strokeDashoffset={c * (1 - score / 100)}
+          strokeDashoffset={c * (1 - shown / 100)}
         />
       </svg>
       <span
         className="absolute inset-0 flex items-center justify-center font-semibold tabular-nums tracking-tight text-foreground"
         style={{ fontSize: size * 0.3 }}
       >
-        {score}
+        {Math.round(shown)}
       </span>
     </div>
   );

@@ -5,6 +5,7 @@ import { Bookmark, BookmarkCheck, Check, GraduationCap, Layers, MapPin, ShieldCh
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { FUNDING_LABELS, REGION_LABELS, TYPE_LABELS, timeAgo } from "@/lib/format";
+import { EASE_OUT, usePrefersReducedMotion } from "@/lib/motion";
 import { useToggleSave } from "@/lib/opportunities";
 import type { Opportunity } from "@/lib/types";
 import { DeadlineBadge } from "@/components/opportunity/deadline-badge";
@@ -83,17 +84,44 @@ export function TrustLine({ opp }: { opp: Opportunity }) {
   );
 }
 
-export function OpportunityCard({ opp, compact = false }: { opp: Opportunity; compact?: boolean }) {
+/**
+ * `enterIndex` (Discover results only): fade the card in, staggered by its position, and
+ * delay its score count-up to match. Without it the card is static.
+ */
+export function OpportunityCard({
+  opp,
+  compact = false,
+  enterIndex,
+}: {
+  opp: Opportunity;
+  compact?: boolean;
+  enterIndex?: number;
+}) {
   const endorsement = opp.endorsements[0];
+  const reduced = usePrefersReducedMotion();
+  const enter = enterIndex !== undefined && !reduced;
+  const stagger = enterIndex !== undefined ? Math.min(enterIndex, 8) * 60 : 0;
   return (
     <article
       className={cn(
         "group relative flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-colors hover:border-primary/40",
-        opp.status === "expired" && "opacity-70"
+        opp.status === "expired" && "opacity-70",
+        enter && "animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both"
       )}
+      style={
+        enter
+          ? ({ animationDelay: `${stagger}ms`, "--tw-ease": EASE_OUT } as React.CSSProperties)
+          : undefined
+      }
     >
       <div className="flex items-start gap-3">
-        {opp.match && <MatchScore score={opp.match.score} size={compact ? 42 : 50} />}
+        {opp.match && (
+          <MatchScore
+            score={opp.match.score}
+            size={compact ? 42 : 50}
+            delay={enterIndex !== undefined ? stagger + 150 : 0}
+          />
+        )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs text-muted-foreground">
             {TYPE_LABELS[opp.type]} · {opp.organization}

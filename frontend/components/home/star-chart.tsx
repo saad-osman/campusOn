@@ -22,7 +22,7 @@ export function StarChart({ variant, className }: { variant: keyof typeof VARIAN
   return (
     <div aria-hidden className={cn("pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-xl", className)}>
       <div className={cn("star-chart absolute inset-0", v.mask)} />
-      <LodestarStar className={cn("star-twinkle absolute translate-x-1/2 -translate-y-1/2", v.star)} />
+      <LodestarStar className={cn("star-twinkle star-intro absolute translate-x-1/2 -translate-y-1/2", v.star)} />
     </div>
   );
 }

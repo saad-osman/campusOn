@@ -1,6 +1,8 @@
 "use client";
 
+import type * as React from "react";
 import { ExternalLink, Mail, MapPin, Quote } from "lucide-react";
+import { EASE_OUT, usePrefersReducedMotion } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { initials } from "@/lib/format";
@@ -28,13 +30,33 @@ export function SourceNote({ result }: { result: ProfessorSearch }) {
   );
 }
 
-export function ProfessorCard({ p, onDraftEmail }: { p: Professor; onDraftEmail?: (p: Professor) => void }) {
+/**
+ * `enterIndex` (professor search results): fade the card in, staggered by position, like
+ * Discover's opportunity cards. Without it the card is static.
+ */
+export function ProfessorCard({
+  p,
+  onDraftEmail,
+  enterIndex,
+}: {
+  p: Professor;
+  onDraftEmail?: (p: Professor) => void;
+  enterIndex?: number;
+}) {
+  const reduced = usePrefersReducedMotion();
+  const enter = enterIndex !== undefined && !reduced;
   return (
     <article
       className={cn(
         "flex flex-col gap-3 rounded-xl border bg-card p-4",
-        p.highlight && "border-primary/40 bg-primary/[0.03]"
+        p.highlight && "border-primary/40 bg-primary/[0.03]",
+        enter && "animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both"
       )}
+      style={
+        enter
+          ? ({ animationDelay: `${Math.min(enterIndex, 8) * 60}ms`, "--tw-ease": EASE_OUT } as React.CSSProperties)
+          : undefined
+      }
     >
       <div className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold" aria-hidden>

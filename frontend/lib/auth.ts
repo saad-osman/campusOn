@@ -40,6 +40,15 @@ export function useRegister() {
   });
 }
 
+/** Rename the signed-in user (PATCH /api/auth/me); the nav and menus update from the cache. */
+export function useUpdateMe() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { name: string }) => api.patch<User>("/api/auth/me", body),
+    onSuccess: (user) => qc.setQueryData(["me"], user),
+  });
+}
+
 export function useLogout() {
   const qc = useQueryClient();
   return useMutation({

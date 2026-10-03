@@ -18,6 +18,7 @@ from app.schemas.auth import (
     LoginIn,
     RegisterIn,
     ResetPasswordIn,
+    UpdateMeIn,
     UserOut,
 )
 from app.services.rate_limit import is_rate_limited, record_hit
@@ -97,6 +98,15 @@ def logout(response: Response):
 
 @router.get("/me", response_model=UserOut)
 def me(user: User = Depends(get_current_user)):
+    return user
+
+
+@router.patch("/me", response_model=UserOut)
+def update_me(payload: UpdateMeIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Edit the signed-in user's display name (email stays fixed: there is no verification flow)."""
+    user.name = payload.name
+    db.commit()
+    db.refresh(user)
     return user
 
 

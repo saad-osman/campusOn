@@ -16,7 +16,7 @@ import { ApiError } from "@/lib/api";
 import { useRequireUser } from "@/lib/auth";
 import { useGenerateDraft, useProfessors } from "@/lib/actions";
 import { useSavedOpportunities } from "@/lib/opportunities";
-import { useProfile } from "@/lib/profile";
+import { profileEditHref, useProfile } from "@/lib/profile";
 import { useTrackRoute } from "@/lib/state";
 import type { Professor } from "@/lib/types";
 
@@ -143,7 +143,7 @@ export default function ProfessorsPage() {
 
       {query === "" && (
         <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-          Type a research interest to start, or <Link href="/onboarding" className="underline">add interests to your profile</Link> and
+          Type a research interest to start, or <Link href={profileEditHref(profile)} className="underline">add interests to your profile</Link> and
           we&apos;ll search for them automatically.
         </div>
       )}
@@ -164,9 +164,11 @@ export default function ProfessorsPage() {
               No recent papers found for that. Try broader terms.
             </p>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {data.authors.map((p) => (
-                <ProfessorCard key={p.author_id} p={p} onDraftEmail={setEmailTo} />
+            // Keyed on the settled result set: a new search replays the entrance, a background
+            // refetch returning the same researchers does not.
+            <div key={JSON.stringify([query, data.authors.map((a) => a.author_id)])} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {data.authors.map((p, i) => (
+                <ProfessorCard key={p.author_id} p={p} onDraftEmail={setEmailTo} enterIndex={i} />
               ))}
             </div>
           )}
