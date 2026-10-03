@@ -22,7 +22,7 @@ from app.schemas.auth import (
 )
 from app.services.rate_limit import is_rate_limited, record_hit
 from app.services.email import send_email
-from app.services.security import create_access_token, hash_password, verify_password
+from app.services.security import create_access_token, hash_password, needs_rehash, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 settings = get_settings()
@@ -81,6 +81,10 @@ def login(payload: LoginIn, request: Request, response: Response, db: Session = 
         record_hit(f"login:{ip}")
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
 
+    if needs_rehash(user.password_hash):
+        # Moves accounts hashed with the old 64 MiB setting to the current one.
+        user.password_hash = hash_password(payload.password)
+        db.commit()
     _set_session_cookie(response, user)
     return user
 

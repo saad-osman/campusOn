@@ -1,3 +1,4 @@
+import threading
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -7,18 +8,34 @@ from argon2.exceptions import VerifyMismatchError
 from app.config import get_settings
 
 settings = get_settings()
-_hasher = PasswordHasher()
+
+# Argon2id at OWASP's recommended minimum (19 MiB, 2 passes, 1 lane). The library
+# default allocates 64 MiB per hash, and logins run in parallel threads: 4 at once
+# peaked at 491 MB and 10 at 879 MB, past the 512 MB production host.
+_hasher = PasswordHasher(time_cost=2, memory_cost=19 * 1024, parallelism=1)
+# At most two hashes in flight; a burst of logins queues for a few ms instead.
+_hash_slots = threading.BoundedSemaphore(2)
 
 
 def hash_password(password: str) -> str:
-    return _hasher.hash(password)
+    with _hash_slots:
+        return _hasher.hash(password)
 
 
 def verify_password(password: str, password_hash: str) -> bool:
     try:
-        return _hasher.verify(password_hash, password)
+        with _hash_slots:
+            return _hasher.verify(password_hash, password)
     except VerifyMismatchError:
         return False
+    except Exception:
+        return False
+
+
+def needs_rehash(password_hash: str) -> bool:
+    """True for hashes made with older (heavier) parameters; rehash them on login."""
+    try:
+        return _hasher.check_needs_rehash(password_hash)
     except Exception:
         return False
 

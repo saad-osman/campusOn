@@ -152,3 +152,35 @@ def test_session_endpoint_is_200_when_logged_out(client):
     assert res.status_code == 200 and res.json() == {"user": None}
     _register(client, email="session@example.com")
     assert client.get("/api/auth/session").json()["user"]["email"] == "session@example.com"
+
+
+def test_password_hash_fits_the_memory_budget():
+    from argon2 import extract_parameters
+
+    from app.services.security import hash_password, verify_password
+
+    h = hash_password("correcthorse")
+    params = extract_parameters(h)
+    # 64 MiB per hash x parallel logins took the 512 MB host down; keep it at 19 MiB.
+    assert params.memory_cost <= 19 * 1024
+    assert params.parallelism == 1
+    assert verify_password("correcthorse", h)
+    assert not verify_password("wrong", h)
+
+
+def test_login_upgrades_legacy_heavy_hash(client, db_session):
+    from argon2 import PasswordHasher, extract_parameters
+
+    from app.models.user import User
+
+    reset_rate_limits()
+    _register(client, email="legacy@example.com", password="correcthorse")
+    client.cookies.clear()
+    user = db_session.query(User).filter(User.email == "legacy@example.com").one()
+    user.password_hash = PasswordHasher().hash("correcthorse")  # the old 64 MiB default
+    db_session.commit()
+
+    assert client.post("/api/auth/login", json={"email": "legacy@example.com", "password": "correcthorse"}).status_code == 200
+    db_session.expire_all()
+    upgraded = db_session.query(User).filter(User.email == "legacy@example.com").one().password_hash
+    assert extract_parameters(upgraded).memory_cost <= 19 * 1024
