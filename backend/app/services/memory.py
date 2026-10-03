@@ -1,7 +1,11 @@
 """Process memory readings for the production logs (the free host has 512 MB)."""
 import os
-import resource
 import sys
+
+try:
+    import resource
+except ImportError:  # Windows has no `resource`; local dev must still start.
+    resource = None
 
 
 def rss_mb() -> float:
@@ -17,6 +21,8 @@ def rss_mb() -> float:
 
 
 def peak_rss_mb() -> float:
+    if resource is None:
+        return 0.0
     peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     # Linux reports KB, macOS bytes.
     return peak / (1024 * 1024) if sys.platform == "darwin" else peak / 1024
