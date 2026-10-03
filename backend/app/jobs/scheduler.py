@@ -14,6 +14,9 @@ _scheduler: BackgroundScheduler | None = None
 
 
 def rescrape_all_active_sources() -> None:
+    from app.services.memory import log_memory
+
+    log_memory("rescrape start")
     db = SessionLocal()
     try:
         sources = db.query(Source).filter(Source.active.is_(True)).all()
@@ -24,6 +27,7 @@ def rescrape_all_active_sources() -> None:
                 logger.exception("Scrape failed for source %s", source.id)
     finally:
         db.close()
+        log_memory("rescrape end")
 
 
 def run_daily_expiry_check() -> None:

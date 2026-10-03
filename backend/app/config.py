@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     SCRAPER_CONTACT_EMAIL: str = "demo@scholarradar.local"
     SCRAPER_MIN_DELAY_SECONDS: float = 2.0
     SCRAPER_TIMEOUT_SECONDS: float = 15.0
+    # Pages are read only up to this size: BeautifulSoup needs many times a page's size in
+    # memory, and one oversized page must not take the 512 MB API host down.
+    SCRAPER_MAX_BYTES: int = 2 * 1024 * 1024
 
     # External APIs
     SEMANTIC_SCHOLAR_API_KEY: str | None = None  # optional; raises the public rate limit

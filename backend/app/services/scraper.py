@@ -74,13 +74,35 @@ def fetch_page(url: str, max_retries: int = 2) -> tuple[str, int]:
     for attempt in range(max_retries + 1):
         try:
             with httpx.Client(timeout=settings.SCRAPER_TIMEOUT_SECONDS, follow_redirects=True) as client:
-                resp = client.get(url, headers=headers)
-            return resp.text, resp.status_code
+                with client.stream("GET", url, headers=headers) as resp:
+                    return _read_capped_text(resp), resp.status_code
+        except ScrapeFailed:
+            raise
         except Exception as e:
             last_error = e
             if attempt < max_retries:
                 time.sleep(2 ** (attempt + 1))
     raise ScrapeFailed(f"Failed to fetch {url}: {last_error}")
+
+
+def _read_capped_text(resp: httpx.Response) -> str:
+    """Body of an HTML/text response, read only up to SCRAPER_MAX_BYTES.
+
+    Streamed so an oversized page (or a mislinked PDF/video) never sits in memory whole.
+    """
+    content_type = resp.headers.get("content-type", "").lower()
+    if content_type and not any(t in content_type for t in ("html", "text/", "xml")):
+        raise ScrapeFailed(f"Not an HTML page ({content_type.split(';')[0]}): {resp.url}")
+    limit = settings.SCRAPER_MAX_BYTES
+    chunks: list[bytes] = []
+    size = 0
+    for chunk in resp.iter_bytes():
+        chunks.append(chunk)
+        size += len(chunk)
+        if size >= limit:
+            break
+    body = b"".join(chunks)[:limit]
+    return body.decode(resp.encoding or "utf-8", errors="replace")
 
 
 def fetch_rendered(url: str) -> tuple[str, int]:

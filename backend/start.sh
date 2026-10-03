@@ -4,6 +4,17 @@
 set -e
 mkdir -p data/uploads
 
+# Memory limits for the 512 MB free plan (dashboard env vars still win):
+# - glibc otherwise creates up to 8 malloc arenas per CPU for a threaded server, and
+#   the memory they fragment is never handed back -- RSS creeps up until the OOM kill.
+# - ONNX Runtime, OpenMP, OpenBLAS and tokenizers size thread pools from the host's CPU
+#   count, which on shared hosts is the whole machine; each thread costs memory.
+export MALLOC_ARENA_MAX="${MALLOC_ARENA_MAX:-2}"
+export EMBED_THREADS="${EMBED_THREADS:-1}"
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
+export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
+export TOKENIZERS_PARALLELISM="${TOKENIZERS_PARALLELISM:-false}"
+
 if python -m app.db_has_users; then
   alembic upgrade head
 else

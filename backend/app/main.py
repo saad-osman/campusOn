@@ -55,6 +55,9 @@ async def lifespan(app: FastAPI):
     from app.services import telegram_bot
 
     telegram_bot.start_bot()  # no-op unless TELEGRAM_BOT_TOKEN is set
+    from app.services.memory import log_memory
+
+    log_memory("startup")
     yield
     telegram_bot.stop_bot()
     if scheduler:

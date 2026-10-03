@@ -16,6 +16,11 @@ MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 # still there at runtime on hosts that only keep the project directory.
 CACHE_DIR = os.environ.get("FASTEMBED_CACHE_PATH") or str(Path(__file__).resolve().parents[2] / ".fastembed_cache")
 
+# ONNX Runtime sizes its thread pool from the CPU count the OS reports. On shared hosts
+# (Render's free plan) that is the whole machine, not our slice, and every extra thread
+# costs memory -- one thread embeds a short text in milliseconds, which is all we need.
+EMBED_THREADS = int(os.environ.get("EMBED_THREADS", "1"))
+
 _model = None
 
 
@@ -24,7 +29,7 @@ def get_model():
     if _model is None:
         from fastembed import TextEmbedding
 
-        _model = TextEmbedding(MODEL_NAME, cache_dir=CACHE_DIR)
+        _model = TextEmbedding(MODEL_NAME, cache_dir=CACHE_DIR, threads=EMBED_THREADS)
     return _model
 
 

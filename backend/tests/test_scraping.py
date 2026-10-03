@@ -336,3 +336,29 @@ def test_render_relative_dates():
 
     out = render_relative_dates("Deadline: {{today+5}} / {{today-10}}", today=date(2026, 9, 30))
     assert out == "Deadline: October 5, 2026 / September 20, 2026"
+
+
+def test_read_capped_text_stops_at_the_size_limit(monkeypatch):
+    import httpx
+    from app.services import scraper
+
+    monkeypatch.setattr(scraper.settings, "SCRAPER_MAX_BYTES", 1000)
+    resp = httpx.Response(200, headers={"content-type": "text/html; charset=utf-8"}, content=b"<p>" + b"a" * 50_000)
+    text = scraper._read_capped_text(resp)
+    assert len(text) == 1000
+    assert text.startswith("<p>aaa")
+
+
+def test_read_capped_text_rejects_non_html():
+    import httpx
+    import pytest
+    from app.services import scraper
+
+    resp = httpx.Response(
+        200,
+        headers={"content-type": "application/pdf"},
+        content=b"%PDF-1.7",
+        request=httpx.Request("GET", "https://example.edu/brochure.pdf"),
+    )
+    with pytest.raises(scraper.ScrapeFailed):
+        scraper._read_capped_text(resp)
