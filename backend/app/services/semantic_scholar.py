@@ -27,6 +27,8 @@ settings = get_settings()
 BASE = "https://api.semanticscholar.org/graph/v1"
 CACHE_TTL = timedelta(days=7)
 SAMPLE_PATH = Path(__file__).resolve().parents[2] / "seed" / "cache" / "professors_sample.json"
+# Real results for common searches (python -m app.snapshot_professors), loaded by the seed.
+SNAPSHOT_PATH = Path(__file__).resolve().parents[2] / "seed" / "cache" / "professors_snapshot.json"
 PAPER_FIELDS = "title,year,url,venue,citationCount,authors,s2FieldsOfStudy,publicationDate"
 AUTHOR_FIELDS = "name,affiliations,hIndex,citationCount,paperCount,url"
 
@@ -150,10 +152,37 @@ def _sample(query: str) -> list[dict]:
     return [dict(a, score=float(overlap(a))) for a in authors[:8]]
 
 
+def cache_key(query: str) -> str:
+    return hashlib.sha256(f"s2:{' '.join(query.split())[:200].lower()}".encode()).hexdigest()
+
+
+def load_snapshot(db: Session) -> int:
+    """Puts the real-results snapshot into the API cache, keeping each entry's fetch time.
+
+    Fresh entries answer directly; older ones are tried live first and still beat the
+    fictional sample if Semantic Scholar is rate-limited ("stale beats nothing" below).
+    """
+    if not SNAPSHOT_PATH.exists():
+        return 0
+    data = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+    count = 0
+    for entry in data.get("entries", []):
+        key = cache_key(entry["query"])
+        fetched_at = datetime.fromisoformat(entry["fetched_at"])
+        row = db.query(ApiCache).filter(ApiCache.key == key).first()
+        if row:
+            row.payload, row.fetched_at = {"authors": entry["authors"]}, fetched_at
+        else:
+            db.add(ApiCache(key=key, namespace="semantic_scholar", payload={"authors": entry["authors"]}, fetched_at=fetched_at))
+        count += 1
+    db.commit()
+    return count
+
+
 def find_professors(db: Session, query: str) -> dict:
     """Returns {"query", "source": live|cache|sample, "fetched_at", "authors": [...]}."""
     query = " ".join(query.split())[:200]
-    key = hashlib.sha256(f"s2:{query.lower()}".encode()).hexdigest()
+    key = cache_key(query)
     cached = db.query(ApiCache).filter(ApiCache.key == key).first()
     if cached and datetime.utcnow() - cached.fetched_at < CACHE_TTL:
         return {"query": query, "source": "cache", "fetched_at": cached.fetched_at, "authors": cached.payload["authors"]}

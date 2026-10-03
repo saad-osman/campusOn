@@ -1,4 +1,5 @@
 """Phase 5: tracker (F9), calendar export, outcomes, copilot (F4), professor finder (F3)."""
+import json
 import uuid
 from datetime import date, timedelta
 
@@ -215,6 +216,24 @@ def test_professor_search_falls_back_to_sample_then_uses_cache(client, db_sessio
     monkeypatch.setattr(semantic_scholar, "fetch_live", unavailable)
     cached = client.get("/api/professors?q=NLP  Arabic").json()  # normalised to the same cache key
     assert cached["source"] == "cache" and cached["authors"][0]["name"] == "Real Person"
+
+
+def test_professor_snapshot_answers_when_scholar_is_down(client, db_session, monkeypatch, tmp_path):
+    _register(client)
+    author = {"author_id": "7", "name": "Snapshot Person", "affiliations": ["KU"], "topics": ["CS"],
+              "highlight": "UAE", "recent_papers": [{"title": "P", "year": 2024, "venue": None, "url": None, "citations": 3}]}
+    snapshot = tmp_path / "snap.json"
+    snapshot.write_text(json.dumps({"entries": [{"query": "Swarm  Robotics", "fetched_at": "2020-01-01T00:00:00", "authors": [author]}]}))
+    monkeypatch.setattr(semantic_scholar, "SNAPSHOT_PATH", snapshot)
+    assert semantic_scholar.load_snapshot(db_session) == 1
+    assert semantic_scholar.load_snapshot(db_session) == 1  # re-loading updates, no duplicate key
+
+    def unavailable(query):
+        raise semantic_scholar.ScholarUnavailable("429")
+
+    monkeypatch.setattr(semantic_scholar, "fetch_live", unavailable)
+    res = client.get("/api/professors?q=swarm robotics").json()  # old entry: live is tried, snapshot beats the sample
+    assert res["source"] == "cache" and res["authors"][0]["name"] == "Snapshot Person"
 
 
 def test_professor_query_from_opportunity_prefers_student_interests(client, db_session, monkeypatch):

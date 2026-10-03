@@ -5,7 +5,7 @@ import { ExternalLink, Mail, MapPin, Quote } from "lucide-react";
 import { EASE_OUT, usePrefersReducedMotion } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { initials } from "@/lib/format";
+import { initials, parseServerTime } from "@/lib/format";
 import type { Professor, ProfessorRef, ProfessorSearch } from "@/lib/types";
 
 export function toProfessorRef(p: Professor): ProfessorRef {
@@ -22,9 +22,13 @@ export function SourceNote({ result }: { result: ProfessorSearch }) {
       </p>
     );
   }
+  const saved =
+    result.source === "cache" && result.fetched_at
+      ? ` (saved ${parseServerTime(result.fetched_at).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })})`
+      : "";
   return (
     <p className="text-xs text-muted-foreground">
-      From Semantic Scholar{result.source === "cache" ? " (cached within the last 7 days)" : ""} for &ldquo;{result.query}&rdquo;.
+      From Semantic Scholar{saved} for &ldquo;{result.query}&rdquo;.
       Ranked by relevance, recency and citations; BITS Pilani and UAE researchers are highlighted.
     </p>
   );

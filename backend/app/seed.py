@@ -302,6 +302,10 @@ def main():
             simulate_deadline_extension(db, tracked[0])
         seed_trust_and_endorsements(db, faculty)
         seed_history(db)
+        from app.services.semantic_scholar import load_snapshot
+
+        snapshot = load_snapshot(db)
+        print(f"Loaded {snapshot} professor-finder searches from the real-results snapshot.")
         print("Done.")
     finally:
         db.close()
