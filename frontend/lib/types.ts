@@ -289,6 +289,21 @@ export interface ProfessorSearch {
   authors: Professor[];
 }
 
+export interface CompareAuthor {
+  name: string;
+  affiliation: string | null;
+  topic: string | null;
+  profile_url: string | null;
+}
+
+export interface CompareProfessors {
+  opportunity_id: string;
+  query: string;
+  source: "cache" | "ai" | "sample";
+  fetched_at: string | null;
+  authors: CompareAuthor[];
+}
+
 export interface ProfessorRef {
   name: string;
   affiliation?: string | null;

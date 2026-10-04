@@ -15,7 +15,7 @@ export function ProfessorsSection({ opp }: { opp: Opportunity }) {
   const { data, isLoading, isError } = useProfessors({ opportunityId: opp.id });
   const [emailTo, setEmailTo] = React.useState<ProfessorRef | null>(null);
   return (
-    <Card>
+    <Card id="researchers" className="scroll-mt-[calc(var(--header-h,3.5rem)+1rem)]">
       <CardHeader>
         <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-base">
           <span className="flex items-center gap-2">

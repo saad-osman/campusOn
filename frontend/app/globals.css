@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* `dark:` follows the site's theme (next-themes puts .dark on <html>), not the OS setting, so
+   it always matches the tokens below, including when someone picks Light on a dark OS. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

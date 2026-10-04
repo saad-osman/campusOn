@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCurrentUser } from "@/lib/auth";
+import { useCurrentUser, useSessionHint } from "@/lib/auth";
+import { HINT_PENDING_HIDE } from "@/lib/session-hint";
+import { cn } from "@/lib/utils";
 
 /** Text-style secondary CTA (logged-out visitors go via login, then land on Discover). */
 function BrowseLink() {
@@ -19,9 +21,12 @@ function BrowseLink() {
 
 export function HomeCTA() {
   const { data: user, isLoading } = useCurrentUser();
-  // Same height as the buttons, so nothing shifts when the session resolves.
-  if (isLoading) return <div className="h-11" aria-hidden />;
-  if (user) {
+  const hint = useSessionHint();
+  // Always show buttons: while the session is unknown (loading, or the API is asleep and the
+  // check failed) the readable hint cookie picks the set; the session's own answer wins once
+  // it loads. The pages they lead to show the "Waking up the server" card if needed.
+  const signedIn = isLoading || user === undefined ? hint === true : !!user;
+  if (signedIn) {
     return (
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <Button size="lg" asChild className="h-11 px-5">
@@ -34,7 +39,7 @@ export function HomeCTA() {
     );
   }
   return (
-    <div className="flex flex-col items-start gap-3">
+    <div className={cn("flex flex-col items-start gap-3", hint === null && HINT_PENDING_HIDE)}>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <Button size="lg" asChild className="h-11 px-5">
           <Link href="/register">

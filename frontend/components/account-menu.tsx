@@ -124,7 +124,11 @@ export function AccountMenu({ user }: { user: User }) {
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => logout.mutate(undefined, { onSuccess: () => router.push("/") })}>
+        <DropdownMenuItem
+          // mutateAsync, not mutate's onSuccess: logging out unmounts this menu, and per-call
+          // callbacks of an unmounted component never run.
+          onClick={() => void logout.mutateAsync().then(() => router.push("/"), () => undefined)}
+        >
           <LogOut className={ITEM_ICON} aria-hidden /> Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

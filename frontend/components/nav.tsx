@@ -4,7 +4,19 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Bell, CheckCheck, Menu } from "lucide-react";
+import {
+  BadgeCheck,
+  Bell,
+  ChartColumn,
+  CheckCheck,
+  ClipboardCheck,
+  Columns3,
+  Compass,
+  Folder,
+  GraduationCap,
+  LayoutDashboard,
+  Menu,
+} from "lucide-react";
 import { LodestarWordmark } from "@/components/brand/logo";
 import { AccountMenu } from "@/components/account-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -20,22 +32,48 @@ import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
 import { timeAgo } from "@/lib/format";
 import { useCurrentUser } from "@/lib/auth";
+import { useCompare } from "@/lib/compare";
 import { useMarkRead, useNotifications } from "@/lib/engagement";
 import type { User } from "@/lib/types";
 
-function linksFor(user: User | null | undefined) {
+type NavLink = { href: string; label: string; icon: React.ElementType };
+
+function linksFor(user: User | null | undefined): NavLink[] {
   if (!user) return [];
-  const links = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/discover", label: "Discover" },
-    { href: "/professors", label: "Professors" },
-    { href: "/files", label: "Files" },
+  const links: NavLink[] = [
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/discover", label: "Discover", icon: Compass },
+    { href: "/compare", label: "Compare", icon: Columns3 },
+    { href: "/professors", label: "Professors", icon: GraduationCap },
+    { href: "/files", label: "Files", icon: Folder },
   ];
   if (user.role === "faculty" || user.role === "admin") {
-    links.push({ href: "/faculty/review", label: "Review" }, { href: "/faculty/endorse", label: "Endorse" });
+    links.push(
+      { href: "/faculty/review", label: "Review", icon: ClipboardCheck },
+      { href: "/faculty/endorse", label: "Endorse", icon: BadgeCheck }
+    );
   }
-  if (user.role === "admin") links.push({ href: "/admin", label: "Admin" });
+  if (user.role === "admin") links.push({ href: "/admin", label: "Admin", icon: ChartColumn });
   return links;
+}
+
+/** Icon + label (+ the compare count) inside a nav link; the icon inherits the text colour. */
+function LinkContent({ link, compareCount }: { link: NavLink; compareCount: number }) {
+  const Icon = link.icon;
+  return (
+    <>
+      <Icon className="size-4 shrink-0" aria-hidden />
+      {link.label}
+      {link.href === "/compare" && compareCount > 0 && (
+        <span
+          className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold tabular-nums text-primary-foreground"
+          aria-label={`${compareCount} selected`}
+        >
+          {compareCount}
+        </span>
+      )}
+    </>
+  );
 }
 
 function NotificationBell() {
@@ -116,8 +154,11 @@ function DemoBanner() {
 export function Nav() {
   const { data: user, isLoading } = useCurrentUser();
   const pathname = usePathname();
+  // The home page is the landing page: just the logo and theme toggle; its own CTAs lead on.
+  const onHome = pathname === "/";
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const links = linksFor(user);
+  const links = onHome ? [] : linksFor(user);
+  const compareCount = useCompare().ids.length;
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   // Publish the sticky header's height (it includes the demo banner) as --header-h, for panels that stick below it.
   const headerRef = React.useRef<HTMLElement>(null);
@@ -155,11 +196,11 @@ export function Nav() {
                       onClick={() => setMobileOpen(false)}
                       aria-current={isActive(link.href) ? "page" : undefined}
                       className={cn(
-                        "rounded-md px-3 py-2 text-sm hover:bg-muted",
+                        "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm hover:bg-muted",
                         isActive(link.href) && "bg-muted font-medium"
                       )}
                     >
-                      {link.label}
+                      <LinkContent link={link} compareCount={compareCount} />
                     </Link>
                   ))}
                 </nav>
@@ -177,18 +218,18 @@ export function Nav() {
               href={link.href}
               aria-current={isActive(link.href) ? "page" : undefined}
               className={cn(
-                "rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:text-foreground",
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-muted-foreground transition-colors hover:text-foreground",
                 isActive(link.href) && "bg-muted font-medium text-foreground"
               )}
             >
-              {link.label}
+              <LinkContent link={link} compareCount={compareCount} />
             </Link>
           ))}
         </nav>
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          {/* `undefined` = the session check failed (server asleep): show neither state yet. */}
-          {isLoading || user === undefined ? null : user ? (
+          {/* Nothing on Home. `undefined` = the session check failed (server asleep): show neither state yet. */}
+          {onHome || isLoading || user === undefined ? null : user ? (
             <>
               <NotificationBell />
               <AccountMenu user={user} />

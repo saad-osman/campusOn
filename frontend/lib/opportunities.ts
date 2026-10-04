@@ -46,12 +46,17 @@ export function useSavedOpportunities() {
   });
 }
 
-export function useOpportunity(id: string | undefined) {
-  return useQuery<Opportunity>({
-    queryKey: ["opportunity", id],
+/** Shared by useOpportunity and the compare page's useQueries, so they share one cache entry. */
+export function opportunityQuery(id: string | undefined) {
+  return {
+    queryKey: ["opportunity", id] as const,
     queryFn: () => api.get<Opportunity>(`/api/opportunities/${id}`),
     enabled: !!id,
-  });
+  };
+}
+
+export function useOpportunity(id: string | undefined) {
+  return useQuery<Opportunity>(opportunityQuery(id));
 }
 
 export function useOpportunityChanges(id: string | undefined) {

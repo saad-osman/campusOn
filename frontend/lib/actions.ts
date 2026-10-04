@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type {
+  CompareProfessors,
   Document,
   DocumentType,
   KitResponse,
@@ -91,6 +92,18 @@ export function useProfessors(params: { q?: string; opportunityId?: string } | n
     queryKey: ["professors", qs],
     queryFn: () => api.get<ProfessorSearch>(`/api/professors?${qs}`),
     enabled: params !== null,
+    staleTime: 10 * 60_000,
+    retry: false,
+  });
+}
+
+/** Researchers for the compare page: saved results or AI suggestions, never a live search. */
+export function useCompareProfessors(ids: string[]) {
+  const sorted = [...ids].sort();
+  return useQuery<CompareProfessors[]>({
+    queryKey: ["professors-compare", sorted],
+    queryFn: () => api.get<CompareProfessors[]>(`/api/professors/compare?ids=${sorted.map(encodeURIComponent).join(",")}`),
+    enabled: sorted.length > 0,
     staleTime: 10 * 60_000,
     retry: false,
   });

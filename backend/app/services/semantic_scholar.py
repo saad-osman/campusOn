@@ -16,10 +16,13 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import httpx
+from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.models.api_cache import ApiCache
+from app.services import llm
+from app.services.rate_limit import check_rate_limit
 
 logger = logging.getLogger("scholarradar.semantic_scholar")
 settings = get_settings()
@@ -199,3 +202,97 @@ def find_professors(db: Session, query: str) -> dict:
         if cached:  # stale beats nothing
             return {"query": query, "source": "cache", "fetched_at": cached.fetched_at, "authors": cached.payload["authors"]}
         return {"query": query, "source": "sample", "fetched_at": None, "authors": _sample(query)}
+
+
+# ---------- compare page: researchers without live Semantic Scholar calls ----------
+
+COMPARE_AUTHORS = 3
+LLM_NAMESPACE = "llm_professors"
+
+
+class _SuggestedResearcher(BaseModel):
+    name: str = Field(min_length=2, max_length=200)
+    affiliation: str | None = Field(default=None, max_length=300)
+    topic: str | None = Field(default=None, max_length=200)
+
+
+class _Suggestions(BaseModel):
+    researchers: list[_SuggestedResearcher] = Field(default_factory=list, max_length=10)
+
+
+def llm_cache_key(query: str) -> str:
+    return hashlib.sha256(f"llm_prof:{' '.join(query.split())[:200].lower()}".encode()).hexdigest()
+
+
+def _compact(authors: list[dict]) -> list[dict]:
+    """Semantic Scholar-shaped authors (snapshot, cache, sample) -> the compare page's short form."""
+    return [
+        {
+            "name": a.get("name") or "Unknown researcher",
+            "affiliation": (a.get("affiliations") or [None])[0],
+            "topic": (a.get("topics") or [None])[0],
+            "profile_url": a.get("profile_url"),
+        }
+        for a in authors[:COMPARE_AUTHORS]
+    ]
+
+
+def _ask_llm(query: str, opp) -> list[dict] | None:
+    """Up to 3 researchers from the LLM, or None if it failed (bad output twice, or unavailable)."""
+    facts = [f"Search topic: {query}"]
+    if opp is not None:
+        facts += [f"Opportunity: {opp.title}", f"Institution: {opp.organization}"]
+        if opp.fields:
+            facts.append("Fields: " + ", ".join(opp.fields))
+        if opp.location:
+            facts.append(f"Location: {opp.location}")
+    system = llm.load_prompt("professor_suggestions.md")
+    for _attempt in range(2):  # retry once on output that doesn't validate, like the extractor
+        try:
+            data = llm.complete_json(system, "\n".join(facts), max_tokens=800)
+        except llm.LLMUnavailable as e:  # complete_json already retried bad JSON once
+            logger.info("LLM professor suggestions unavailable for %r: %s", query, e)
+            return None
+        try:
+            parsed = _Suggestions.model_validate(data)
+        except ValidationError:
+            continue
+        return [
+            {"name": r.name, "affiliation": r.affiliation, "topic": r.topic, "profile_url": None}
+            for r in parsed.researchers[:COMPARE_AUTHORS]
+        ]
+    return None
+
+
+def find_professors_offline(db: Session, query: str, user, opp=None) -> dict:
+    """Researchers for the compare page, without ever calling Semantic Scholar live.
+
+    Order: saved Semantic Scholar results (snapshot/cache, any age) -> cached AI
+    suggestions (7 days) -> ask the LLM (rate-limited per user) -> the fictional sample.
+    Returns {"query", "source": cache|ai|sample, "fetched_at", "authors": [compact]}.
+    """
+    query = " ".join(query.split())[:200]
+
+    cached = db.query(ApiCache).filter(ApiCache.key == cache_key(query)).first()
+    if cached and cached.payload.get("authors"):
+        return {"query": query, "source": "cache", "fetched_at": cached.fetched_at,
+                "authors": _compact(cached.payload["authors"])}
+
+    key = llm_cache_key(query)
+    ai_cached = db.query(ApiCache).filter(ApiCache.key == key).first()
+    if ai_cached and datetime.utcnow() - ai_cached.fetched_at < CACHE_TTL:
+        return {"query": query, "source": "ai", "fetched_at": ai_cached.fetched_at,
+                "authors": ai_cached.payload.get("authors", [])}
+
+    if llm.llm_enabled() and check_rate_limit(f"prof-ai:{user.id}", max_calls=8, window_seconds=60):
+        authors = _ask_llm(query, opp)
+        if authors is not None:
+            now = datetime.utcnow()
+            if ai_cached:
+                ai_cached.payload, ai_cached.fetched_at = {"authors": authors}, now
+            else:
+                db.add(ApiCache(key=key, namespace=LLM_NAMESPACE, payload={"authors": authors}, fetched_at=now))
+            db.commit()
+            return {"query": query, "source": "ai", "fetched_at": now, "authors": authors}
+
+    return {"query": query, "source": "sample", "fetched_at": None, "authors": _compact(_sample(query))}

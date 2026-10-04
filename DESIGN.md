@@ -81,7 +81,7 @@ These encode meaning and are tuned independently of the brand. Do not retheme th
   serif `text-base` title + optional `BentoAction` ("View all" link, `text-xs`).
 
 **Uses bento:** Home (`app/page.tsx`: How it works, features, universities) and Dashboard.
-**Does not:** Discover, Professors, Files and the Application File workspace, opportunity
+**Does not:** Discover, Compare, Professors, Files and the Application File workspace, opportunity
 detail, Settings, Onboarding, Admin, Faculty review/endorse, auth pages, demo portal. Those use
 plain cards and lists.
 
@@ -114,15 +114,53 @@ Below lg the nav is a horizontal tab row (`overflow-x-auto scrollbar-none`). Sec
 Profile (one form, sticky save bar only when dirty), Notifications, Account & access (danger
 zone last).
 
+**Nav** (`components/nav.tsx`): every link is a `size-4` Lucide icon + label (`gap-1.5`, the
+icon inherits the text colour), in the desktop row and the mobile sheet alike. Dashboard
+`LayoutDashboard`, Discover `Compass`, Compare `Columns3`, Professors `GraduationCap`, Files
+`Folder`, Review `ClipboardCheck`, Endorse `BadgeCheck`, Admin `ChartColumn`. Compare carries a
+count badge when non-empty (`rounded-full bg-primary text-primary-foreground text-[11px]
+font-semibold tabular-nums`, 18px tall).
+
+**Compare** (`app/compare/page.tsx`, list in `lib/compare.ts`): up to 4 opportunities, kept per
+user in localStorage (`lodestar:compare:<userId>`), not in `/api/state`. The only way in is the
+"Add to compare" outline button on the opportunity page's action row (`Columns3`); when on it
+reads "In compare" with `Check`, `aria-pressed`, and the honor tint (`bg-accent text-honor
+border-honor/30`). Adding toasts "Added to compare · N of 4" with a View action; a fifth is
+refused with an error toast. The page: title + one muted line; three summary cards (Best match,
+Closes first, Eligible now; section label with a `size-4` icon, semibold value, muted line); a
+toolbar ("Show differences only" switch, "N of 4 slots", ghost "Clear all" behind an
+AlertDialog); then one standard card holding a real `<table>` (`table-fixed min-w-[640px]`,
+scrolls sideways inside the card on phones) with a sticky `w-[168px]` row-label column, a header
+per opportunity (remove `X`, 2-line title link, organisation, SaveButton), a dashed "Add from
+Discover" slot column while under 4, and `bg-muted` section rows (Fit, Timing and money, Details,
+Requirements, Trust and people). **Best here:** with 2+ items and differing values, the winning
+cell(s) get `bg-accent/70` and a `text-honor text-[11px]` "Best here" with a small gold star, for
+match score, eligibility (eligible > partial > unknown > not), most days left, funding (fully
+funded > stipend > partial > unfunded > unknown), endorsements and sources. The Researchers row
+(never hidden by the diff toggle) ends with a `text-[11px]` source note: `Database` "From saved
+Semantic Scholar results", `Sparkles` "Suggested by AI. Check before contacting", or
+`FlaskConical` "Sample researchers (fictional)". Opportunities that 404 or stop being active
+are dropped with one toast. Motion: see "Compare page" under Motion.
+
 **Server waking screen** (`components/server-waking.tsx`, state in `lib/backend-status.ts`):
 when `/api/health` fails (or a check takes over 2.5s), every page except Home shows one
 standard card in place of its content, centred like the auth pages (`max-w-sm py-16`):
-a `LatticeLoader` row (3x3 round "orbit" lattice beside "Waking up the server" in
+a `LatticeLoader` row (3x3 round "orbit" lattice, navy dots in light mode and `gold` in dark, beside "Waking up the server" in
 `font-heading` 18px semibold, then a Geist Mono stopwatch), and one sentence. It retries every
 4s; after 2 minutes the lattice dissolves into a rose cross, the label reads "Not responding
 after" with the frozen time, and a full-width "Try again" button appears. The page stays mounted underneath (`hidden`), so forms keep their values,
 and queries refetch once the server answers. Never show "Log in / Sign up" or a logout
 redirect just because the session check failed: `undefined` user = unknown, `null` = logged out.
+
+Home is exempt from the card, so its CTAs render immediately: while the session is unknown they
+use the readable `lodestar_hint` cookie (`lib/session-hint.ts`, kept by `middleware.ts` and
+set/cleared on login/logout): hinted in → "Open your dashboard", otherwise "Get started free".
+Clicking through lands on the waking card. The nav does not use the hint, and on Home it shows
+only the wordmark and theme toggle (no links, bell, account menu or Log in / Sign up); elsewhere
+its links and account menu appear only once the real session confirms the user. The hint only decides what to show; it
+never grants access, and the real session replaces it as soon as it loads. Before hydration a
+`<head>` script marks `<html>` with `hint-in` so the signed-out CTAs stay invisible (space kept)
+for a hinted visitor, with no flash.
 
 ## Cards and surfaces
 
@@ -169,6 +207,12 @@ Other motion:
   `min(i, 8) × 60ms` stagger) and delays the score count-up to match. The results grid is keyed
   only on settled data, so a new query, filter or sort replays it; a save toggle, a background
   refetch or placeholder data does not. Without `enterIndex` a card is static.
+- **Compare page:** the same timing as Discover. The three summary cards fade and rise in
+  (500ms, 60ms apart), then each opportunity column's cells (header included) follow, one step
+  per column; the row-label column stays put. Count-ups start 150ms after their element: the
+  Best match score, the Eligible now count, and per column the `MatchScore`, endorsement count
+  and source count. A column animates only in its first 1.5s on screen, so removing another
+  column, a re-render, or "Show differences only" revealing rows never replays it.
 - **`MatchScore`:** counts up over 1000ms by default (`animate`, `delay`); colour and label always
   use the final score. Dashboard tiles ripple down each list instead of all at once
   (`delay = min(index, 8) × 60ms + 150ms`, the same timing as Discover's cards).

@@ -65,8 +65,10 @@ function ServerWaking({ down }: { down: boolean }) {
             cellSize={6}
             gap={2}
             fontSize={18}
+            // Dots: the text's navy in light mode, gold in dark mode (the label stays foreground).
+            color="var(--lattice-ink, currentColor)"
             errorColor="var(--color-rose-500)"
-            className="font-heading font-semibold text-foreground"
+            className="font-heading font-semibold text-foreground dark:[--lattice-ink:var(--gold)]"
           />
           <CardDescription>
             {down

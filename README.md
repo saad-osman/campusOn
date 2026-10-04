@@ -67,7 +67,7 @@ top): rule-based extraction, CV parsing and query parsing, and template drafts. 
 in `backend/.env` either `LLM_PROVIDER=gemini` + `LLM_API_KEY` (free key from
 https://aistudio.google.com/apikey) or `LLM_PROVIDER=anthropic` + `ANTHROPIC_API_KEY`.
 
-Tests: `make test` (132 backend tests). Production build check: `make build`.
+Tests: `make test` (139 backend tests). Production build check: `make build`.
 
 ## Status
 
@@ -191,6 +191,16 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
   under 7 days), assignee and eligibility; assigning notifies the teammate. Moving a card to
   Accepted/Rejected asks for an outcome (`POST /api/outcomes`, optionally shared anonymously).
 - **Calendar:** `.ics` per opportunity and per file, with alarms 7 days and 1 day before.
+- **Compare:** "Add to compare" on an opportunity's page puts it in a side-by-side table at
+  `/compare` (up to 4, kept per user in the browser's localStorage). The page shows summary cards
+  (best match, closes first, eligible now), a "Show differences only" toggle, "Best here" marks per
+  row, and up to 3 researchers per opportunity from `GET /api/professors/compare?ids=a,b,c`
+  (max 4 ids). That endpoint **never calls Semantic Scholar live**; it resolves each opportunity's
+  query in this order: saved Semantic Scholar results (the seeded snapshot / cache, any age) →
+  cached AI suggestions (`api_cache` namespace `llm_professors`, 7 days) → ask the LLM
+  (`prompts/professor_suggestions.md`: real, publicly known researchers only, fewer or none when
+  unsure; validated, retried once, rate-limited to 8 per user per minute) → the fictional sample.
+  Each result carries `source: cache | ai | sample` and the UI labels it.
 - Also: documents poll every 10 s and show "Last edited by X"; checklist documents have clickable
   checkboxes; the `/files` list shows members, opportunity count, nearest deadline and last activity.
 

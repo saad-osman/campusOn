@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CalendarPlus, FolderPlus, Wand2 } from "lucide-react";
+import { CalendarPlus, Check, Columns3, FolderPlus, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ApiError } from "@/lib/api";
 import { useAddToTracker, useGenerateKit, useProfessors } from "@/lib/actions";
+import { MAX_COMPARE, useCompare } from "@/lib/compare";
+import { cn } from "@/lib/utils";
 import { useWorkspaces } from "@/lib/workspaces";
 import type { Opportunity, ProfessorRef } from "@/lib/types";
 
@@ -204,6 +206,36 @@ export function KitDialog({
   );
 }
 
+/** The only place users add to /compare (not Discover cards, the dashboard or professors). */
+function CompareButton({ opp }: { opp: Opportunity }) {
+  const router = useRouter();
+  const compare = useCompare();
+  const inCompare = compare.has(opp.id);
+  const view = { label: "View", onClick: () => router.push("/compare") };
+  return (
+    <Button
+      variant="outline"
+      aria-pressed={inCompare}
+      disabled={!compare.ready}
+      className={cn(inCompare && "border-honor/30 bg-accent text-honor hover:bg-accent hover:text-honor dark:border-honor/30 dark:bg-accent dark:hover:bg-accent")}
+      onClick={() => {
+        if (inCompare) {
+          compare.remove(opp.id);
+          return;
+        }
+        const result = compare.add(opp.id);
+        if (result === "added") {
+          toast.success(`Added to compare · ${compare.ids.length + 1} of ${MAX_COMPARE}`, { action: view });
+        } else if (result === "full") {
+          toast.error(`You can compare up to ${MAX_COMPARE} at once. Remove one first.`, { action: view });
+        }
+      }}
+    >
+      {inCompare ? <Check /> : <Columns3 />} {inCompare ? "In compare" : "Add to compare"}
+    </Button>
+  );
+}
+
 export function OpportunityActions({ opp }: { opp: Opportunity }) {
   const [addOpen, setAddOpen] = React.useState(false);
   const [kitOpen, setKitOpen] = React.useState(false);
@@ -222,6 +254,7 @@ export function OpportunityActions({ opp }: { opp: Opportunity }) {
           </a>
         </Button>
       )}
+      <CompareButton opp={opp} />
       <AddToFileDialog opp={opp} open={addOpen} onOpenChange={setAddOpen} />
       <KitDialog opp={opp} open={kitOpen} onOpenChange={setKitOpen} />
     </div>

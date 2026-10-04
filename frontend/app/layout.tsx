@@ -8,6 +8,7 @@ import { QueryProvider } from "@/lib/query-provider";
 import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
 import { BackendGate } from "@/components/server-waking";
+import { SESSION_HINT_SCRIPT } from "@/lib/session-hint";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -45,6 +46,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans")} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SESSION_HINT_SCRIPT }} />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
