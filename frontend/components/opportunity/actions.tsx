@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { useWorkspaces } from "@/lib/workspaces";
 import type { Opportunity, ProfessorRef } from "@/lib/types";
 
-const NEW_FILE = "__new__";
+export const NEW_FILE = "__new__";
 
 /** Application Files the user can write to, for "pick a file" selects. */
 export function useEditableFiles() {

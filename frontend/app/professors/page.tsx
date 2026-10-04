@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileSelect, useEditableFiles } from "@/components/opportunity/actions";
 import { ProfessorCard, ProfessorSkeleton, SourceNote, toProfessorRef } from "@/components/professors/professor-list";
+import { OutreachList } from "@/components/professors/outreach";
 import { ApiError } from "@/lib/api";
 import { useRequireUser } from "@/lib/auth";
 import { useGenerateDraft, useProfessors } from "@/lib/actions";
@@ -140,6 +141,8 @@ export default function ProfessorsPage() {
           <Button type="submit" size="lg" className="h-11 px-4">Find researchers</Button>
         </form>
       </header>
+
+      <OutreachList />
 
       {query === "" && (
         <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">

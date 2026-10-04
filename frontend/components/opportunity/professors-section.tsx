@@ -39,7 +39,7 @@ export function ProfessorsSection({ opp }: { opp: Opportunity }) {
             <SourceNote result={data} />
             <div className="grid gap-3 xl:grid-cols-2">
               {data.authors.slice(0, 4).map((p) => (
-                <ProfessorCard key={p.author_id} p={p} onDraftEmail={(prof) => setEmailTo(toProfessorRef(prof))} />
+                <ProfessorCard key={p.author_id} p={p} opportunityId={opp.id} onDraftEmail={(prof) => setEmailTo(toProfessorRef(prof))} />
               ))}
             </div>
           </>

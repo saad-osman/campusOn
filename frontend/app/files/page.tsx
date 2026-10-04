@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import type { FolderItem } from "@/components/motion/folder-float";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReadinessMeter } from "@/components/workspace/readiness";
 import { DeadlineBadge } from "@/components/opportunity/deadline-badge";
 import { ProjectIcon } from "@/components/workspace/project-icon";
 import { initials, timeAgo } from "@/lib/format";
@@ -242,6 +243,7 @@ function FileCard({ ws, spread, enterIndex }: { ws: Workspace; spread: number; e
           </div>
           <Badge variant="secondary">{ws.my_role}</Badge>
         </div>
+        {ws.readiness && <ReadinessMeter readiness={ws.readiness} />}
         <dl className="grid grid-cols-3 gap-2 text-xs">
           <div>
             <dt className="text-muted-foreground">Opportunities</dt>

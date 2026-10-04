@@ -26,6 +26,7 @@ import {
   Target,
   Trophy,
   UserPlus,
+  MailCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ import { BentoAction, BentoCell, BentoGrid, BentoHeader } from "@/components/ben
 import { DeadlineTimeline } from "@/components/dashboard/deadline-timeline";
 import { filterChips } from "@/components/discover/filters";
 import { IconTile } from "@/components/icon-tile";
+import { ReadinessMeter } from "@/components/workspace/readiness";
 import { DeadlineBadge } from "@/components/opportunity/deadline-badge";
 import { EligibilityPill } from "@/components/opportunity/eligibility-badge";
 import { MatchScore } from "@/components/opportunity/match-score";
@@ -385,6 +387,7 @@ function FilesCell({ files, loading }: { files: Workspace[]; loading: boolean })
             <li key={w.id}>
               <Link href={`/files/${w.id}`} className="-mx-2 flex flex-col gap-1 rounded-lg p-2 transition-colors hover:bg-muted/60">
                 <span className="line-clamp-2 text-sm font-medium">{w.name}</span>
+                {w.readiness && w.readiness.status !== "empty" && <ReadinessMeter readiness={w.readiness} compact />}
                 <span className="flex items-center justify-between gap-2">
                   <span className="flex -space-x-1.5" aria-label={`Members: ${w.members.map((m) => m.name).join(", ")}`}>
                     {w.members.slice(0, 3).map((m) => (
@@ -430,6 +433,7 @@ const NOTIFICATION_ICONS: Record<AppNotification["type"], React.ElementType> = {
   endorsement: Sparkles,
   digest: Newspaper,
   outcome: Trophy,
+  outreach: MailCheck,
   system: Info,
 };
 

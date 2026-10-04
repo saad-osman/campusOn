@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EligibilityExplanation, EligibilityPill } from "@/components/opportunity/eligibility-badge";
+import { FixPlanSection } from "@/components/opportunity/fix-plan";
 import { MatchScore } from "@/components/opportunity/match-score";
 import { OpportunityMeta, SaveButton, TrustLine } from "@/components/opportunity/opportunity-card";
 import { OpportunityActions } from "@/components/opportunity/actions";
@@ -218,7 +219,10 @@ export default function OpportunityPage() {
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
               {opp.eligibility_check ? (
-                <EligibilityExplanation check={opp.eligibility_check} />
+                <>
+                  <EligibilityExplanation check={opp.eligibility_check} />
+                  <FixPlanSection opp={opp} />
+                </>
               ) : (
                 <p className="text-sm text-muted-foreground">
                   <Link href={profileEditHref(profile)} className="underline">Complete your profile</Link> to see whether you qualify.

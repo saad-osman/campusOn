@@ -31,6 +31,18 @@ class MemberSummary(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ReadinessOut(BaseModel):
+    score: int  # 0-100
+    status: str  # empty | on_track | at_risk | ready
+    checklist_done: int
+    checklist_total: int
+    docs_ready: int
+    docs_ai_drafts: int
+    docs_total: int
+    days_left: int | None = None
+    next_step: str | None = None
+
+
 class WorkspaceOut(BaseModel):
     id: str
     name: str
@@ -45,6 +57,7 @@ class WorkspaceOut(BaseModel):
     document_count: int
     opportunity_count: int = 0
     nearest_deadline: date | None = None
+    readiness: ReadinessOut | None = None
     last_activity_at: datetime | None = None
     members: list[dict] = []
 

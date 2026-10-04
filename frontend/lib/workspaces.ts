@@ -173,6 +173,9 @@ export function usePatchDocument(documentId: string) {
     onSuccess: (doc) => {
       qc.setQueryData(["document", documentId], doc);
       qc.invalidateQueries({ queryKey: ["documents", doc.workspace_id] });
+      // Readiness (on the File and the Files list) is computed from document contents.
+      qc.invalidateQueries({ queryKey: ["workspace", doc.workspace_id] });
+      qc.invalidateQueries({ queryKey: ["workspaces"] });
     },
   });
 }

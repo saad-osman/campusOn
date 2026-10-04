@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type {
   CompareProfessors,
+  FixPlan,
   Document,
   DocumentType,
   KitResponse,
@@ -106,6 +107,32 @@ export function useCompareProfessors(ids: string[]) {
     enabled: sorted.length > 0,
     staleTime: 10 * 60_000,
     retry: false,
+  });
+}
+
+// ---------- eligibility fix plan ----------
+
+export function useFixPlan(opportunityId: string, enabled: boolean) {
+  return useQuery<FixPlan>({
+    queryKey: ["fix-plan", opportunityId],
+    queryFn: () => api.get<FixPlan>(`/api/opportunities/${opportunityId}/fix-plan`),
+    enabled,
+  });
+}
+
+export function useApplyFixPlan(opportunityId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (workspaceId: string | null) =>
+      api.post<{ workspace_id: string; workspace_name: string; document_id: string; added: number }>(
+        `/api/opportunities/${opportunityId}/fix-plan/apply`,
+        { workspace_id: workspaceId }
+      ),
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: ["workspaces"] });
+      qc.invalidateQueries({ queryKey: ["workspace", res.workspace_id] });
+      qc.invalidateQueries({ queryKey: ["documents", res.workspace_id] });
+    },
   });
 }
 

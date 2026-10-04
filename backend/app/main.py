@@ -13,6 +13,8 @@ from app.routers import (
     review,
     calendar,
     copilot,
+    fix_plan,
+    outreach,
     professors,
     tracker,
     documents,
@@ -93,6 +95,8 @@ def create_app() -> FastAPI:
     app.include_router(calendar.router)
     app.include_router(professors.router)
     app.include_router(copilot.router)
+    app.include_router(fix_plan.router)
+    app.include_router(outreach.router)
     app.include_router(notifications.router)
     app.include_router(review.router)
     app.include_router(endorsements.router)

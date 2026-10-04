@@ -34,6 +34,18 @@ export type WorkspaceTemplate = "blank" | "single_application" | "scholarship_hu
 export type MemberRole = "owner" | "editor" | "viewer";
 export type DocumentType = "sop" | "cold_email" | "checklist" | "notes" | "cover_letter";
 
+export interface Readiness {
+  score: number; // 0-100
+  status: "empty" | "on_track" | "at_risk" | "ready";
+  checklist_done: number;
+  checklist_total: number;
+  docs_ready: number;
+  docs_ai_drafts: number;
+  docs_total: number;
+  days_left: number | null;
+  next_step: string | null;
+}
+
 export interface Workspace {
   id: string;
   name: string;
@@ -48,6 +60,7 @@ export interface Workspace {
   document_count: number;
   opportunity_count: number;
   nearest_deadline: string | null;
+  readiness: Readiness | null;
   last_activity_at: string | null;
   members: { user_id: string; name: string }[];
 }
@@ -322,7 +335,7 @@ export interface KitResponse {
 
 export interface AppNotification {
   id: string;
-  type: "invite" | "assignment" | "change_alert" | "endorsement" | "digest" | "outcome" | "system";
+  type: "invite" | "assignment" | "change_alert" | "endorsement" | "digest" | "outcome" | "outreach" | "system";
   title: string;
   body: string | null;
   link: string | null;
@@ -355,4 +368,40 @@ export interface MyEndorsement {
   target_major: string | null;
   created_at: string;
   notified: number;
+}
+
+export interface FixStep {
+  key: string;
+  kind: "profile" | "action" | "blocked";
+  title: string;
+  detail: string | null;
+  due: string | null; // YYYY-MM-DD
+  urgent: boolean;
+  link: string | null;
+}
+
+export interface FixPlan {
+  verdict: Verdict;
+  deadline: string | null;
+  has_deadline: boolean;
+  blocked: boolean;
+  steps: FixStep[];
+}
+
+export interface Outreach {
+  id: string;
+  professor_name: string;
+  affiliation: string | null;
+  author_id: string | null;
+  profile_url: string | null;
+  paper_title: string | null;
+  opportunity_id: string | null;
+  opportunity_title: string | null;
+  status: "sent" | "replied" | "closed";
+  sent_on: string; // YYYY-MM-DD
+  follow_up_on: string | null;
+  follow_ups: number;
+  notes: string | null;
+  days_until_follow_up: number | null;
+  follow_up_due: boolean;
 }

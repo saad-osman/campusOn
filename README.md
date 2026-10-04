@@ -179,6 +179,20 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
   `python -m app.snapshot_professors` (fills in missing searches; `--refresh` re-fetches all) and
   commit the JSON. If a search is neither live nor cached, the UI shows a clearly labelled set of
   **fictional** sample researchers from `seed/cache/professors_sample.json`.
+- **Professor outreach tracker:** "I emailed them" on a professor card logs the email
+  (`/api/outreach`, table `professor_outreach`); the Professors page lists everyone contacted.
+  Seven days after an email (or a logged follow-up) with no reply, an in-app reminder appears.
+  Reminders are created when the notifications or outreach list load (`services/outreach.py`),
+  not by a background job, because the free host sleeps.
+- **Eligibility fix plan:** `GET /api/opportunities/{id}/fix-plan` turns each eligibility gap into
+  dated steps planned back from the deadline (e.g. book the English test 35 days before, send the
+  score 7 days before); profile gaps link to Settings and hard blocks are listed without a date
+  (`services/fix_plan.py`). `POST …/fix-plan/apply` appends them to an Application File's
+  checklist (creating the File if needed) and adds the opportunity to its tracker.
+- **Application readiness:** every Application File carries a `readiness` score (checklist 60%,
+  SOP / cover letter / cold email 40%, unreviewed AI drafts count half) with On track / At risk /
+  Ready and the next step (`services/readiness.py`), shown on Files, the File overview and the
+  dashboard.
 - **Application copilot (F4):** `POST /api/copilot/kit` writes a checklist, SOP draft and cold email
   (under 150 words, referencing one of the professor's papers) into an Application File, creating
   one if needed, and puts the opportunity in the tracker as "preparing". `POST /api/copilot/draft`

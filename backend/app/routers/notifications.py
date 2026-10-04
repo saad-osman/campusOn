@@ -31,6 +31,9 @@ class NotificationList(BaseModel):
 
 @router.get("", response_model=NotificationList)
 def list_notifications(limit: int = 30, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    from app.services.outreach import remind_due_follow_ups
+
+    remind_due_follow_ups(db, user.id)  # outreach follow-ups surface the next time the bell loads
     base = db.query(Notification).filter(Notification.user_id == user.id)
     items = base.order_by(Notification.created_at.desc()).limit(max(1, min(limit, 100))).all()
     unread = base.filter(Notification.read.is_(False)).count()

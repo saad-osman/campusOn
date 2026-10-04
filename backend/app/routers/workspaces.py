@@ -27,6 +27,7 @@ from app.schemas.workspace import (
 from app.services.activity import log_activity
 from app.services.email import send_email
 from app.services.notifications import notify
+from app.services.readiness import compute_readiness
 from app.services.workspace_access import require_workspace_role
 
 router = APIRouter(prefix="/api/workspaces", tags=["workspaces"])
@@ -52,7 +53,7 @@ def _to_workspace_out(ws: Workspace, my_role: str, db: Session) -> dict:
         .filter(WorkspaceMember.workspace_id == ws.id)
         .all()
     )
-    document_count = db.query(Document).filter(Document.workspace_id == ws.id).count()
+    docs = db.query(Document.type, Document.title, Document.content).filter(Document.workspace_id == ws.id).all()
     opp_ids = [r.opportunity_id for r in db.query(TrackerItem.opportunity_id)
                .filter(TrackerItem.workspace_id == ws.id, TrackerItem.opportunity_id.isnot(None)).all()]
     upcoming = (
@@ -72,6 +73,7 @@ def _to_workspace_out(ws: Workspace, my_role: str, db: Session) -> dict:
         "member_count": len(members),
         "opportunity_count": len(opp_ids),
         "nearest_deadline": upcoming[0] if upcoming else None,
+        "readiness": compute_readiness(docs, upcoming[0] if upcoming else None),
         "last_activity_at": last[0] if last else ws.updated_at,
         "id": ws.id,
         "name": ws.name,
@@ -82,7 +84,7 @@ def _to_workspace_out(ws: Workspace, my_role: str, db: Session) -> dict:
         "created_at": ws.created_at,
         "updated_at": ws.updated_at,
         "my_role": my_role,
-        "document_count": document_count,
+        "document_count": len(docs),
     }
 
 

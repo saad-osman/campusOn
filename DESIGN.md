@@ -162,6 +162,28 @@ never grants access, and the real session replaces it as soon as it loads. Befor
 `<head>` script marks `<html>` with `hint-in` so the signed-out CTAs stay invisible (space kept)
 for a hinted visitor, with no flash.
 
+**Readiness** (`components/workspace/readiness.tsx`): one score per Application File from the
+API (checklist 60%, application documents 40%; an unreviewed AI draft counts half). A label row
+("Readiness 64%" + status), a `h-1.5` bar and, outside compact mode, the breakdown and "Next:".
+Status colours: Ready = emerald, At risk = rose (deadline close and score lagging), On track /
+Not started = primary bar with muted text. Shown on Files cards, the File's Overview tab, and
+compact in the dashboard's Application Files cell (hidden there while "Not started").
+
+**Fix plan** (`components/opportunity/fix-plan.tsx`): inside the opportunity's Eligibility card,
+below the explanation, when the verdict isn't eligible. A section label "How to close the
+gaps", then one row per step: a muted Lucide icon (UserRound = profile gap, linking to Settings;
+CalendarClock = action; rose Ban = can't change in time), the step, "by 5 Dec" on the right
+(rose "Do it now" when its ideal date has passed) and a muted detail line. An outline
+"Add to an Application File" button appends the steps to that File's checklist.
+
+**Outreach** (`components/professors/outreach.tsx`): professor cards get an outline
+"I emailed them" button (not on sample researchers), which becomes a muted status link
+("Emailed · follow up 11 Oct", "Follow-up due", "Replied"). The Professors page shows a
+"Your outreach" card (`#outreach`) above the results: one row per professor with the status line
+(rose "Follow-up due", emerald "Replied", muted otherwise), "Got a reply", "I followed up"
+(primary when due) and a ⋯ menu (Still waiting, Close, Remove). Reminders arrive as `outreach`
+notifications (MailCheck icon) 7 days after each email or follow-up.
+
 ## Cards and surfaces
 
 - One card recipe everywhere: `rounded-xl border bg-card` + `shadow-[0_1px_2px_rgb(0_0_0/0.04)]`

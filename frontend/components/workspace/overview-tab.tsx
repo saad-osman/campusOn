@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ReadinessMeter } from "@/components/workspace/readiness";
 import { useDeleteWorkspace, useDuplicateWorkspace, usePatchWorkspace } from "@/lib/workspaces";
 import type { Workspace } from "@/lib/types";
 
@@ -56,6 +57,16 @@ export function OverviewTab({ workspace }: { workspace: Workspace }) {
 
   return (
     <div className="flex flex-col gap-4">
+      {workspace.readiness && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Readiness</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ReadinessMeter readiness={workspace.readiness} />
+          </CardContent>
+        </Card>
+      )}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Details</CardTitle>

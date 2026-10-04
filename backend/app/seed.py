@@ -287,6 +287,34 @@ def seed_history(db):
     print(f"Seeded analytics history: {len(cohort)} past students, {len(COHORT_OUTCOMES)} outcomes.")
 
 
+def seed_outreach(db, student):
+    """Two logged cold emails for the demo student, to researchers from the real-results snapshot
+    for their default professor search: one with a follow-up due, one that got a reply."""
+    import json
+
+    from app.models.outreach import ProfessorOutreach
+    from app.models.profile import Profile
+    from app.services.semantic_scholar import SNAPSHOT_PATH
+
+    if not SNAPSHOT_PATH.exists():
+        return 0
+    profile = db.query(Profile).filter(Profile.user_id == student.id).first()
+    query = " ".join((profile.interests or [])[:2]).lower() if profile else ""
+    entries = {e["query"].lower(): e for e in json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))["entries"]}
+    authors = (entries.get(query) or {}).get("authors", [])[:2]
+    today = date.today()
+    for a, (days_ago, status) in zip(authors, [(9, "sent"), (12, "replied")]):
+        sent = today - timedelta(days=days_ago)
+        db.add(ProfessorOutreach(
+            user_id=student.id, professor_name=a["name"], affiliation=(a.get("affiliations") or [None])[0],
+            author_id=a.get("author_id"), profile_url=a.get("profile_url"),
+            paper_title=(a.get("recent_papers") or [{}])[0].get("title"), status=status, sent_on=sent,
+            follow_up_on=sent + timedelta(days=7) if status == "sent" else None,
+        ))
+    db.commit()
+    return len(authors)
+
+
 def main():
     print("Resetting database...")
     reset_db()
@@ -306,6 +334,7 @@ def main():
 
         snapshot = load_snapshot(db)
         print(f"Loaded {snapshot} professor-finder searches from the real-results snapshot.")
+        print(f"Logged {seed_outreach(db, student)} demo professor emails.")
         print("Done.")
     finally:
         db.close()

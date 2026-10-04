@@ -4,6 +4,7 @@ import type * as React from "react";
 import { ExternalLink, Mail, MapPin, Quote } from "lucide-react";
 import { EASE_OUT, usePrefersReducedMotion } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
+import { LogOutreachButton } from "@/components/professors/outreach";
 import { cn } from "@/lib/utils";
 import { initials, parseServerTime } from "@/lib/format";
 import type { Professor, ProfessorRef, ProfessorSearch } from "@/lib/types";
@@ -42,10 +43,13 @@ export function ProfessorCard({
   p,
   onDraftEmail,
   enterIndex,
+  opportunityId,
 }: {
   p: Professor;
   onDraftEmail?: (p: Professor) => void;
   enterIndex?: number;
+  /** Logged with "I emailed them", so the outreach list shows what it was about. */
+  opportunityId?: string;
 }) {
   const reduced = usePrefersReducedMotion();
   const enter = enterIndex !== undefined && !reduced;
@@ -113,6 +117,7 @@ export function ProfessorCard({
             <Mail /> Draft cold email
           </Button>
         )}
+        <LogOutreachButton p={p} opportunityId={opportunityId} />
         {p.profile_url && (
           <Button size="sm" variant="ghost" asChild>
             <a href={p.profile_url} target="_blank" rel="noopener noreferrer">
