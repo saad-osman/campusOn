@@ -70,7 +70,7 @@ def test_ingest_same_url_twice_is_unchanged_not_duplicated(db_session):
     db_session.add(source)
     db_session.flush()
 
-    first = ingest_page_text(db_session, source, "https://daad.de/page", DAAD_TEXT)
+    ingest_page_text(db_session, source, "https://daad.de/page", DAAD_TEXT)
     second = ingest_page_text(db_session, source, "https://daad.de/page", DAAD_TEXT)
     assert second["action"] == "unchanged"
 
@@ -351,7 +351,6 @@ def test_read_capped_text_stops_at_the_size_limit(monkeypatch):
 
 def test_read_capped_text_rejects_non_html():
     import httpx
-    import pytest
     from app.services import scraper
 
     resp = httpx.Response(

@@ -84,7 +84,7 @@ def test_sources_require_faculty_or_admin_role(client):
 
 def test_admin_can_manage_sources(client, db_session):
     reset_rate_limits()
-    res = _register(client, "opps5@example.com")
+    _register(client, "opps5@example.com")
     # promote to admin directly via DB (no admin-creation endpoint by design -- Section 4.1)
     from app.models.user import User
 

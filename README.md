@@ -79,7 +79,7 @@ data model from the spec is built as specified:
 | PostgreSQL 16 + pgvector | SQLite + embeddings as JSON, cosine similarity in Python (numpy) | No Postgres/Docker available. At this data scale (dozens–low hundreds of rows) a Python cosine scan is plenty fast, and it keeps the whole stack to one file with no server process to run. |
 | `docker compose up` | `make dev` / `scripts\dev.ps1` | No Docker in the build environment. `docker-compose.yml` + `docker/*.Dockerfile` (Postgres 16) exist but are **unverified**. |
 | Node via system package manager | Official Node.js tarball extracted into `.node/` (gitignored, not committed) | No Homebrew. Run `make setup` and it's handled for you. |
-| Demo mode uses cached outputs from `seed/cache/` | Rule-based extraction/CV/query parsing and template drafts | They work on any input, not just pre-cached ones, and report lower confidence so weak extractions still reach the review queue. `seed/cache/` holds the offline professor sample. |
+| Demo mode uses cached outputs from `seed/cache/` | Rule-based extraction/CV/query parsing and template drafts | They work on any input, not just pre-cached ones, and report lower confidence so weak extractions still reach the review queue. `seed/cache/` holds the offline professor sample and the real-results snapshot. |
 | Playwright fallback for JS-rendered pages | Stubbed hook in `services/scraper.py`; flags `pending_review` instead | Avoids an uninvited ~300MB browser-binary download; wire up on request. |
 | python-telegram-bot, `ics` library | Bot API over httpx (long polling); RFC 5545 written directly | Fewer dependencies for two small, stable protocols; both are unit-tested. |
 
@@ -156,9 +156,14 @@ The UI for these (discover, opportunity page, admin) arrives in Phases 4 and 7.
 - **Professor & lab finder (F3):** `services/semantic_scholar.py` searches recent papers, groups
   them by author, ranks by relevance, recency and citations, and highlights BITS Pilani and UAE
   affiliations. Results are cached 7 days in `api_cache`; 429s back off exponentially. The public API
-  rate-limits hard without a key (`SEMANTIC_SCHOLAR_API_KEY` raises it). If it's unreachable and
-  nothing is cached, the UI shows a clearly labelled set of **fictional** sample researchers from
-  `seed/cache/professors_sample.json`, so the flow stays demoable offline.
+  rate-limits hard without a key (`SEMANTIC_SCHOLAR_API_KEY` raises it). Because the free host's
+  disk (and so the cache) resets on restart, `seed/cache/professors_snapshot.json` holds real results
+  for ~30 common searches (the demo student's interests, each opportunity's "Find professors"
+  query, popular topics); the seed loads it into `api_cache`, so those searches show real
+  researchers even when the API is rate-limited. Refresh it from a laptop with
+  `python -m app.snapshot_professors` (fills in missing searches; `--refresh` re-fetches all) and
+  commit the JSON. If a search is neither live nor cached, the UI shows a clearly labelled set of
+  **fictional** sample researchers from `seed/cache/professors_sample.json`.
 - **Application copilot (F4):** `POST /api/copilot/kit` writes a checklist, SOP draft and cold email
   (under 150 words, referencing one of the professor's papers) into an Application File, creating
   one if needed, and puts the opportunity in the tracker as "preparing". `POST /api/copilot/draft`
@@ -257,7 +262,7 @@ campusOn/
   docs/                # SPEC.md (product spec), DEMO_SCRIPT.md (3-minute demo)
   backend/
     app/            # main, config, db, models/, schemas/, routers/, services/, jobs/, prompts/
-    seed/           # opportunities.json (58 illustrative listings), cache/
+    seed/           # opportunities.json (58 illustrative listings), cache/ (professor sample + snapshot)
     alembic/
     tests/
   frontend/
@@ -277,6 +282,12 @@ campusOn/
 - **Frontend → Vercel:** root directory `frontend`, env `BACKEND_URL` = the Render service URL
   (read at build time, so redeploy after changing it). `/api` is proxied, so the session
   cookie stays first-party. `FRONTEND_ORIGIN` on Render must equal the Vercel URL.
+- **While the backend sleeps or restarts**, pages show a "Waking up the server" card
+  (`frontend/lib/backend-status.ts`, `components/server-waking.tsx`) that polls `/api/health`
+  and carries on by itself when it answers, instead of rendering blank.
+- **Memory (512 MB on the free plan):** the embedding model (~140 MB) loads once, on the first
+  search or dashboard, behind a lock so parallel requests share it; `start.sh` caps allocator
+  arenas and thread pools. Expect ~90 MB idle and ~250 MB after the first dashboard.
 
 ## Environment variables
 
