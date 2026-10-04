@@ -58,7 +58,8 @@ export default function OnboardingPage() {
   useTrackRoute("/onboarding");
 
   React.useEffect(() => {
-    if (!userLoading && !user) router.replace("/login?next=/onboarding");
+    // `null` = logged out; `undefined` = the check failed (server asleep), which BackendGate handles.
+    if (!userLoading && user === null) router.replace("/login?next=/onboarding");
   }, [user, userLoading, router]);
 
   // Onboarding is for first-time setup; a finished profile is edited in settings.

@@ -187,7 +187,8 @@ export function Nav() {
         </nav>
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          {isLoading ? null : user ? (
+          {/* `undefined` = the session check failed (server asleep): show neither state yet. */}
+          {isLoading || user === undefined ? null : user ? (
             <>
               <NotificationBell />
               <AccountMenu user={user} />

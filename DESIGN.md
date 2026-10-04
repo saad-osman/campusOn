@@ -114,6 +114,16 @@ Below lg the nav is a horizontal tab row (`overflow-x-auto scrollbar-none`). Sec
 Profile (one form, sticky save bar only when dirty), Notifications, Account & access (danger
 zone last).
 
+**Server waking screen** (`components/server-waking.tsx`, state in `lib/backend-status.ts`):
+when `/api/health` fails (or a check takes over 2.5s), every page except Home shows one
+standard card in place of its content, centred like the auth pages (`max-w-sm py-16`):
+a `LatticeLoader` row (3x3 round "orbit" lattice beside "Waking up the server" in
+`font-heading` 18px semibold, then a Geist Mono stopwatch), and one sentence. It retries every
+4s; after 2 minutes the lattice dissolves into a rose cross, the label reads "Not responding
+after" with the frozen time, and a full-width "Try again" button appears. The page stays mounted underneath (`hidden`), so forms keep their values,
+and queries refetch once the server answers. Never show "Log in / Sign up" or a logout
+redirect just because the session check failed: `undefined` user = unknown, `null` = logged out.
+
 ## Cards and surfaces
 
 - One card recipe everywhere: `rounded-xl border bg-card` + `shadow-[0_1px_2px_rgb(0_0_0/0.04)]`
@@ -146,6 +156,7 @@ Motion explains order and change; it never decorates. Shared helpers live in `li
 | `BlurText` | Home hero only | "Lodestar" (`h1`) letter by letter: 70ms apart from 100ms; tagline word by word: 150ms apart from 650ms; 0.35s per step, blur 10→0, y ±50→0 |
 | `ScrollReveal` | Home section headings only | Words fade 0.1→1 and unblur 4px→0, heading rotates 3°→0, scrubbed to scroll (reverses going up) |
 | `ScrollRevealGroup` | Home "How it works" and features bento grids only | Cells fade in, rise 16px, unblur 4px, stagger 0.12, scrubbed; wraps the whole `BentoGrid` (`:scope > div > *`) |
+| `LatticeLoader` | Server waking screen only | React Bits loader: cells light in a wave (CSS, `lattice-loader.css` in `@layer components`), the stopwatch ticks; on give-up it freezes into a cross. Reduced motion: the lattice is still, half lit |
 | `FolderFloat` | `/files` only (`next/dynamic`, `ssr: false`) | Each Application File's documents spring out of a folder as draggable pills (matter-js); hover (mouse) or tap opens it |
 
 Other motion:

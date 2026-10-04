@@ -180,7 +180,8 @@ export default function DocumentEditorPage() {
   const saved = React.useRef({ title: "", content: "" });
 
   React.useEffect(() => {
-    if (!userLoading && !user) router.replace(`/login?next=/files/${workspaceId}/docs/${docId}`);
+    // `null` = logged out; `undefined` = the check failed (server asleep), which BackendGate handles.
+    if (!userLoading && user === null) router.replace(`/login?next=/files/${workspaceId}/docs/${docId}`);
   }, [user, userLoading, router, workspaceId, docId]);
 
   React.useEffect(() => {

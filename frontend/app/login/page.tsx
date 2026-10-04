@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLogin } from "@/lib/auth";
-import { ApiError } from "@/lib/api";
+import { whenServerUp } from "@/lib/api";
 
 export default function LoginPage() {
   return (
@@ -32,10 +32,11 @@ function LoginForm() {
     e.preventDefault();
     setError(null);
     try {
-      await login.mutateAsync({ email, password });
+      // A sleeping server: the waking screen shows, then this finishes by itself.
+      await whenServerUp(() => login.mutateAsync({ email, password }));
       router.push(params.get("next") || "/dashboard");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Something went wrong. Try again.");
+      setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
     }
   }
 

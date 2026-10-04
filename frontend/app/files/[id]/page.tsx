@@ -37,7 +37,8 @@ function WorkspaceDetail() {
   const tracked = React.useRef<string | null>(null);
 
   React.useEffect(() => {
-    if (!userLoading && !user) router.replace(`/login?next=/files/${workspaceId}`);
+    // `null` = logged out; `undefined` = the check failed (server asleep), which BackendGate handles.
+    if (!userLoading && user === null) router.replace(`/login?next=/files/${workspaceId}`);
   }, [user, userLoading, router, workspaceId]);
 
   React.useEffect(() => {

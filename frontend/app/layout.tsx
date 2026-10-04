@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { QueryProvider } from "@/lib/query-provider";
 import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
+import { BackendGate } from "@/components/server-waking";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -55,7 +56,7 @@ export default function RootLayout({
             </a>
             <Nav />
             <main id="main" tabIndex={-1} className="mx-auto min-h-[calc(100vh-3.5rem)] max-w-6xl px-4 py-6 outline-none">
-              {children}
+              <BackendGate>{children}</BackendGate>
             </main>
             <Toaster />
           </QueryProvider>

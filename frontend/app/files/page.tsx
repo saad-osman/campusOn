@@ -280,7 +280,8 @@ export default function FilesPage() {
   }, []);
 
   React.useEffect(() => {
-    if (!userLoading && !user) router.replace("/login?next=/files");
+    // `null` = logged out; `undefined` = the check failed (server asleep), which BackendGate handles.
+    if (!userLoading && user === null) router.replace("/login?next=/files");
   }, [user, userLoading, router]);
 
   if (userLoading || !user) {

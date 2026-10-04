@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useRegister } from "@/lib/auth";
-import { ApiError } from "@/lib/api";
+import { whenServerUp } from "@/lib/api";
 
 function RegisterForm() {
   const router = useRouter();
@@ -25,10 +25,11 @@ function RegisterForm() {
     e.preventDefault();
     setError(null);
     try {
-      await register.mutateAsync({ name, email, password });
+      // A sleeping server: the waking screen shows, then this finishes by itself.
+      await whenServerUp(() => register.mutateAsync({ name, email, password }));
       router.push(params.get("next") || "/onboarding");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Something went wrong. Try again.");
+      setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
     }
   }
 
