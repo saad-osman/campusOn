@@ -7,6 +7,7 @@ the same vectors as sentence-transformers at under half the memory, so the API
 fits a 512 MB host. `python -m app.services.embeddings` downloads it ahead of time.
 """
 import os
+import threading
 from pathlib import Path
 
 import numpy as np
@@ -22,14 +23,20 @@ CACHE_DIR = os.environ.get("FASTEMBED_CACHE_PATH") or str(Path(__file__).resolve
 EMBED_THREADS = int(os.environ.get("EMBED_THREADS", "1"))
 
 _model = None
+# The dashboard fires several requests at once; on a cold server each would otherwise load
+# its own copy of the model (~140 MB each) and blow through a 512 MB host. One loads it,
+# the rest wait and reuse it.
+_model_lock = threading.Lock()
 
 
 def get_model():
     global _model
     if _model is None:
-        from fastembed import TextEmbedding
+        with _model_lock:
+            if _model is None:
+                from fastembed import TextEmbedding
 
-        _model = TextEmbedding(MODEL_NAME, cache_dir=CACHE_DIR, threads=EMBED_THREADS)
+                _model = TextEmbedding(MODEL_NAME, cache_dir=CACHE_DIR, threads=EMBED_THREADS)
     return _model
 
 
