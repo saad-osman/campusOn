@@ -15,9 +15,34 @@ public API field `scholarradar_url`, the widget's `data-scholarradar-widget` att
 event UIDs (`…@scholarradar`), the scraper's `ScholarRadarBot/1.0` User-Agent (sites' robots.txt
 rules may name it), logger names, and the placeholder `@scholarradar.local` email defaults.
 
-## Quick start
+## Live demo
 
-Needs Python 3.11+ and Node 18+.
+**Open https://lodestar-campusops.vercel.app**
+
+| | URL |
+|---|---|
+| Site (Vercel) | https://lodestar-campusops.vercel.app |
+| API (Render) | https://lodestar-api-9lvk.onrender.com ([health](https://lodestar-api-9lvk.onrender.com/api/health)) |
+
+The live API runs with AI on (Gemini). It's on Render's free plan, so after 15 minutes idle the
+first visit shows a "Waking up the server" card for about a minute, then the site carries on by
+itself. Restarts reset the data to the seeded demo.
+
+**Demo accounts** (password `demo1234`):
+
+| Account | What to look at |
+|---|---|
+| `student@demo.com` | Dashboard, Discover, an opportunity, Professors, the shared Application File |
+| `teammate@demo.com` | Same shared file: sees edits, tracker moves and activity |
+| `faculty@demo.com` | Review queue (`/faculty/review`) and endorsements (`/faculty/endorse`) |
+| `admin@demo.com` | Analytics, sources, digest and demo controls (`/admin`) |
+
+[`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) walks through a 3-minute demo. UI work follows
+[`DESIGN.md`](DESIGN.md), the design system as built.
+
+## Run locally (backup)
+
+If the live site is down, run it on your machine. Needs Python 3.11+ and Node 18+.
 
 ```bash
 make setup     # backend venv + deps, frontend npm install, .env files
@@ -33,26 +58,16 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1   # setup + migrate +
 powershell -ExecutionPolicy Bypass -File scripts\dev.ps1     # opens backend + frontend windows
 ```
 
-Open http://localhost:3000. The browser only talks to the Next.js server, which proxies `/api/*`
-and `/feed.xml` to FastAPI (`frontend/next.config.mjs`), so the session cookie is first-party.
+Open http://localhost:3000 and use the same demo accounts. The browser only talks to the Next.js
+server, which proxies `/api/*` and `/feed.xml` to FastAPI (`frontend/next.config.mjs`), so the
+session cookie is first-party.
 
-**Demo accounts** (password `demo1234`):
-
-| Account | What to look at |
-|---|---|
-| `student@demo.com` | Dashboard, Discover, an opportunity, Professors, the shared Application File |
-| `teammate@demo.com` | Same shared file: sees edits, tracker moves and activity |
-| `faculty@demo.com` | Review queue (`/faculty/review`) and endorsements (`/faculty/endorse`) |
-| `admin@demo.com` | Analytics, sources, digest and demo controls (`/admin`) |
-
-No API keys are needed. Without an LLM key the app runs in **demo mode** (banner at the top):
-rule-based extraction, CV parsing and query parsing, and template drafts. To turn AI on, set in
-`backend/.env` either `LLM_PROVIDER=gemini` + `LLM_API_KEY` (free key from
+No API keys are needed locally. Without an LLM key the app runs in **demo mode** (banner at the
+top): rule-based extraction, CV parsing and query parsing, and template drafts. To turn AI on, set
+in `backend/.env` either `LLM_PROVIDER=gemini` + `LLM_API_KEY` (free key from
 https://aistudio.google.com/apikey) or `LLM_PROVIDER=anthropic` + `ANTHROPIC_API_KEY`.
-[`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) walks through a 3-minute demo. UI work follows
-[`DESIGN.md`](DESIGN.md), the design system as built.
 
-Tests: `make test` (116 backend tests). Production build check: `make build`.
+Tests: `make test` (132 backend tests). Production build check: `make build`.
 
 ## Status
 
@@ -275,6 +290,9 @@ campusOn/
 ```
 
 ## Deployment
+
+Live: frontend at https://lodestar-campusops.vercel.app, backend at
+https://lodestar-api-9lvk.onrender.com.
 
 - **Backend → Render (free):** render.com → New → Blueprint → this repo. `render.yaml` sets
   everything; Render asks for `LLM_API_KEY` (Gemini). The build seeds the demo data. Free
